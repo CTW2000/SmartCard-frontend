@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style scoped>
-.search { position: relative; width: 80%; max-width: 1000px; }
+.search { position: relative; width: 70%; max-width: 2000px; }
 
 .icon {
   position: absolute;

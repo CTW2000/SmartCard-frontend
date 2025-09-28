@@ -55,8 +55,9 @@ export default {
   backdrop-filter: blur(8px) saturate(1.2);
 }
 .top-inner {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   padding: 8px 16px;
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -64,7 +65,8 @@ export default {
   gap: 12px;
 }
 .center { display: flex; justify-content: center; }
-.actions { display: inline-flex; align-items: center; gap: 8px; }
+.left { justify-self: start; }
+.actions { display: inline-flex; align-items: center; gap: 8px; justify-self: end; margin-right: 24px; }
 
 .app-layout {
   display: flex;

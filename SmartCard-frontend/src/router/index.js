@@ -31,6 +31,17 @@ const routes = [
     name: 'EquipmentManager',
     component: () => import('../views/Equipment manager.vue'),
   },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue'),
+  },
+  {
+    path: '/createaccounts',
+    name: 'CreateAccounts',
+    component: () => import('../views/CreateAccounts.vue'),
+  },
+  
 ]
 
 const router = createRouter({

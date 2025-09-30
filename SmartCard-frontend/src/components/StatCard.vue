@@ -1,10 +1,10 @@
 <template>
-  <div class="card stat">
-    <div class="caption">{{ title }}</div>
-    <div class="value" :class="colorClass">{{ value }}</div>
-    <div class="meta" v-if="meta">
-      <span class="label" v-if="metaLabel">{{ metaLabel }}</span>
-      <span :class="trendClass" v-if="metaValue">{{ metaValue }}</span>
+  <div class="rounded-[16px] border border-border bg-card shadow-md p-6">
+    <div class="text-muted-foreground text-sm">{{ title }}</div>
+    <div class="text-3xl font-bold my-1" :class="valueColorClass">{{ value }}</div>
+    <div class="text-muted-foreground text-sm" v-if="meta">
+      <span v-if="metaLabel">{{ metaLabel }}</span>
+      <span class="ml-1" :class="trendColorClass" v-if="metaValue">{{ metaValue }}</span>
     </div>
   </div>
   </template>
@@ -15,19 +15,22 @@ export default {
   props: {
     title: { type: String, required: true },
     value: { type: String, required: true },
-    color: { type: String, default: '' }, // '', 'brand', 'success'
+    // Use Tailwind theme tokens: 'primary' | 'accent' | ''
+    color: { type: String, default: '' },
     metaLabel: { type: String, default: '' },
     metaValue: { type: String, default: '' },
     trend: { type: String, default: '' }, // 'up' | 'down'
   },
   computed: {
-    colorClass() {
-      return this.color ? this.color : ''
-    },
-    trendClass() {
-      if (this.trend === 'down') return 'down'
-      if (this.trend === 'up') return 'up'
+    valueColorClass() {
+      if (this.color === 'primary') return 'text-primary'
+      if (this.color === 'accent') return 'text-accent-foreground'
       return ''
+    },
+    trendColorClass() {
+      if (this.trend === 'down') return 'text-primary'
+      if (this.trend === 'up') return 'text-accent-foreground'
+      return 'text-muted-foreground'
     },
     meta() {
       return this.metaLabel || this.metaValue
@@ -37,11 +40,7 @@ export default {
 </script>
 
 <style scoped>
-/* keep styles minimal; main card styles live in page */
-.stat .value.up { color: var(--success); }
-.stat .value.brand { color: var(--brand); }
-.meta .down { color: var(--brand); margin-left: 6px; }
-.meta .up { color: var(--success); margin-left: 6px; }
+
 </style>
 
 

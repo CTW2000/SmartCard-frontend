@@ -29,7 +29,7 @@ const routes = [
   {
     path: '/equipment',
     name: 'EquipmentManager',
-    component: () => import('../views/Equipment manager.vue'),
+    component: () => import('../views/EquipmentManager.vue'),
   },
   {
     path: '/login',

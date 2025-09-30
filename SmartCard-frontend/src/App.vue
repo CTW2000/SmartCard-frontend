@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <header class="topbar">
-      <div class="top-inner">
-        <div class="left"><BrandButton /></div>
-        <div class="center"><Searchbar @search="onSearch" /></div>
-        <div class="actions">
+    <header class="sticky top-0 z-40 bg-white/90 border-b border-black/5 backdrop-blur-md saturate-125">
+      <div class="w-full m-0 px-4 py-2 grid grid-cols-[auto_1fr_auto] items-center gap-3">
+        <div class="justify-self-start"><BrandButton /></div>
+        <div class="flex justify-center"><Searchbar @search="onSearch" /></div>
+        <div class="inline-flex items-center gap-2 justify-self-end mr-6">
           <Notification />
           <UserAvatar name="Alice Doe" />
         </div>
       </div>
     </header>
-    <div class="app-layout">
+    <div class="flex min-h-[calc(100vh-64px)] bg-[#F4F6F9]">
       <Navbar />
-      <main class="app-content">
+      <main class="flex-1 min-w-0">
         <router-view />
       </main>
     </div>
@@ -45,37 +45,4 @@ export default {
 </script>
 
 <style scoped>
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  background: rgba(255,255,255,0.90);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  -webkit-backdrop-filter: blur(8px) saturate(1.2);
-  backdrop-filter: blur(8px) saturate(1.2);
-}
-.top-inner {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 8px 16px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 12px;
-}
-.center { display: flex; justify-content: center; }
-.left { justify-self: start; }
-.actions { display: inline-flex; align-items: center; gap: 8px; justify-self: end; margin-right: 24px; }
-
-.app-layout {
-  display: flex;
-  min-height: calc(100vh - 64px);
-  background: #F4F6F9; /* tokens.layout.surfaces.appBg */
-}
-
-.app-content {
-  flex: 1;
-  min-width: 0;
-}
 </style>

@@ -1,9 +1,9 @@
 <template>
-  <div class="search">
-    <span class="icon">🔍</span>
+  <div class="relative w-[70%] max-w-[2000px]">
+    <span class="absolute left-3 text-[#656665]">🔍</span>
     <input
       v-model="query"
-      class="input"
+      class="w-full h-9 bg-[#F4F6F9] text-[#0E1116] border border-black/5 rounded-full pl-8 pr-4 outline-none focus:[box-shadow:inset_0_0_0_2px_#D94447]"
       type="text"
       placeholder="Search anything..."
       @keyup.enter="emitSearch"
@@ -26,25 +26,5 @@ export default {
 </script>
 
 <style scoped>
-.search { position: relative; width: 70%; max-width: 2000px; }
-
-.icon {
-  position: absolute;
-  left: 12px;
-  color: #656665;
-}
-
-.input {
-  width: 100%;
-  height: 36px;
-  background: #F4F6F9;
-  color: #0E1116;
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 9999px;
-  padding: 0 16px 0 32px;
-  outline: none;
-}
-
-.input:focus { box-shadow: 0 0 0 2px #D94447 inset; }
 </style>
 

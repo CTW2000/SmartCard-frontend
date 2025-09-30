@@ -2,26 +2,10 @@
   <section class="dashboard">
     <div class="container">
       <div class="stats">
-        <div class="card stat">
-          <div class="caption">本周店长评分</div>
-          <div class="value brand">9.8分</div>
-          <div class="meta"><span class="label">同比上周</span><span class="down">5%</span></div>
-        </div>
-        <div class="card stat">
-          <div class="caption">员工服务评分</div>
-          <div class="value brand">9.2分</div>
-          <div class="meta"><span class="label">同比上周</span><span class="down">1.7%</span></div>
-        </div>
-        <div class="card stat">
-          <div class="caption">菜品差评率</div>
-          <div class="value success">10%</div>
-          <div class="meta"><span class="label">与上周持平</span></div>
-        </div>
-        <div class="card stat">
-          <div class="caption">投流转化率</div>
-          <div class="value success">23%</div>
-          <div class="meta"><span class="label">与上周相比下降</span></div>
-        </div>
+        <StatCard title="本周店长评分" value="9.0分" color="brand" metaLabel="同比上周" metaValue="5%" trend="down" />
+        <StatCard title="员工服务评分" value="9.2分" color="brand" metaLabel="同比上周" metaValue="1.7%" trend="down" />
+        <StatCard title="菜品差评率" value="10%" color="success" metaLabel="与上周持平" />
+        <StatCard title="投流转化率" value="23%" color="success" metaLabel="与上周相比下降" />
       </div>
 
       <div class="grid-two">
@@ -84,8 +68,10 @@
 </template>
 
 <script>
+import StatCard from '../components/StatCard.vue'
 export default {
   name: 'Home',
+  components: { StatCard },
 }
 </script>
 

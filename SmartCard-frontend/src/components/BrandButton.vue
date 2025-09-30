@@ -1,6 +1,10 @@
 <template>
-  <router-link to="/" class="brand-btn" aria-label="Go to dashboard">
-    <span class="text">朱友和大排档</span>
+  <router-link
+    to="/"
+    class="inline-flex items-center gap-0 no-underline"
+    aria-label="Go to dashboard"
+  >
+    <span class="text-[#A92E31] font-semibold">朱友和大排档</span>
   </router-link>
 </template>
 
@@ -11,16 +15,5 @@ export default {
 </script>
 
 <style scoped>
-.brand-btn {
-  --brand-700: #A92E31;
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-  text-decoration: none;
-}
-.text {
-  color: var(--brand-700);
-  font-weight: 600;
-}
 </style>
 

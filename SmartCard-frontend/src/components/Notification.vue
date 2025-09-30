@@ -1,7 +1,14 @@
 <template>
-  <button class="icon-btn" aria-label="Notifications" @click="$emit('click')">
+  <button
+    class="relative bg-[#F4F6F9] border border-black/5 rounded-full px-2 py-1 cursor-pointer"
+    aria-label="Notifications"
+    @click="$emit('click')"
+  >
     🔔
-    <span v-if="count > 0" class="badge">{{ displayCount }}</span>
+    <span
+      v-if="count > 0"
+      class="absolute -top-1.5 -right-1.5 bg-[#D94447] text-white rounded-full text-[10px] leading-[18px] w-[18px] h-[18px] text-center"
+    >{{ displayCount }}</span>
   </button>
 </template>
 
@@ -20,26 +27,5 @@ export default {
 </script>
 
 <style scoped>
-.icon-btn {
-  position: relative;
-  background: #F4F6F9; /* neutral.50 */
-  border: 1px solid rgba(0,0,0,0.06); /* overlay.border */
-  border-radius: 9999px;
-  padding: 6px 8px;
-  cursor: pointer;
-}
-.badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background: #D94447; /* brand.600 */
-  color: #FFFFFF; /* neutral.0 */
-  border-radius: 9999px;
-  font-size: 10px;
-  line-height: 18px;
-  width: 18px;
-  height: 18px;
-  text-align: center;
-}
 </style>
 

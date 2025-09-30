@@ -1,8 +1,12 @@
 <template>
-  <button class="avatar" aria-label="User menu" @click="$emit('click')">
-    <span class="initials">{{ initials }}</span>
+  <button
+    class="w-8 h-8 rounded-full bg-[#F5C4C5] text-[#A92E31] inline-flex items-center justify-center font-bold border border-black/5"
+    aria-label="User menu"
+    @click="$emit('click')"
+  >
+    <span class="text-[12px] leading-none">{{ initials }}</span>
   </button>
-</template>
+  </template>
 
 <script>
 export default {
@@ -21,20 +25,5 @@ export default {
 </script>
 
 <style scoped>
-.avatar {
-  --brand-700: #A92E31;
-  --overlay-border: rgba(0,0,0,0.06);
-  width: 32px;
-  height: 32px;
-  border-radius: 9999px;
-  background: #F5C4C5; /* brand.100 */
-  color: var(--brand-700);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  border: 1px solid var(--overlay-border);
-}
-.initials { font-size: 12px; line-height: 1; }
 </style>
 

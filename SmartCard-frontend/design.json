@@ -1,209 +1,109 @@
 {
-  "profile_name": "Profile-Modal-Card-V1",
-  "version": "1.0.0",
-  "design_style": {
-    "keywords": ["profile-card", "modal", "soft-elevation", "rounded-geometry", "neutral-calm"],
-    "vibe": "friendly, minimal, high-legibility with generous whitespace",
-    "geometry": {
-      "corner_radius": { "card": 24, "avatar": 999, "icon": 999, "divider": 1 },
-      "stroke_widths": { "border": 1, "icon": 2 },
-      "shadow": { "y": 10, "blur": 28, "spread": -6 }
-    }
-  },
-  "tokens": {
-    "color": {
-      "background": {
-        "canvas": "#F6F8FB",
-        "surface": "#FFFFFF",
-        "overlay_scrim": "rgba(2,6,23,0.35)"
+  "design_system_profile": {
+    "style": {
+      "theme": "minimalist",
+      "color_palette": {
+        "background": "#FFFFFF",
+        "primary_text": "#000000",
+        "secondary_text": "#999999",
+        "divider": "#E5E5E5",
+        "accent": "#007AFF",
+        "input_background": "#F9F9F9"
       },
-      "text": {
-        "primary": "#0F172A",
-        "secondary": "rgba(15,23,42,0.65)",
-        "muted": "rgba(15,23,42,0.45)"
+      "typography": {
+        "font_family": "Inter, Helvetica, Arial, sans-serif",
+        "font_weights": {
+          "regular": 400,
+          "medium": 500,
+          "bold": 600
+        },
+        "font_sizes": {
+          "label": 14,
+          "body": 16,
+          "title": 18
+        }
       },
-      "border": {
-        "subtle": "rgba(0,0,0,0.08)",
-        "strong": "rgba(0,0,0,0.16)"
+      "corner_radius": "8px",
+      "shadow": {
+        "button": "0 1px 3px rgba(0,0,0,0.1)"
       },
-      "accent": {
-        "brand": "#2563EB",
-        "positive": "#16A34A",
-        "warning": "#D97706"
-      },
-      "decorative": {
-        "avatar_ring": "rgba(0,0,0,0.08)",
-        "divider": "rgba(0,0,0,0.08)",
-        "icon_bg_soft": "rgba(0,0,0,0.03)"
+      "spacing": {
+        "xs": 4,
+        "sm": 8,
+        "md": 16,
+        "lg": 24
       }
     },
-    "typography": {
-      "family": ["Inter", "SF Pro", "system-ui", "Arial"],
-      "title": { "size": 22, "weight": 700, "tracking": -0.01, "line_height": 1.25 },
-      "label": { "size": 16, "weight": 600 },
-      "value": { "size": 16, "weight": 500 },
-      "meta": { "size": 14, "weight": 500 }
+
+    "layout": {
+      "alignment": "centered column layout",
+      "section_spacing": "md",
+      "content_width": "90%",
+      "card_structure": {
+        "header": "section label with bullet or title indicator",
+        "body": "form fields aligned vertically",
+        "footer": "primary button centered at bottom"
+      }
     },
-    "spacing": { "xs": 4, "sm": 8, "md": 12, "lg": 16, "xl": 24, "xxl": 32 },
-    "effects": {
-      "shadow_card": "0 10px 28px rgba(16,24,40,0.13)",
-      "shadow_fab": "0 8px 18px rgba(16,24,40,0.18)"
+
+    "components": {
+      "time_range_picker": {
+        "type": "horizontal_control_group",
+        "elements": [
+          "start_time_input",
+          "arrow_icon",
+          "end_time_input"
+        ],
+        "input_style": "rounded bordered minimal",
+        "alignment": "center"
+      },
+
+      "user_selector": {
+        "type": "dropdown_field",
+        "label_alignment": "inline",
+        "value_alignment": "right"
+      },
+
+      "text_input": {
+        "type": "single_line_input",
+        "style": "light background with subtle border",
+        "placeholder_alignment": "center"
+      },
+
+      "button_primary": {
+        "type": "action_button",
+        "width": "fit-content",
+        "alignment": "center",
+        "style": {
+          "background": "#FFFFFF",
+          "border": "1px solid #DADADA",
+          "text_color": "#000000",
+          "border_radius": "24px",
+          "padding": "8px 20px"
+        },
+        "hover_state": {
+          "background": "#F4F4F4"
+        }
+      }
+    },
+
+    "interaction_design": {
+      "focus_state": {
+        "outline_color": "#007AFF",
+        "transition": "0.2s ease"
+      },
+      "hover_state": {
+        "opacity": 0.95
+      },
+      "feedback": {
+        "button_press": "slight scale or shadow change"
+      }
+    },
+
+    "visual_hierarchy": {
+      "primary": "section headers",
+      "secondary": "labels and inline text",
+      "tertiary": "subtle dividers or helper text"
     }
-  },
-  "layout": {
-    "modal": {
-      "max_width": 420,
-      "padding": { "top": 28, "right": 28, "bottom": 28, "left": 28 },
-      "stack_gap": 16,
-      "align": "center"
-    },
-    "avatar_block": {
-      "size": 128,
-      "ring_width": 2,
-      "ring_color": "{tokens.color.decorative.avatar_ring}",
-      "margin_bottom": 12
-    },
-    "title_block": {
-      "margin_top": 4,
-      "margin_bottom": 12,
-      "align": "center"
-    },
-    "divider": {
-      "height": 1,
-      "color": "{tokens.color.decorative.divider}",
-      "inset_x": 0,
-      "margin_y": 12
-    },
-    "info_list": {
-      "gap_y": 12,
-      "label_width": 108,
-      "value_flex": 1,
-      "align": "baseline"
-    },
-    "close_button": {
-      "size": 36,
-      "position": { "corner": "top-right", "offset_x": -10, "offset_y": -10 },
-      "border": { "color": "{tokens.color.border.strong}", "width": 2 },
-      "bg": "#FFFFFF"
-    },
-    "fab": {
-      "size": 56,
-      "offset_from_card": 24,
-      "position": "bottom-center",
-      "bg": "#FFFFFF",
-      "icon_size": 22
-    }
-  },
-  "structure": {
-    "modal_card": ["CloseIcon", "Avatar", "Title", "Divider", "InfoList", "FloatingAction"]
-  },
-  "components": {
-    "Modal": {
-      "scrim_color": "{tokens.color.background.overlay_scrim}",
-      "centered": true,
-      "dismiss_on_scrim": true,
-      "trap_focus": true
-    },
-    "Card": {
-      "background": "{tokens.color.background.surface}",
-      "radius": "{design_style.geometry.corner_radius.card}",
-      "shadow": "{tokens.effects.shadow_card}",
-      "border": { "color": "{tokens.color.border.subtle}", "width": "{design_style.geometry.stroke_widths.border}" }
-    },
-    "CloseIcon": {
-      "shape": "circle",
-      "size": "{layout.close_button.size}",
-      "icon": "x",
-      "stroke_width": "{design_style.geometry.stroke_widths.icon}",
-      "bg": "{layout.close_button.bg}",
-      "border": "{layout.close_button.border}",
-      "hover": { "bg": "{tokens.color.decorative.icon_bg_soft}" },
-      "aria_label": "Close"
-    },
-    "Avatar": {
-      "size": "{layout.avatar_block.size}",
-      "shape": "circle",
-      "ring_width": "{layout.avatar_block.ring_width}",
-      "ring_color": "{layout.avatar_block.ring_color}",
-      "object_fit": "cover"
-    },
-    "Title": {
-      "style": "{tokens.typography.title}",
-      "color": "{tokens.color.text.primary}",
-      "align": "center",
-      "max_width": 320
-    },
-    "InfoList": {
-      "rows": [
-        { "label_style": "{tokens.typography.label}", "value_style": "{tokens.typography.value}" }
-      ],
-      "label_color": "{tokens.color.text.secondary}",
-      "value_color": "{tokens.color.text.primary}",
-      "gap_y": "{layout.info_list.gap_y}",
-      "layout": "two-column"
-    },
-    "Divider": {
-      "height": "{layout.divider.height}",
-      "color": "{layout.divider.color}"
-    },
-    "FloatingAction": {
-      "type": "icon-button",
-      "shape": "circle",
-      "size": "{layout.fab.size}",
-      "icon": "edit",
-      "icon_size": "{layout.fab.icon_size}",
-      "bg": "{layout.fab.bg}",
-      "shadow": "{tokens.effects.shadow_fab}",
-      "border": { "color": "{tokens.color.border.subtle}", "width": 1 },
-      "hover": { "bg": "{tokens.color.decorative.icon_bg_soft}" },
-      "aria_label": "Edit"
-    }
-  },
-  "behaviors": {
-    "enter_animation": { "type": "spring", "from_scale": 0.98, "to_scale": 1, "opacity_from": 0, "opacity_to": 1, "duration_ms": 220 },
-    "exit_animation": { "type": "fade-scale", "to_scale": 0.98, "opacity_to": 0, "duration_ms": 160 },
-    "close_icon_click": "dismiss",
-    "esc_key": "dismiss",
-    "outside_click": "dismiss",
-    "responsive": {
-      "sm": { "max_width": "92vw", "avatar_size": 96, "title_size": 20 },
-      "xs": { "max_width": "96vw", "avatar_size": 80, "title_size": 18 }
-    }
-  },
-  "a11y": {
-    "roles": { "dialog": true },
-    "aria": {
-      "labelledby": "Title",
-      "describedby": "InfoList"
-    },
-    "focus_management": {
-      "initial_focus": "CloseIcon",
-      "return_focus_on_close": true
-    },
-    "hit_targets_min": 40,
-    "contrast_minimum": 4.5
-  },
-  "replication_rules": {
-    "do_not_include": [
-      "real names or IDs from any screenshot",
-      "image-specific content or copy"
-    ],
-    "keep_consistent": [
-      "rounded card with thin subtle border and soft drop shadow",
-      "prominent centered circular avatar with faint ring",
-      "title centered above an inset divider",
-      "two-column info rows with muted labels and stronger values",
-      "circular close icon overlapping the card corner",
-      "center-bottom floating action button with soft elevation"
-    ]
-  },
-  "example_schema_binding": {
-    "info_rows": [
-      { "key": "status", "label_role": "state", "value_role": "state_value", "badge_variant": "neutral/positive/negative" },
-      { "key": "identifier", "label_role": "id_label", "value_role": "id_value" }
-    ],
-    "actions": [
-      { "type": "primary", "placement": "fab", "icon": "edit" }
-    ]
   }
 }

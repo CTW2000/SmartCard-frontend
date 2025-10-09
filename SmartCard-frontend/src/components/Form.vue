@@ -28,7 +28,7 @@
         <thead>
           <tr class="bg-card border-b-2" style="border-bottom-color: rgba(0,0,0,0.16)">
             <th class="text-left text-[16px] font-bold text-[rgba(15,23,42,0.65)] px-4 py-3">姓名</th>
-            <th class="text-left text-[16px] font-bold text-[rgba(15,23,42,0.65)] px-4 py-3">编号</th>
+            <th class="text-left text-[16px] font-bold text-[rgba(15,23,42,0.65)] px-4 py-3">设备号</th>
             <th class="text-left text-[16px] font-bold text-[rgba(15,23,42,0.65)] px-4 py-3">岗位</th>
             <th class="text-right text-[16px] font-bold text-[rgba(15,23,42,0.65)] px-4 py-3">日均服务时间</th>
             <th class="text-right text-[16px] font-bold text-[rgba(15,23,42,0.65)] px-4 py-3">每周差评事件</th>

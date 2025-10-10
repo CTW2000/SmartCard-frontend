@@ -7,9 +7,6 @@ const routes = [
     component: () => import('../views/Home.vue'),
   },
   {
-    path: '/steam',
-    name: 'SteamManager',
-    component: () => import('../views/SteamManager.vue'),
   },
   {
     path: '/dishes',

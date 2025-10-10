@@ -6,7 +6,7 @@
       <router-link to="/equipment" class="h-10 rounded-[10px] flex items-center px-3 text-[#0E1116] no-underline router-link">设备管理</router-link>
       <router-link to="/dishes" class="h-10 rounded-[10px] flex items-center px-3 text-[#0E1116] no-underline router-link">菜品管理</router-link>
       <router-link to="/staff" class="h-10 rounded-[10px] flex items-center px-3 text-[#0E1116] no-underline router-link">员工管理</router-link>
-      <router-link to="/steam" class="h-10 rounded-[10px] flex items-center px-3 text-[#0E1116] no-underline router-link">投流管理</router-link>
+      
     </nav>
   </aside>
 </template>

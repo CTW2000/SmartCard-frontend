@@ -1,34 +1,34 @@
 <template>
   <div class="login-container">
     <section class="left-panel">
-      <div class="brand">SmartCard</div>
+      <div class="brand">NFT市场</div>
       <h1 class="heading">Welcome back</h1>
-      <p class="subtitle">Please sign in to continue</p>
+      <p class="subtitle">请登录以继续</p>
 
       <form class="login-form" @submit.prevent>
         <div class="form-field">
-          <label for="email">Email</label>
+          <label for="email">邮箱</label>
           <input id="email" type="email" placeholder="you@example.com" />
         </div>
 
         <div class="form-field">
-          <label for="password">Password</label>
+          <label for="password">密码</label>
           <input id="password" type="password" placeholder="Enter your password" />
         </div>
 
         <div class="form-row">
           <label class="checkbox">
             <input id="remember" type="checkbox" />
-            <span>Remember me</span>
+            <span>记住我</span>
           </label>
-          <a href="#" class="link">Forgot password?</a>
+          <a href="#" class="link">忘记密码?</a>
         </div>
 
-        <button type="submit" class="button">Sign in</button>
+        <button type="submit" class="button">登录</button>
 
         <p class="caption">
-          Don’t have an account?
-          <a href="#" class="link">Create one</a>
+          没有账号?
+          <a href="#" class="link">创建一个</a>
         </p>
       </form>
     </section>

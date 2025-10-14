@@ -1,43 +1,36 @@
 <template>
   <div class="signup-container">
     <section class="content">
-      <div class="brand">SmartCard</div>
-      <h1 class="heading">Create your account</h1>
-      <p class="subtitle">Set up your SmartCard account</p>
-
+      <div class="brand">NFT市场</div>
+      <h1 class="heading">创建你的账号</h1>
+      <p class="subtitle">设置你的账号</p>
       <form class="signup-form" @submit.prevent>
         <div class="form-field">
-          <label for="name">Full name</label>
+          <label for="name">全名</label>
           <input id="name" type="text" placeholder="Jane Doe" />
         </div>
-
         <div class="form-field">
-          <label for="email">Email</label>
+          <label for="email">邮箱</label>
           <input id="email" type="email" placeholder="you@example.com" />
         </div>
-
         <div class="form-field">
-          <label for="password">Password</label>
+          <label for="password">密码</label>
           <input id="password" type="password" placeholder="Create a password" />
         </div>
-
         <div class="form-field">
-          <label for="confirm">Confirm password</label>
+          <label for="confirm">确认密码</label>
           <input id="confirm" type="password" placeholder="Re-enter your password" />
         </div>
-
         <div class="form-row">
           <label class="checkbox">
             <input id="terms" type="checkbox" />
-            <span>I agree to the Terms and Privacy Policy</span>
+            <span>我同意隐私政策</span>
           </label>
         </div>
-
-        <button type="submit" class="button">Create account</button>
-
+        <button type="submit" class="button">创建账号</button>
         <p class="caption">
-          Already have an account?
-          <a href="/login" class="link">Sign in</a>
+          已有账号?
+          <a href="/login" class="link">登录</a>
         </p>
       </form>
     </section>

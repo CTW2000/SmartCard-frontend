@@ -1,177 +1,165 @@
 <template>
-  <div class="login-container">
-    <section class="left-panel">
-      <div class="brand">NFT市场</div>
-      <h1 class="heading">Welcome back</h1>
-      <p class="subtitle">请登录以继续</p>
+  <div class="w-screen min-h-screen flex justify-center bg-white overflow-y-auto">
+    <div class="relative" :style="outerStyle">
+      <div class="relative origin-top-left rounded-[31px] overflow-hidden" :style="canvasBaseStyle">
+        <div class="w-[1920px] h-[1080px] relative bg-white rounded-[31px] overflow-hidden">
+          <div class="w-24 h-6 left-[64px] top-[26px] absolute bg-neutral-700 rounded-[10px]"></div>
 
-      <form class="login-form" @submit.prevent>
-        <div class="form-field">
-          <label for="email">邮箱</label>
-          <input id="email" type="email" placeholder="you@example.com" />
+          <div class="left-[260px] top-[247px] absolute text-neutral-600 text-5xl font-normal font-['Alibaba_PuHuiTi']">欢迎回来！</div>
+          <div class="left-[260px] top-[319px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">输入您的账号密码</div>
+
+          <!-- Labels -->
+          <div class="left-[260px] top-[390px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">账号</div>
+          <div class="left-[260px] top-[495px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">密码</div>
+
+          <!-- Inputs -->
+          <form class="absolute inset-0" @submit.prevent="onSubmit">
+            <input
+              id="account"
+              type="text"
+              v-model="form.account"
+              placeholder="请输入您的账号"
+              class="w-96 h-14 left-[260px] top-[422px] absolute rounded-[10px] border border-black opacity-50 px-4 text-stone-700 placeholder-stone-500"
+            />
+            <input
+              id="password"
+              type="password"
+              v-model="form.password"
+              placeholder="请输入您的密码"
+              class="w-96 h-14 left-[260px] top-[527px] absolute rounded-[10px] border border-black opacity-50 px-4 text-stone-700 placeholder-stone-500"
+            />
+
+            <!-- Remember + Forgot -->
+            <input
+              id="remember"
+              type="checkbox"
+              v-model="remember"
+              class="w-5 h-4 left-[260px] top-[620px] absolute rounded-sm border border-black opacity-50"
+            />
+            <label for="remember" class="left-[286px] top-[618px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">记住我的密码</label>
+            <a href="#" class="left-[631px] top-[616px] absolute text-black text-base font-normal font-['Alibaba_PuHuiTi']">忘记密码？</a>
+
+            <!-- Submit -->
+            <button
+              type="submit"
+              class="w-96 h-14 left-[260px] top-[671px] absolute bg-red-700 rounded-[10px] text-white text-base font-normal font-['Alibaba_PuHuiTi']"
+            >
+              登录
+            </button>
+
+            <!-- Bottom link -->
+            <div class="left-[398px] top-[745px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">
+              暂时没有账号？
+              <router-link to="/createaccounts" class="text-black">注册</router-link>
+            </div>
+          </form>
+
+          <!-- Right panel and image -->
+          <div class="w-[921px] h-[1080px] left-[999px] top-0 absolute bg-zinc-300"></div>
+          <img class="w-[921px] h-[1080px] left-[999px] top-0 absolute object-cover" :src="loginImage" />
         </div>
-
-        <div class="form-field">
-          <label for="password">密码</label>
-          <input id="password" type="password" placeholder="Enter your password" />
-        </div>
-
-        <div class="form-row">
-          <label class="checkbox">
-            <input id="remember" type="checkbox" />
-            <span>记住我</span>
-          </label>
-          <a href="#" class="link">忘记密码?</a>
-        </div>
-
-        <button type="submit" class="button">登录</button>
-
-        <p class="caption">
-          没有账号?
-          <a href="#" class="link">创建一个</a>
-        </p>
-      </form>
-    </section>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import client from '../httpClient/client';
+import { PATHS } from '../httpClient/paths';
+import loginImage from '../../Resource/Login/LoginImage.jpg';
 export default {
   name: 'Login',
+  data() {
+    return {
+      form: { account: '', password: '' },
+      remember: false,
+      scale: 1,
+      loginImage,
+    }
+  },
+  computed: {
+    outerStyle() {
+      return {
+        width: `${1920 * this.scale}px`,
+        height: `${1080 * this.scale}px`,
+      };
+    },
+    canvasBaseStyle() {
+      return {
+        width: '1920px',
+        height: '1080px',
+        transform: `scale(${this.scale})`,
+        transformOrigin: 'top left',
+      };
+    },
+  },
+  methods: {
+    updateScale() {
+      const vw = window.innerWidth;
+      const sx = vw / 1920;
+      this.scale = sx;
+    },
+    async onSubmit() {
+      try {
+        const data = new URLSearchParams();
+        data.append('account', this.form.account);
+        data.append('password', this.form.password);
+        const res = await client.post(PATHS.LOGIN, data, {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        });
+        const body = res?.data;
+        if (body?.success === true || body?.code === 200) {
+          const token = body?.data?.token;
+          if (token) localStorage.setItem('token', token);
+          if (this.remember) {
+            localStorage.setItem('remembered_account', this.form.account);
+            localStorage.setItem('remembered_password', this.form.password);
+          } else {
+            localStorage.removeItem('remembered_account');
+            localStorage.removeItem('remembered_password');
+          }
+          this.$router.push({ name: 'Home' });
+          return;
+        }
+        alert(body?.message || '登录失败');
+      } catch (err) {
+        console.error(err?.response?.data || err);
+        const msg = err?.response?.data?.message || err?.message || '请求失败';
+        alert(msg);
+      }
+    },
+  },
+  mounted() {
+    // restore remembered credentials
+    const savedAccount = localStorage.getItem('remembered_account');
+    if (savedAccount) {
+      this.form.account = savedAccount;
+      this.remember = true;
+    }
+    const savedPassword = localStorage.getItem('remembered_password');
+    if (savedPassword) {
+      this.form.password = savedPassword;
+      this.remember = true;
+    }
+    // init responsive scale
+    this.updateScale();
+    window.addEventListener('resize', this.updateScale);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateScale);
+  },
+  watch: {
+    remember(newVal) {
+      if (!newVal) {
+        localStorage.removeItem('remembered_account');
+        localStorage.removeItem('remembered_password');
+      }
+    },
+  },
 }
 export {};
 </script>
 
 <style scoped>
-.login-container {
-  display: flex;
-  height: 100vh;
-  background: #FFFFFF;
-  color: #1C1C1C;
-  font-family: Sans-Serif, system-ui, -apple-system;
-  justify-content: center;
-  align-items: center;
-}
-
-.left-panel {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 24px;
-  gap: 12px;
-  text-align: center;
-}
-
-.brand {
-  font-weight: 600;
-  color: #3C3C3C;
-  margin-bottom: 4px;
-}
-
-.heading {
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1.4;
-  margin: 0;
-}
-
-.subtitle {
-  color: #666666;
-  margin: 0 0 8px 0;
-}
-
-.login-form {
-  width: 100%;
-  max-width: 320px;
-  display: grid;
-  row-gap: 12px;
-}
-
-.form-field {
-  display: grid;
-  row-gap: 6px;
-}
-
-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #1C1C1C;
-}
-
-input[type="email"],
-input[type="password"] {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #DADADA;
-  background: #FFFFFF;
-  color: #1C1C1C;
-  font-size: 14px;
-  transition: border-color 150ms ease-in-out, box-shadow 150ms ease-in-out;
-}
-
-input::placeholder {
-  color: #B0B0B0;
-}
-
-input:focus {
-  outline: none;
-  border-color: #3C3C3C;
-  box-shadow: 0 0 0 3px rgba(60, 60, 60, 0.15);
-}
-
-.form-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #1C1C1C;
-}
-
-.checkbox input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-}
-
-.button {
-  height: 44px;
-  border: none;
-  border-radius: 8px;
-  background: #3C3C3C;
-  color: #FFFFFF;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 150ms ease-in-out;
-}
-
-.button:hover {
-  background: #2A2A2A;
-}
-
-.link {
-  font-size: 12px;
-  color: #3C3C3C;
-  text-decoration: none;
-  transition: text-decoration-color 150ms ease-in-out;
-}
-
-.link:hover {
-  text-decoration: underline;
-}
-
-.caption {
-  margin: 0;
-  font-size: 12px;
-  color: #666666;
-}
 </style>
 

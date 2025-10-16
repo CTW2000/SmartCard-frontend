@@ -1,179 +1,164 @@
 <template>
-  <div class="signup-container">
-    <section class="content">
-      <div class="brand">NFT市场</div>
-      <h1 class="heading">创建你的账号</h1>
-      <p class="subtitle">设置你的账号</p>
-      <form class="signup-form" @submit.prevent>
-        <div class="form-field">
-          <label for="name">全名</label>
-          <input id="name" type="text" placeholder="Jane Doe" />
+  <div class="w-screen min-h-screen flex justify-center bg-white overflow-y-auto">
+    <div class="relative" :style="outerStyle">
+      <div class="relative origin-top-left rounded-[31px] overflow-hidden" :style="canvasBaseStyle">
+      <div class="w-[922px] h-[1080px] left-0 top-0 absolute bg-zinc-300"></div>
+      <img class="w-[922px] h-[1080px] left-0 top-0 absolute object-cover" :src="loginImage" />
+      <div class="w-24 h-6 left-[64px] top-[26px] absolute bg-neutral-700 rounded-[10px] shadow-[0px_4px_4px_0px_rgba(221,221,221,0.25)]"></div>
+
+      <div class="left-[1182px] top-[181px] absolute text-neutral-600 text-5xl font-normal font-['Alibaba_PuHuiTi']">创建您的账户！</div>
+      <div class="left-[1192px] top-[253px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">您好！欢迎加入我们</div>
+
+      <!-- Labels -->
+      <div class="left-[1192px] top-[308px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">账号</div>
+      <div class="left-[1192px] top-[418px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">密码</div>
+      <div class="left-[1192px] top-[528px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">门店名称</div>
+      <div class="left-[1192px] top-[638px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">邀请码</div>
+
+      <!-- Form -->
+      <form class="absolute inset-0" @submit.prevent="onSubmit">
+        <!-- Account input -->
+        <input
+          id="account"
+          type="text"
+          v-model="form.account"
+          placeholder="输入您的账号"
+          class="w-96 h-14 left-[1192px] top-[340px] absolute rounded-[10px] border border-black opacity-50 px-4 text-stone-700 placeholder-stone-500"
+        />
+
+        <!-- Password input -->
+        <input
+          id="password"
+          type="password"
+          v-model="form.password"
+          placeholder="输入您的密码"
+          class="w-96 h-14 left-[1192px] top-[450px] absolute rounded-[10px] border border-black opacity-50 px-4 text-stone-700 placeholder-stone-500"
+        />
+
+        <!-- Store name -->
+        <input
+          id="name"
+          type="text"
+          v-model="form.name"
+          placeholder="门店名称"
+          class="w-96 h-14 left-[1192px] top-[560px] absolute rounded-[10px] border border-black opacity-50 px-4 text-stone-700 placeholder-stone-500"
+        />
+
+        <!-- Invitation code -->
+        <input
+          id="invitation"
+          type="text"
+          v-model="form.invitationCode"
+          placeholder="邀请码"
+          class="w-96 h-14 left-[1192px] top-[670px] absolute rounded-[10px] border border-black opacity-50 px-4 text-stone-700 placeholder-stone-500"
+        />
+
+        <!-- Agree -->
+        <input
+          id="agree"
+          type="checkbox"
+          v-model="agree"
+          class="w-5 h-4 left-[1192px] top-[745px] absolute rounded-sm border border-black opacity-50"
+        />
+        <label for="agree" class="left-[1218px] top-[743px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">同意隐私协议</label>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="w-96 h-14 left-[1192px] top-[798px] absolute bg-red-700 rounded-[10px] text-white text-base font-normal font-['Alibaba_PuHuiTi']"
+        >
+          创建账户
+        </button>
+
+        <!-- Login link -->
+        <div class="left-[1324px] top-[865px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">
+          已经拥有一个账号？
+          <a href="/login" class="text-black">登录</a>
         </div>
-        <div class="form-field">
-          <label for="email">邮箱</label>
-          <input id="email" type="email" placeholder="you@example.com" />
-        </div>
-        <div class="form-field">
-          <label for="password">密码</label>
-          <input id="password" type="password" placeholder="Create a password" />
-        </div>
-        <div class="form-field">
-          <label for="confirm">确认密码</label>
-          <input id="confirm" type="password" placeholder="Re-enter your password" />
-        </div>
-        <div class="form-row">
-          <label class="checkbox">
-            <input id="terms" type="checkbox" />
-            <span>我同意隐私政策</span>
-          </label>
-        </div>
-        <button type="submit" class="button">创建账号</button>
-        <p class="caption">
-          已有账号?
-          <a href="/login" class="link">登录</a>
-        </p>
       </form>
-    </section>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import client from '../httpClient/client';
+import { PATHS } from '../httpClient/paths';
+import loginImage from '../../Resource/Login/LoginImage.jpg';
 export default {
   name: 'CreateAccounts',
+  data() {
+    return {
+      form: {
+        account: '',
+        name: '',
+        password: '',
+        invitationCode: '',
+      },
+      agree: false,
+      scale: 1,
+      loginImage,
+    }
+  },
+  computed: {
+    outerStyle() {
+      return {
+        width: `${1920 * this.scale}px`,
+        height: `${1080 * this.scale}px`,
+      };
+    },
+    canvasBaseStyle() {
+      return {
+        width: '1920px',
+        height: '1080px',
+        transform: `scale(${this.scale})`,
+        transformOrigin: 'top left',
+      };
+    },
+  },
+  methods: {
+    updateScale() {
+      const vw = window.innerWidth;
+      const sx = vw / 1920;
+      this.scale = sx;
+    },
+    async onSubmit() {
+      try {
+        const data = new URLSearchParams();
+        data.append('account', this.form.account);
+        data.append('password', this.form.password);
+        data.append('invitation_code', this.form.invitationCode);
+        data.append('name', this.form.name);
+
+        const res = await client.post(PATHS.REGISTER, data, {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        });
+        const body = res?.data;
+        console.log(body);
+        if (body?.success === true || body?.code === 200) {
+          const token = body?.data?.token;
+          if (token) localStorage.setItem('token', token);
+          alert(body?.message || '注册成功');
+          this.$router.push({ name: 'Login' });
+          return;
+        }
+        alert(body?.message || '注册失败');
+      } catch (err) {
+        console.error(err?.response?.data || err);
+        const msg = err?.response?.data?.message || err?.message || '请求失败';
+        alert(msg);
+      }
+    },
+  },
+  mounted() {
+    this.updateScale();
+    window.addEventListener('resize', this.updateScale);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateScale);
+  },
 }
 export {};
 </script>
 
-<style scoped>
-.signup-container {
-  display: flex;
-  height: 100vh;
-  background: #FFFFFF;
-  color: #1C1C1C;
-  font-family: Sans-Serif, system-ui, -apple-system;
-  justify-content: center;
-  align-items: center;
-  padding: 24px;
-}
-
-.content {
-  width: 100%;
-  max-width: 420px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align: center;
-}
-
-.brand {
-  font-weight: 600;
-  color: #3C3C3C;
-}
-
-.heading {
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1.4;
-  margin: 0;
-}
-
-.subtitle {
-  color: #666666;
-  margin: 0 0 8px 0;
-}
-
-.signup-form {
-  width: 100%;
-  max-width: 320px;
-  display: grid;
-  row-gap: 12px;
-}
-
-.form-field {
-  display: grid;
-  row-gap: 6px;
-}
-
-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #1C1C1C;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #DADADA;
-  background: #FFFFFF;
-  color: #1C1C1C;
-  font-size: 14px;
-  transition: border-color 150ms ease-in-out, box-shadow 150ms ease-in-out;
-}
-
-input::placeholder {
-  color: #B0B0B0;
-}
-
-input:focus {
-  outline: none;
-  border-color: #3C3C3C;
-  box-shadow: 0 0 0 3px rgba(60, 60, 60, 0.15);
-}
-
-.form-row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #1C1C1C;
-}
-
-.checkbox input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-}
-
-.button {
-  height: 44px;
-  border: none;
-  border-radius: 8px;
-  background: #3C3C3C;
-  color: #FFFFFF;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 150ms ease-in-out;
-}
-
-.button:hover {
-  background: #2A2A2A;
-}
-
-.link {
-  font-size: 12px;
-  color: #3C3C3C;
-  text-decoration: none;
-  transition: text-decoration-color 150ms ease-in-out;
-}
-
-.link:hover {
-  text-decoration: underline;
-}
-
-.caption {
-  margin: 0;
-  font-size: 12px;
-  color: #666666;
-}
-</style>
 

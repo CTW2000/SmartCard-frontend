@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header class="sticky top-0 z-40 bg-white/90 border-b border-black/5 backdrop-blur-md saturate-125">
+    <header v-if="!hideChrome" class="sticky top-0 z-40 bg-white/90 border-b border-black/5 backdrop-blur-md saturate-125">
       <div class="w-full m-0 px-4 py-2 grid grid-cols-[auto_1fr_auto] items-center gap-3">
         <div class="justify-self-start"><BrandButton /></div>
         <div class="flex justify-center"><Searchbar @search="onSearch" /></div>
@@ -10,11 +10,14 @@
         </div>
       </div>
     </header>
-    <div class="flex min-h-[calc(100vh-64px)] bg-[#F4F6F9]">
+    <div v-if="!hideChrome" class="flex min-h-[calc(100vh-64px)] bg-[#F4F6F9]">
       <Navbar />
       <main class="flex-1 min-w-0">
         <router-view />
       </main>
+    </div>
+    <div v-else>
+      <router-view />
     </div>
   </div>
   
@@ -35,6 +38,11 @@ export default {
     BrandButton,
     Notification,
     UserAvatar,
+  },
+  computed: {
+    hideChrome() {
+      return this.$route?.meta?.hideChrome === true;
+    },
   },
   methods: {
     onSearch(q) {

@@ -3,10 +3,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('../views/Home.vue'),
+    redirect: '/login',
   },
   {
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: () => import('../views/Home.vue'),
   },
   {
     path: '/dishes',
@@ -32,11 +36,13 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue'),
+    meta: { hideChrome: true },
   },
   {
     path: '/createaccounts',
     name: 'CreateAccounts',
     component: () => import('../views/CreateAccounts.vue'),
+    meta: { hideChrome: true },
   },
   
 ]
@@ -44,6 +50,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = !!localStorage.getItem('token')
+  const allowList = ['Login', 'CreateAccounts']
+  if (!isAuthenticated && !allowList.includes(to.name)) {
+    return next({ name: 'Login' })
+  }
+  next()
 })
 
 export default router

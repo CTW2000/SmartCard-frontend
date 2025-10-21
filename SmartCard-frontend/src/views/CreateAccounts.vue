@@ -6,23 +6,29 @@
       <img class="w-[922px] h-[1080px] left-0 top-0 absolute object-cover" :src="loginImage" />
       <div class="w-24 h-6 left-[64px] top-[26px] absolute bg-neutral-700 rounded-[10px] shadow-[0px_4px_4px_0px_rgba(221,221,221,0.25)]"></div>
 
-      <div class="left-[1182px] top-[181px] absolute text-neutral-600 text-5xl font-normal font-['Alibaba_PuHuiTi']">创建您的账户！</div>
-      <div class="left-[1192px] top-[253px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">您好！欢迎加入我们</div>
+      <div class="left-[1182px] top-[181px] absolute text-neutral-600 text-6xl font-normal font-['Alibaba_PuHuiTi']">创建您的账户！</div>
+      <div class="left-[1192px] top-[253px] absolute text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">您好！欢迎加入我们</div>
 
       <!-- Labels -->
-      <div class="left-[1192px] top-[308px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">账号</div>
-      <div class="left-[1192px] top-[418px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">密码</div>
-      <div class="left-[1192px] top-[528px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">门店名称</div>
-      <div class="left-[1192px] top-[638px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">邀请码</div>
+      <div class="left-[1218px] top-[309px] absolute text-stone-500 text-xl font-medium font-['Alibaba_PuHuiTi']">手机号</div>
+      <div class="left-[1218px] top-[421px] absolute text-stone-500 text-xl font-medium font-['Alibaba_PuHuiTi']">密码</div>
+      <div class="left-[1218px] top-[529px] absolute text-stone-500 text-xl font-medium font-['Alibaba_PuHuiTi']">门店名称</div>
+      <div class="left-[1218px] top-[636px] absolute text-stone-500 text-xl font-medium font-['Alibaba_PuHuiTi']">邀请码</div>
+
+      <!-- Bullet accents -->
+      <img class="w-2.5 h-2.5 left-[1200px] top-[315px] absolute" :src="starBlue" />
+      <img class="w-2.5 h-2.5 left-[1200px] top-[427px] absolute" :src="starBlue" />
+      <img class="w-2.5 h-2.5 left-[1200px] top-[535px] absolute" :src="starBlue" />
+      <img class="w-2.5 h-2.5 left-[1200px] top-[643px] absolute" :src="starBlue" />
 
       <!-- Form -->
       <form class="absolute inset-0" @submit.prevent="onSubmit">
-        <!-- Account input -->
+        <!-- Phone input -->
         <input
-          id="account"
+          id="phone"
           type="text"
           v-model="form.account"
-          placeholder="输入您的账号"
+          placeholder="输入您的手机号"
           class="w-96 h-14 left-[1192px] top-[340px] absolute rounded-[10px] border border-black opacity-50 px-4 text-stone-700 placeholder-stone-500"
         />
 
@@ -60,18 +66,18 @@
           v-model="agree"
           class="w-5 h-4 left-[1192px] top-[745px] absolute rounded-sm border border-black opacity-50"
         />
-        <label for="agree" class="left-[1218px] top-[743px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">同意隐私协议</label>
+        <label for="agree" class="left-[1218px] top-[743px] absolute text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">同意隐私协议</label>
 
         <!-- Submit -->
         <button
           type="submit"
-          class="w-96 h-14 left-[1192px] top-[798px] absolute bg-red-700 rounded-[10px] text-white text-base font-normal font-['Alibaba_PuHuiTi']"
+          class="w-96 h-14 left-[1192px] top-[798px] absolute bg-black rounded-[10px] text-white text-xl font-normal font-['Alibaba_PuHuiTi']"
         >
           创建账户
         </button>
 
         <!-- Login link -->
-        <div class="left-[1324px] top-[865px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">
+        <div class="left-[1324px] top-[865px] absolute text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">
           已经拥有一个账号？
           <a href="/login" class="text-black">登录</a>
         </div>
@@ -85,6 +91,7 @@
 import client from '../httpClient/client';
 import { PATHS } from '../httpClient/paths';
 import loginImage from '../../Resource/Login/LoginImage.jpg';
+import starBlue from '../../Resource/Login/starBlue.svg';
 export default {
   name: 'CreateAccounts',
   data() {
@@ -98,6 +105,7 @@ export default {
       agree: false,
       scale: 1,
       loginImage,
+      starBlue,
     }
   },
   computed: {

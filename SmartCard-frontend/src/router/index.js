@@ -44,6 +44,12 @@ const routes = [
     component: () => import('../views/CreateAccounts.vue'),
     meta: { hideChrome: true },
   },
+  {
+    path: '/joinUs',
+    name: 'JoinUs',
+    component: () => import('../views/JoinUs.vue'),
+    meta: { hideChrome: true },
+  },
   
 ]
 
@@ -54,7 +60,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = !!localStorage.getItem('token')
-  const allowList = ['Login', 'CreateAccounts']
+  const allowList = ['Login', 'CreateAccounts', 'JoinUs']
   if (!isAuthenticated && !allowList.includes(to.name)) {
     return next({ name: 'Login' })
   }

@@ -5,12 +5,12 @@
         <div class="w-[1920px] h-[1080px] relative bg-white rounded-[31px] overflow-hidden">
           <div class="w-24 h-6 left-[64px] top-[26px] absolute bg-neutral-700 rounded-[10px]"></div>
 
-          <div class="left-[260px] top-[247px] absolute text-neutral-600 text-5xl font-normal font-['Alibaba_PuHuiTi']">欢迎回来！</div>
-          <div class="left-[260px] top-[319px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">输入您的账号密码</div>
+          <div class="left-[260px] top-[247px] absolute text-neutral-600 text-6xl font-normal font-['Alibaba_PuHuiTi']">欢迎回来！</div>
+          <div class="left-[260px] top-[319px] absolute text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">输入您的账号密码</div>
 
           <!-- Labels -->
-          <div class="left-[260px] top-[390px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">账号</div>
-          <div class="left-[260px] top-[495px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">密码</div>
+          <div class="left-[260px] top-[390px] absolute text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">账号</div>
+          <div class="left-[260px] top-[495px] absolute text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">密码</div>
 
           <!-- Inputs -->
           <form class="absolute inset-0" @submit.prevent="onSubmit">
@@ -36,19 +36,19 @@
               v-model="remember"
               class="w-5 h-4 left-[260px] top-[620px] absolute rounded-sm border border-black opacity-50"
             />
-            <label for="remember" class="left-[286px] top-[618px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">记住我的密码</label>
-            <a href="#" class="left-[631px] top-[616px] absolute text-black text-base font-normal font-['Alibaba_PuHuiTi']">忘记密码？</a>
+            <label for="remember" class="left-[286px] top-[618px] absolute text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">记住我的密码</label>
+            <a href="#" class="left-[631px] top-[616px] absolute text-black text-xl font-normal font-['Alibaba_PuHuiTi']">忘记密码？</a>
 
             <!-- Submit -->
             <button
               type="submit"
-              class="w-96 h-14 left-[260px] top-[671px] absolute bg-red-700 rounded-[10px] text-white text-base font-normal font-['Alibaba_PuHuiTi']"
+              class="w-96 h-14 left-[260px] top-[671px] absolute bg-black rounded-[10px] text-white text-xl font-normal font-['Alibaba_PuHuiTi']"
             >
               登录
             </button>
 
             <!-- Bottom link -->
-            <div class="left-[398px] top-[745px] absolute text-stone-500 text-base font-normal font-['Alibaba_PuHuiTi']">
+            <div class="left-[398px] top-[745px] absolute text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">
               暂时没有账号？
               <router-link to="/createaccounts" class="text-black">注册</router-link>
             </div>
@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import client from '../httpClient/client';
+import client, { postStoredCredentials } from '../httpClient/client';
 import { PATHS } from '../httpClient/paths';
 import loginImage from '../../Resource/Login/LoginImage.jpg';
 export default {
@@ -111,6 +111,11 @@ export default {
         if (body?.success === true || body?.code === 200) {
           const token = body?.data?.token;
           if (token) localStorage.setItem('token', token);
+          // Update current login credentials
+          localStorage.removeItem('currentAccount');
+          localStorage.removeItem('currentPassword');
+          localStorage.setItem('currentAccount', this.form.account);
+          localStorage.setItem('currentPassword', this.form.password);
           if (this.remember) {
             localStorage.setItem('remembered_account', this.form.account);
             localStorage.setItem('remembered_password', this.form.password);

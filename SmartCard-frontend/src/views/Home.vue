@@ -4,8 +4,8 @@
       <div class="grid grid-cols-4 gap-6">
         <StatCard title="本周店长评分" :value="manager_score + '分'" color="primary" metaLabel="同比上周" :metaValue="manager_score_ratio" :trend="trendOf(manager_score_ratio)" />
         <StatCard title="员工服务评分" :value="staff_score + '分'" color="primary" metaLabel="同比上周" :metaValue="staff_score_ratio" :trend="trendOf(staff_score_ratio)" />
-        <StatCard title="菜品差评分" :value="dish_bad_score + '%'" color="accent" metaLabel="与上周相比" :metaValue="dish_bad_ratio" :trend="trendOf(dish_bad_ratio)" />
-        <StatCard title="昨日预警分数" :value="warn_score + '%'" color="accent" metaLabel="与上周相比" :metaValue="warn_ratio" :trend="trendOf(warn_ratio)" />
+        <StatCard title="菜品差评分" :value="dish_bad_score + '分'" color="accent" metaLabel="与上周相比" :metaValue="dish_bad_ratio" :trend="trendOf(dish_bad_ratio)" />
+        <StatCard title="昨日预警分数" :value="warn_score + '分'" color="accent" metaLabel="与上周相比" :metaValue="warn_ratio" :trend="trendOf(warn_ratio)" />
       </div>
 
       <div class="mt-6 overflow-x-auto">
@@ -17,7 +17,7 @@
           </div>
           <div class="flex-none w-[557.25px] h-[353.25px]">
             <div class="transform origin-top-left scale-75">
-              <TaskPanel />
+              <TaskPanel :tasks="tasks" />
             </div>
           </div>
           <div class="flex-none w-[650.25px] h-[353.25px]">
@@ -29,7 +29,7 @@
       </div>
 
       <div class="mt-6">
-        <FormCard :title="'员工服务评分'" :headers="headersStaff" :fields="fieldsStaff" :rows="rowsStaff" @rowAction="onRowAction" />
+        <StaffForm :title="'员工服务评分'" :headers="headersStaff" :fields="fieldsStaff" :rows="rowsStaff" @rowAction="onRowAction" />
       </div>
     </div>
   </section>
@@ -38,14 +38,14 @@
 <script>
 import StatCard from '../components/StatCard.vue'
 import LineChart from '../components/lineChart.vue'
-import FormCard from '../components/Form.vue'
+import StaffForm from '../components/StaffForm.vue'
 import BadDish from '../components/badDish.vue'
 import TaskPanel from '../components/TaskPanel.vue'
 import client, { postStoredCredentials }  from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 export default {
   name: 'Home',
-  components: { StatCard, LineChart, FormCard, BadDish, TaskPanel },
+  components: { StatCard, LineChart, StaffForm, BadDish, TaskPanel },
   data() {
     return {
       headersStaff: ['姓名', '设备号', '岗位', '日均服务时间', '每周差评事件', '评分', '详情'],
@@ -71,6 +71,7 @@ export default {
       dish_bad_ratio: '-',
       warn_ratio: '-',
       warn_score: '-',
+      tasks: [],
     }
   },
   created() {
@@ -110,6 +111,14 @@ export default {
         this.dish_bad_ratio = this.formatRatio(pick('dish_bad_ratio', '-'))
         this.warn_ratio = this.formatRatio(pick('warn_ratio', '-'))
         this.warn_score = String(pick('warn_score', '-'))
+        // apply bad dish list to BadDish component
+        const badList = Array.isArray(data.bad_dish_list) ? data.bad_dish_list : []
+        this.badDishes = badList.map(d => ({
+          name: (d && d.dish_name !== undefined && d.dish_name !== null) ? String(d.dish_name) : '-',
+          amount: Number(d && d.sum !== undefined && d.sum !== null ? d.sum : 0) || 0,
+        }))
+        // tasks for TaskPanel
+        this.tasks = Array.isArray(data.task_list) ? data.task_list : []
       } catch (e) {
         console.error('Failed to load manage index', e)
       }

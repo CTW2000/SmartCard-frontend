@@ -1,6 +1,6 @@
 <template>
   <div class="w-[867px] h-[471px] relative">
-    <div class="w-[867px] h-[471px] left-0 top-0 absolute bg-white rounded-[38px] shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)]"></div>
+    <div class="w-[867px] h-[471px] left-0 top-0 absolute rounded-[38px] border border-border bg-card shadow-md"></div>
     <div class="left-[47px] top-[30px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">投流转化次数</div>
     <div data-type="Indicator" class="w-1 h-1 p-1 left-[47px] top-[91px] absolute bg-cyan-950 rounded-2xl"></div>
     <div class="left-[55px] top-[85px] absolute justify-start text-neutral-700 text-xs font-normal font-['Nunito']">抖音</div>

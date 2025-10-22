@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import client from '../httpClient/client';
+import { postForm } from '../httpClient/client';
 import { PATHS } from '../httpClient/paths';
 import loginImage from '../../Resource/Login/LoginImage.jpg';
 import starBlue from '../../Resource/Login/starBlue.svg';
@@ -132,14 +132,11 @@ export default {
     },
     async onSubmit() {
       try {
-        const data = new URLSearchParams();
-        data.append('account', this.form.account);
-        data.append('password', this.form.password);
-        data.append('invitation_code', this.form.invitationCode);
-        data.append('name', this.form.name);
-
-        const res = await client.post(PATHS.REGISTER, data, {
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        const res = await postForm(PATHS.REGISTER, {
+          account: this.form.account,
+          password: this.form.password,
+          invitation_code: this.form.invitationCode,
+          name: this.form.name,
         });
         const body = res?.data;
         console.log(body);

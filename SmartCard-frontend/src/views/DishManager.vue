@@ -11,10 +11,10 @@
     </div>
     <div class="forms-row">
       <div class="form-card">
-        <Form :title="'菜品销量热榜'" :headers="headersDish" :fields="fieldsDish" :rows="rowsHot" />
+        <StaffForm :title="'菜品销量热榜'" :headers="headersDish" :fields="fieldsDish" :rows="rowsHot" />
       </div>
       <div class="form-card">
-        <Form :title="'菜品销量冷榜'" :headers="headersDish" :fields="fieldsDish" :rows="rowsCold" />
+        <StaffForm :title="'菜品销量冷榜'" :headers="headersDish" :fields="fieldsDish" :rows="rowsCold" />
       </div>
     </div>
   </section>
@@ -23,11 +23,11 @@
 <script>
 import LineChart from '../components/lineChart.vue'
 import CircleGraph from '../components/CircleGraph.vue'
-import Form from '../components/Form.vue'
+import StaffForm from '../components/StaffForm.vue'
 
 export default {
   name: 'DishManager',
-  components: { LineChart, CircleGraph, Form },
+  components: { LineChart, CircleGraph, StaffForm },
   data() {
     return {
       headersDish: ['排名', '菜名', '销量', '详情'],

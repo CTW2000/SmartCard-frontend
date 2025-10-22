@@ -5,33 +5,33 @@
 
       <!-- Top summary cards (3-column responsive, gap ≈ 12px) -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-        <StatCard title="本周店长评分" value="9.8分" metaLabel="同比上周增长" metaValue="5%" trend="up" />
-        <StatCard title="员工服务评分" value="9.2 分" metaLabel="同比上周增长" metaValue="17%" trend="up" />
-        <StatCard
-          title="员工差评原因TOP榜单"
-          :items="[
-            { value: 'TOP1', metaValue: '服务态度差' },
-            { value: 'TOP2', metaValue: '餐前餐具清洁问题' },
-            { value: 'TOP3', metaValue: '服务不及时' }
-          ]"
-        />
+        <StatCard title="本周店长评分" :value="managerScoreDisplay" metaLabel="同比上周增长" :metaValue="formatPercent(managerScoreRatio)" :trend="managerTrend" />
+        <StatCard title="员工服务评分" :value="staffScoreDisplay" metaLabel="同比上周增长" :metaValue="formatPercent(staffScoreRatio)" :trend="staffTrend" />
+        <StatCard title="员工差评原因TOP榜单" :items="badReasonItems" />
       </div>
 
       <!-- Form section -->
-      <Form :title="'员工服务评分'" :headers="headersStaff" :fields="fieldsStaff" :rows="rowsStaff" />
+      <StaffForm :title="'员工服务评分'" :headers="headersStaff" :fields="fieldsStaff" :rows="rowsStaff" />
     </div>
   </section>
 </template>
 
 <script>
 import StatCard from '../components/StatCard.vue'
-import Form from '../components/Form.vue'
+import StaffForm from '../components/StaffForm.vue'
+import { postForm } from '../httpClient/client'
+import { PATHS } from '../httpClient/paths'
 
 export default {
   name: 'StaffManagement',
-  components: { StatCard, Form },
+  components: { StatCard, StaffForm },
   data() {
     return {
+      managerScore: 0,
+      managerScoreRatio: 0,
+      staffScore: 0,
+      staffScoreRatio: 0,
+      badReasons: [],
       headersStaff: ['姓名', '设备号', '岗位', '日均服务时间', '每周差评事件', '评分', '详情'],
       fieldsStaff: ['name', 'no', 'role', 'hours', 'issues', 'score', 'detail'],
       rowsStaff: [
@@ -41,6 +41,50 @@ export default {
         { id: 4, name: '刘洋', no: 'A004', role: '打荷', hours: '5h', issues: 0, score: '4.9' }
       ]
     }
+  },
+  computed: {
+    managerTrend() {
+      return this.managerScoreRatio >= 0 ? 'up' : 'down'
+    },
+    staffTrend() {
+      return this.staffScoreRatio >= 0 ? 'up' : 'down'
+    },
+    managerScoreDisplay() {
+      return `${this.managerScore} 分`
+    },
+    staffScoreDisplay() {
+      return `${this.staffScore} 分`
+    },
+    badReasonItems() {
+      return (this.badReasons || []).slice(0, 3).map((r, idx) => ({
+        value: `TOP${idx + 1}`,
+        metaValue: r?.resaon_name || ''
+      }))
+    }
+  },
+  methods: {
+    formatPercent(value) {
+      const num = Number(value) || 0
+      if (Math.abs(num) <= 1) {
+        return `${Math.round(num * 100)}%`
+      }
+      return `${num}%`
+    }
+  },
+  mounted() {
+    postForm(PATHS.STAFF_NAV)
+      .then(({ data }) => {
+        const json = data
+        const result = json && json.data && Array.isArray(json.data.result) ? json.data.result[0] : null
+        if (result) {
+          this.managerScore = result.manager_score ?? 0
+          this.managerScoreRatio = result.manager_score_ratio ?? 0
+          this.staffScore = result.staff_score ?? 0
+          this.staffScoreRatio = result.staff_score_ratio ?? 0
+          this.badReasons = result.bad_rank || []
+        }
+      })
+      .catch(() => {})
   }
 }
 </script>

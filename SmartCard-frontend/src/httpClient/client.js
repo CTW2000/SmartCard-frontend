@@ -23,4 +23,24 @@ export function postStoredCredentials(url) {
   return client.post(url, data, { headers });
 }
 
+// Generic helper to POST x-www-form-urlencoded data
+// Accepts a plain object or URLSearchParams
+export function postForm(url, form, extraHeaders = {}) {
+  const token = localStorage.getItem('token');
+  const formData = form instanceof URLSearchParams
+    ? form
+    : (() => {
+        const d = new URLSearchParams();
+        if (form && typeof form === 'object') {
+          Object.entries(form).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) d.append(key, String(value));
+          });
+        }
+        return d;
+      })();
+  const headers = { 'Content-Type': 'application/x-www-form-urlencoded', ...extraHeaders };
+  if (token && !headers['authorization']) headers['authorization'] = `Bearer ${token}`;
+  return client.post(url, formData, { headers });
+}
+
 

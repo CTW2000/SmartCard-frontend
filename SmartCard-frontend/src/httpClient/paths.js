@@ -4,6 +4,7 @@ export const PATHS = {
   REGISTER: '/api/users/register',
   LOGIN: '/api/users/login',
   MANAGE_INDEX: '/api/manage/index',
+  STAFF_NAV: '/api/staff/nav',
 };
 
 

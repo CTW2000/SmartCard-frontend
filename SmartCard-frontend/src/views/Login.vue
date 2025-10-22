@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import client, { postStoredCredentials } from '../httpClient/client';
+import { postForm } from '../httpClient/client';
 import { PATHS } from '../httpClient/paths';
 import loginImage from '../../Resource/Login/LoginImage.jpg';
 export default {
@@ -101,11 +101,9 @@ export default {
     },
     async onSubmit() {
       try {
-        const data = new URLSearchParams();
-        data.append('account', this.form.account);
-        data.append('password', this.form.password);
-        const res = await client.post(PATHS.LOGIN, data, {
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        const res = await postForm(PATHS.LOGIN, {
+          account: this.form.account,
+          password: this.form.password,
         });
         const body = res?.data;
         if (body?.success === true || body?.code === 200) {

@@ -38,14 +38,14 @@
 <script>
 import StatCard from '../components/StatCard.vue'
 import LineChart from '../components/lineChart.vue'
-import StaffForm from '../components/StaffForm.vue'
+import StaffFormHome from '../components/StaffFormHome.vue'
 import BadDish from '../components/badDish.vue'
 import TaskPanel from '../components/TaskPanel.vue'
 import client, { postStoredCredentials }  from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 export default {
   name: 'Home',
-  components: { StatCard, LineChart, StaffForm, BadDish, TaskPanel },
+  components: { StatCard, LineChart, StaffForm: StaffFormHome, BadDish, TaskPanel },
   data() {
     return {
       headersStaff: ['姓名', '设备号', '岗位', '日均服务时间', '每周差评事件', '评分', '详情'],

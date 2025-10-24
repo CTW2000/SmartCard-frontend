@@ -11,7 +11,15 @@
       </div>
 
       <!-- Form section -->
-      <StaffForm :title="'员工服务评分'" :headers="headersStaff" :fields="fieldsStaff" :rows="rowsStaff" />
+      <StaffForm :title="'员工服务评分'" :headers="headersStaff" :fields="fieldsStaff" :rows="rowsStaff" @rowAction="onRowAction" />
+    </div>
+
+    <!-- StaffReport modal overlay -->
+    <div v-if="showReport" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div class="relative">
+        <staff-report />
+        <button type="button" class="absolute -top-4 -right-4 bg-white rounded-full px-3 py-1 border border-neutral-200 shadow" @click="closeReport">关闭</button>
+      </div>
     </div>
   </section>
 </template>
@@ -19,12 +27,13 @@
 <script>
 import StatCard from '../components/StatCard.vue'
 import StaffForm from '../components/StaffForm.vue'
+import StaffReport from '../components/staffReport.vue'
 import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 
 export default {
   name: 'StaffManagement',
-  components: { StatCard, StaffForm },
+  components: { StatCard, StaffForm, StaffReport },
   data() {
     return {
       managerScore: 0,
@@ -39,7 +48,9 @@ export default {
         { id: 2, name: '王芳', no: 'A002', role: '服务', hours: '7h', issues: 0, score: '4.8' },
         { id: 3, name: '李强', no: 'A003', role: '后厨', hours: '8h', issues: 2, score: '4.2' },
         { id: 4, name: '刘洋', no: 'A004', role: '打荷', hours: '5h', issues: 0, score: '4.9' }
-      ]
+      ],
+      showReport: false,
+      selectedRow: null
     }
   },
   computed: {
@@ -63,6 +74,14 @@ export default {
     }
   },
   methods: {
+    onRowAction(row) {
+      this.selectedRow = row
+      this.showReport = true
+    },
+    closeReport() {
+      this.showReport = false
+      this.selectedRow = null
+    },
     formatPercent(value) {
       const num = Number(value) || 0
       if (Math.abs(num) <= 1) {

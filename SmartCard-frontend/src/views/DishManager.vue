@@ -3,10 +3,14 @@
     <h1>DishManager</h1>
     <div class="charts-row">
       <div class="chart">
-        <LineChart />
+        <div class="transform origin-top-left scale-75">
+          <LineChart />
+        </div>
       </div>
       <div class="chart">
-        <CircleGraph />
+        <div class="transform origin-top-left scale-75">
+          <BadDishMenu />
+        </div>
       </div>
     </div>
     <div class="forms-row">
@@ -22,12 +26,12 @@
 
 <script>
 import LineChart from '../components/lineChart.vue'
-import CircleGraph from '../components/CircleGraph.vue'
-import StaffForm from '../components/StaffForm.vue'
+import BadDishMenu from '../components/badDishMenu.vue'
+import StaffFormHome from '../components/StaffFormHome.vue'
 
 export default {
   name: 'DishManager',
-  components: { LineChart, CircleGraph, StaffForm },
+  components: { LineChart, BadDishMenu, StaffForm: StaffFormHome },
   data() {
     return {
       headersDish: ['排名', '菜名', '销量', '详情'],

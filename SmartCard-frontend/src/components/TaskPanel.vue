@@ -26,6 +26,9 @@
 
 <script>
 import warningIcon from '../../Resource/Home/warningIcon.svg'
+import AvatarMan from '../../Resource/Staff/AvatarMan.svg'
+import AvatarMan1 from '../../Resource/Staff/AvatarMan1.svg'
+import AvatarWoman from '../../Resource/Staff/AvatarWoman.svg'
 export default {
   name: 'TaskPanel',
   props: {
@@ -42,8 +45,8 @@ export default {
       return (this.tasks || []).find(t => t?.type === 2) || null
     },
     staffTaskAvatars() {
-      const list = (this.staffTask && Array.isArray(this.staffTask.unfinished_staff)) ? this.staffTask.unfinished_staff : []
-      return list.map(s => s?.avatar).filter(Boolean).slice(0, 3)
+      // Use local SVG avatars instead of API-provided URLs
+      return [AvatarMan, AvatarMan1, AvatarWoman]
     }
   },
   methods: {

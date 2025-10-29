@@ -9,6 +9,10 @@ export const PATHS = {
   MANAGE_INDEX_STAFF: '/api/manage/index/staff',
   STAFF_SCORE_LIST: '/api/staff/score/list',
   DISH_NAV_LIST: '/api/dish/nav/list',
+  DISH_RANK: '/api/dish/rank',
+  DISH_LIST: '/api/dish/list',
+  DISH_EDIT: '/api/dish/edit',
+  DISH_UPLOAD_EXCEL: '/api/dish/upload/excel',
 };
 
 

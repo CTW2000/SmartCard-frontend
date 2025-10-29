@@ -44,3 +44,13 @@ export function postForm(url, form, extraHeaders = {}) {
 }
 
 
+// Helper to POST multipart/form-data using FormData
+// Do NOT set Content-Type manually so the browser/axios can add the correct boundary
+export function postMultipart(url, formData, extraHeaders = {}) {
+  const token = localStorage.getItem('token');
+  const headers = { ...extraHeaders };
+  if (token && !headers['authorization']) headers['authorization'] = `Bearer ${token}`;
+  return client.post(url, formData, { headers });
+}
+
+

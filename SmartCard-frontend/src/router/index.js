@@ -33,6 +33,11 @@ const routes = [
     component: () => import('../views/EquipmentManager.vue'),
   },
   {
+    path: '/menu-detail',
+    name: 'MenuDetail',
+    component: () => import('../views/MenuDetail.vue'),
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue'),

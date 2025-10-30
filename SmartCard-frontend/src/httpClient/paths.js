@@ -13,6 +13,8 @@ export const PATHS = {
   DISH_LIST: '/api/dish/list',
   DISH_EDIT: '/api/dish/edit',
   DISH_UPLOAD_EXCEL: '/api/dish/upload/excel',
+  DEVICE_ORGANIZE_EDIT: '/api/device/organize/edit',
+  DEVICE_GROUP_EDIT: '/api/device/group/edit',
 };
 
 

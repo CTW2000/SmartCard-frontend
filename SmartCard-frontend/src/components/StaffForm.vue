@@ -47,7 +47,7 @@
     <!-- Modal: Add Staff Info -->
     <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div class="relative flex flex-col items-center">
-        <add-staff-info />
+        <add-staff-info @staff-added="onStaffAdded" />
         <button type="button" class="mt-3 ml-4 cursor-pointer" @click="showAddModal = false" aria-label="关闭">
           <img :src="closeIcon" alt="关闭" class="w-[42px] h-[42px]" />
         </button>
@@ -57,7 +57,7 @@
     <!-- Modal: Update Staff Info (edit mode detail) -->
     <div v-if="showUpdateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div class="relative flex flex-col items-center">
-        <updata-staff-info :staff="selectedStaff" @close="showUpdateModal = false" />
+        <updata-staff-info :staff="selectedStaff" @close="showUpdateModal = false" @updated="onStaffUpdated" />
         <button type="button" class="mt-3 ml-4 cursor-pointer" @click="showUpdateModal = false" aria-label="关闭">
           <img :src="closeIcon" alt="关闭" class="w-[42px] h-[42px]" />
         </button>
@@ -305,7 +305,11 @@ export default {
           device_number: (full && full.device_id && full.device_id.device_number) || (full && full.device_number) || row.device_number || '',
           postion: (full && full.staff_id && full.staff_id.postion) || (full && full.postion) || row.postion || '',
           phone: (full && (full.phone || (full.staff_id && full.staff_id.phone))) || '',
-          sex: sexLabel
+          sex: sexLabel,
+          // Pass staff_id._id for update API usage
+          staff_id: {
+            _id: (full && full.staff_id && (full.staff_id._id || full.staff_id.id || full.staff_id)) || ''
+          }
         }
         this.selectedStaff = normalized
         this.showUpdateModal = true
@@ -370,6 +374,16 @@ export default {
       if (!this.canGoNext) return
       const next = this.currentPage + 1
       this.fetchRows(next, this.pageSize)
+    },
+    onStaffUpdated() {
+      // Ensure modal closed and refresh the list from API
+      this.showUpdateModal = false
+      this.fetchRows(this.currentPage, this.pageSize)
+    },
+    onStaffAdded(payload) {
+      // Close the add modal and refresh the list from API
+      this.showAddModal = false
+      this.fetchRows(this.currentPage, this.pageSize)
     }
   },
   mounted() {

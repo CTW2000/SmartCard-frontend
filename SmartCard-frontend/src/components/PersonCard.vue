@@ -3,6 +3,7 @@
     <div class="relative rounded-[16px] bg-card border border-border p-5 w-[220px]" style="box-shadow: 0 8px 20px rgba(16,24,40,0.12)">
       <!-- Close button -->
       <button
+        v-if="editMode"
         class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white border-2 flex items-center justify-center"
         style="border-color: rgba(0,0,0,0.16)"
         aria-label="Close"
@@ -30,7 +31,7 @@
       </div>
 
       <!-- Inline bottom edit action (inside card) -->
-      <div class="mt-3 flex items-center justify-center">
+      <div class="mt-3 flex items-center justify-center" v-if="editMode">
         <button
           class="w-8 h-8 rounded-full bg-white border flex items-center justify-center"
           style="border-color: rgba(0,0,0,0.12)"
@@ -43,7 +44,7 @@
     </div>
 
     <!-- Edit Panel -->
-    <PersonEditPanel
+    <DeviceEditPanel
       v-if="isEditing"
       :modelValue="person"
       @save="onSave"
@@ -54,7 +55,10 @@
 
 <script setup>
 import { reactive, ref, watch, computed, onMounted, onUnmounted } from 'vue'
-import PersonEditPanel from './PersonEditPanel.vue'
+import DeviceEditPanel from './DeviceEditPanel.vue'
+import AvatarMan from '../../Resource/Staff/AvatarMan.svg'
+import AvatarMan1 from '../../Resource/Staff/AvatarMan1.svg'
+import AvatarWoman from '../../Resource/Staff/AvatarWoman.svg'
 
 const props = defineProps({
   open: { type: Boolean, default: true },
@@ -65,17 +69,21 @@ const props = defineProps({
   phone: { type: String, default: '138-0000-0000' },
   location: { type: String, default: '上海市 浦东新区' },
   avatarUrl: { type: String, default: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=256&q=80&auto=format&fit=crop' },
+  editMode: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['edit', 'save', 'close'])
 
 const isEditing = ref(false)
+const avatarPool = [AvatarMan, AvatarMan1, AvatarWoman]
+const randomAvatarUrl = avatarPool[Math.floor(Math.random() * avatarPool.length)]
+
 const person = reactive({
   name: props.name,
   role: props.role,
   identifier: props.identifier,
   periods: Array.isArray((props).periods) ? props.periods : [],
-  avatarUrl: props.avatarUrl,
+  avatarUrl: randomAvatarUrl,
 })
 
 watch(
@@ -83,7 +91,6 @@ watch(
     name: props.name,
     role: props.role,
     identifier: props.identifier,
-    avatarUrl: props.avatarUrl,
   }),
   (next) => {
     Object.assign(person, next)
@@ -145,7 +152,7 @@ const displayName = computed(() => {
 
 function onEditClick() {
   isEditing.value = true
-  emit('edit')
+  emit('edit', { ...person })
 }
 
 function onSave(updated) {

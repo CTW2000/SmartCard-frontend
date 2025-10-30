@@ -46,6 +46,7 @@ import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 export default {
   name: 'AddStaffInfo',
+  emits: ['staff-added'],
   beforeDestroy() {
     // Vue 2
     if (typeof this.submit === 'function') this.submit()
@@ -101,9 +102,19 @@ export default {
       }
       try {
         const res = await postForm(PATHS.STAFF_EDIT, payload)
+        //TODO:  提交之后还需要调用staffform来fetch一下储存最新的员工信息到localhost中，然后才能调用updateStaffInfo.vue来更新员工信息
+        //还需要传递staff id 参数
         // Consider any 2xx status as success
         if (res && res.status >= 200 && res.status < 300) {
-          // success: no alert
+          // Emit event to notify parent (StaffForm) to refresh
+          let staffId = null
+          try {
+            const d = res && res.data
+            staffId = (d && (d.id || d._id)) || (d && d.data && (d.data.id || d.data._id)) || null
+          } catch (e) {
+            // ignore parse error
+          }
+          this.$emit('staff-added', { staffId })
         } else {
           alert('提交失败')
         }
@@ -115,7 +126,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 </style>
 

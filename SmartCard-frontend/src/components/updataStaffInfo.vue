@@ -43,6 +43,7 @@ import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 export default {
   name: 'UpdateStaffInfo',
+  emits: ['close', 'updated'],
   props: {
     staff: { type: Object, default: () => null }
   },
@@ -117,7 +118,9 @@ export default {
           sex: sexMap[this.selectedSex] || '',
           postion: this.selectedPosition || '',
           postion_type: positionTypeMap[this.selectedPosition] || '',
-          phone: this.phone || ''
+          phone: this.phone || '',
+          // Required by API to identify which staff to update/delete
+          staff_id: (this.staff && this.staff.staff_id && (this.staff.staff_id._id || this.staff.staff_id)) || ''
         }),
         type
       }
@@ -125,6 +128,9 @@ export default {
         const res = await postForm(PATHS.STAFF_EDIT, payload)
         if (res && res.status >= 200 && res.status < 300) {
           // success: no alert
+          if (type === 'update') {
+            this.$emit('updated')
+          }
           return true
         } else {
           alert('提交失败')
@@ -139,7 +145,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 </style>
 

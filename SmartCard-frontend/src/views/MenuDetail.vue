@@ -64,12 +64,35 @@
         class="w-40 h-14 left-[1446px] top-[242px] absolute origin-top-left rotate-90 bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer"
         @click="isUploadByHandOpen = true"
       ></div>
+
       <div
         class="w-5 left-[1410px] top-[265px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer"
         @click="isUploadByHandOpen = true"
       >手动录菜</div>
+      <!-- Delete button under 手动录菜 -->
+      <div
+        v-if="isBatchSelect"
+        class="w-30 h-14 left-[1446px] top-[420px] absolute origin-top-left rotate-90 bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer"
+        @click="onDeleteSelected"
+      ></div>
+      <div
+        v-if="isBatchSelect"
+        class="w-5 left-[1407px] top-[450px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer"
+        @click="onDeleteSelected"
+      >删除</div>
       <!-- Click overlay to make the whole button area clickable -->
-      
+
+      <!-- Select Group button under 删除 -->
+      <div
+        v-if="isBatchSelect"
+        class="w-40 h-14 left-[1446px] top-[565px] absolute origin-top-left rotate-90 bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer"
+        @click="isSelectGroupOpen = true"
+      ></div>
+      <div
+        v-if="isBatchSelect"
+        class="w-5 left-[1407px] top-[589px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer"
+        @click="isSelectGroupOpen = true"
+      >选择分组</div>
       
       <input
         v-model="searchText"
@@ -88,11 +111,13 @@
               @click="onClickWhiteIcon(idx)"
             >
               <img :src="WhiteCircle" alt="select" class="w-full h-full object-contain" />
-              <div
+              <img
                 v-if="selectedIndexes.has(idx)"
-                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b-2 border-r-2 border-neutral-700"
-                style="width: 16px; height: 8px;"
-              ></div>
+                :src="CheckMark"
+                alt="checked"
+                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                style="width: 20px; height: 10px;"
+              />
             </div>
             <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi'] text-center">{{ card.name }}</div>
           </div>
@@ -101,7 +126,13 @@
       
       <div class="left-[1011px] top-[184px] absolute justify-start text-zinc-500 text-base font-normal font-['Alibaba_PuHuiTi'] cursor-pointer" @click="toggleBatchSelect">批量选择</div>
       <div class="w-5 h-5 left-[983px] top-[186px] absolute bg-white rounded-sm border border-zinc-400 cursor-pointer relative" @click="toggleBatchSelect">
-        <div v-if="isBatchSelect" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b-2 border-r-2 border-neutral-700" style="width: 12px; height: 6px;"></div>
+        <img
+          v-if="isBatchSelect"
+          :src="CheckMark"
+          alt="checked"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          style="width: 15px; height: 7.5px;"
+        />
       </div>
       </div>
     </div>
@@ -116,6 +147,28 @@
       ></div>
       <div class="relative z-10">
         <UploadDishByHand @confirm="onUploadConfirm" />
+      </div>
+    </div>
+    <!-- Select Group Panel -->
+    <div v-if="isSelectGroupOpen" class="fixed inset-0 z-50 flex items-center justify-center">
+      <div class="absolute inset-0 bg-black/30" @click="isSelectGroupOpen = false"></div>
+      <div class="relative z-10">
+        <div class="w-96 h-60 relative">
+          <div class="w-96 h-60 left-0 top-0 absolute bg-white rounded-[31px]"></div>
+          <div class="left-[137px] top-[35px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">选择分组</div>
+          <div class="w-28 h-10 left-[145px] top-[177px] absolute bg-white rounded-[20px] border border-zinc-300"></div>
+          <div class="left-[180px] top-[184px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer" @click="isSelectGroupOpen = false">确认</div>
+          <div class="left-[130px] top-[110px] absolute justify-start text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi']">热销</div>
+          <div class="w-8 h-8 left-[82px] top-[111px] absolute bg-white rounded-full border border-stone-300"></div>
+          <div class="w-4 h-4 left-[90px] top-[119px] absolute">
+            <img :src="CheckMark" alt="checked" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="width: 12px; height: 6px;" />
+          </div>
+          <div class="left-[271px] top-[109px] absolute justify-start text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi']">新菜</div>
+          <div class="w-8 h-8 left-[223px] top-[110px] absolute bg-white rounded-full border border-stone-300"></div>
+          <div class="w-4 h-4 left-[231px] top-[118px] absolute">
+            <img :src="CheckMark" alt="checked" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="width: 12px; height: 6px;" />
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -172,11 +225,13 @@ import { postForm, postMultipart } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 import ExcelIcon from '../../Resource/Menu/ExcelIcon.svg'
 import WhiteCircle from '../../Resource/Menu/whiteCircle.svg'
+import CheckMark from '../../Resource/Menu/CheckMark.svg'
 
 const isUploadByHandOpen = ref(false)
 const isUploadExcelOpen = ref(false)
 const isDragging = ref(false)
 const isUploading = ref(false)
+const isSelectGroupOpen = ref(false)
 const selectedFileName = ref('')
 const fileInputRef = ref(null)
 const isBatchSelect = ref(false)
@@ -214,6 +269,11 @@ async function fetchPage(page) {
     })
     const data = res && res.data && res.data.data
     const list = (data && data.dish_list) || []
+    try {
+      localStorage.setItem('dish_list', JSON.stringify(list))
+    } catch (e) {
+      // ignore storage errors
+    }
     total.value = (data && data.total) || 0
     totalPages.value = Math.max(1, Math.ceil(total.value / pageSize.value))
     dishCards.value = list
@@ -265,6 +325,44 @@ function onClickWhiteIcon(idx) {
   if (next.has(idx)) next.delete(idx)
   else next.add(idx)
   selectedIndexes.value = next
+}
+
+async function onDeleteSelected() {
+  try {
+    if (!isBatchSelect.value || !selectedIndexes.value || selectedIndexes.value.size === 0) {
+      return
+    }
+    const selectedNames = Array.from(selectedIndexes.value)
+      .map((i) => dishCards.value[i] && dishCards.value[i].name)
+      .filter(Boolean)
+    if (!selectedNames.length) return
+
+    let allDishes = []
+    try {
+      const raw = localStorage.getItem('dish_list')
+      allDishes = raw ? JSON.parse(raw) : []
+    } catch (_) {
+      allDishes = []
+    }
+
+    const selectedDishes = allDishes.filter((d) => selectedNames.includes(d.dish_name))
+    const ids = selectedDishes
+      .map((d) => d && d._id)
+      .filter(Boolean)
+
+    await postForm(PATHS.DISH_EDIT, {
+      type: 'delete',
+      data: JSON.stringify(selectedDishes),
+      ids: JSON.stringify(ids),
+    })
+
+    // refresh list and storage
+    await fetchPage(currentPage.value)
+    // clear selection after delete
+    selectedIndexes.value = new Set()
+  } catch (e) {
+    console.error('Failed to delete selected dishes', e)
+  }
 }
 
 const router = useRouter()

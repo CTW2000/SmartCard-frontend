@@ -12,7 +12,7 @@
           <BadDishMenu />
         </div>
         <div class="time-switch">
-          <div class="w-11 h-44 relative">
+          <div class="w-11 h-44 relative mx-auto">
             <div class="w-11 h-11 left-0 top-0 absolute bg-white rounded-full border border-gray-200"></div>
             <div class="w-11 h-11 left-0 top-[65px] absolute bg-white rounded-full border border-gray-200"></div>
             <div class="w-11 h-11 left-0 top-[130px] absolute bg-white rounded-full border border-gray-200"></div>
@@ -142,7 +142,7 @@ export default {
 .time-switch {
   position: absolute;
   top: 0.1rem;
-  right: 0.1rem;
+  right: calc(0.1rem + 100px);
 }
 .report-overlay {
   position: fixed;

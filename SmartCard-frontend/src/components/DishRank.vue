@@ -1,6 +1,6 @@
 <template>
-  <div class="relative overflow-hidden" :style="{ width: scaledWidth + 'px', height: scaledHeight + 'px' }">
-    <div class="w-[736px] h-[684px] relative transform origin-top-left" :style="scaledInnerStyle">
+  <div ref="wrapper" class="relative overflow-hidden responsive-rank" :style="{ height: wrapperHeight + 'px' }">
+    <div class="relative design-root" :style="designStyle">
     <!-- Background card -->
     <div class="w-[736px] h-[684px] left-0 top-0 absolute bg-white rounded-[38px] shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)]"></div>
 
@@ -70,20 +70,19 @@ export default {
     return {
       ArrowUpDown,
       ArrowIcon,
-      baseWidth: 736,
-      baseHeight: 684,
-      scale: 0.75,
       page: 1,
       size: 7,
       total: 0,
       remoteItems: [],
+      // responsive
+      designWidth: 736,
+      designHeight: 684,
+      scale: 1,
+      wrapperHeight: 684,
+      ro: null,
     };
   },
   methods: {
-    updateScale() {
-      // Fixed scale - 25% smaller (0.75 scale)
-      this.scale = 0.75;
-    },
     openReport(item) {
       let name = '-'
       try {
@@ -161,26 +160,29 @@ export default {
         this.fetchRank(true);
       }
     },
+    updateScale() {
+      const el = this.$refs.wrapper;
+      if (!el) return;
+      const availableWidth = el.clientWidth || 0;
+      if (availableWidth <= 0) return;
+      const s = availableWidth / this.designWidth;
+      this.scale = s;
+      this.wrapperHeight = Math.round(this.designHeight * s);
+    },
   },
   computed: {
+    designStyle() {
+      return {
+        width: this.designWidth + 'px',
+        height: this.designHeight + 'px',
+        transform: `scale(${this.scale})`,
+        transformOrigin: 'top left',
+      };
+    },
     displayItems() {
       if (Array.isArray(this.remoteItems) && this.remoteItems.length) return this.remoteItems
       if (!Array.isArray(this.items)) return []
       return this.items
-    },
-    scaledHeight() {
-      return Math.round(this.baseHeight * this.scale);
-    },
-    scaledWidth() {
-      return Math.round(this.baseWidth * this.scale);
-    },
-    scaledInnerStyle() {
-      return {
-        width: this.baseWidth + 'px',
-        height: this.baseHeight + 'px',
-        transform: `scale(${this.scale})`,
-        transformOrigin: 'top left',
-      };
     },
   },
   watch: {
@@ -192,21 +194,33 @@ export default {
   },
   mounted() {
     this.fetchRank(false);
-    this.$nextTick(() => {
-      this.updateScale();
-    });
-    // Disabled resize listener to prevent scaling
-    // window.addEventListener('resize', this.updateScale, { passive: true });
+    // responsive scaling
+    this.updateScale();
+    try {
+      this.ro = new ResizeObserver(() => {
+        this.updateScale();
+      });
+      const el = this.$refs.wrapper;
+      if (el) this.ro.observe(el);
+    } catch (e) {
+      // ResizeObserver may be unavailable in some environments
+      window.addEventListener('resize', this.updateScale);
+    }
   },
   beforeDestroy() {
-    // window.removeEventListener('resize', this.updateScale);
+    if (this.ro && this.ro.disconnect) this.ro.disconnect();
+    window.removeEventListener('resize', this.updateScale);
   },
   beforeUnmount() {
-    // window.removeEventListener('resize', this.updateScale);
+    if (this.ro && this.ro.disconnect) this.ro.disconnect();
+    window.removeEventListener('resize', this.updateScale);
   }
 };
 export {};
 </script>
 
 <style scoped>
+.responsive-rank {
+  width: 100%;
+}
 </style>

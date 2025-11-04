@@ -90,5 +90,3 @@ function smoothPath(arr) {
 
 <style scoped>
 </style>
-
-

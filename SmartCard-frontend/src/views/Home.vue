@@ -1,6 +1,6 @@
 <template>
   <section class="min-h-[calc(100vh-64px)] bg-background">
-    <div class="max-w-[1200px] mx-auto px-8 py-6">
+    <div class="max-w-[1600px] mx-auto px-8 py-6">
       <div class="grid grid-cols-4 gap-6">
         <StatCard title="本周店长评分" :value="manager_score + '分'" color="primary" metaLabel="同比上周" :metaValue="manager_score_ratio" :trend="trendOf(manager_score_ratio)" />
         <StatCard title="员工服务评分" :value="staff_score + '分'" color="primary" metaLabel="同比上周" :metaValue="staff_score_ratio" :trend="trendOf(staff_score_ratio)" />

@@ -63,7 +63,8 @@ export default {
     columnGapPx: { type: Number, default: 24 },
     sidePaddingPxTotal: { type: Number, default: 64 }, // px-8 => 32px left + 32px right
     // Fit control to keep many columns within screen/container
-    maxContentWidthPx: { type: Number, default: 1136 }, // Home max-w-[1200px] with px-8 container padding
+    // Fallback maximum content width; component will auto-detect parent width when mounted
+    maxContentWidthPx: { type: Number, default: 1536 }, // Home container widened; px-8 padding already accounted externally
     minColumnWidthPx: { type: Number, default: 130 },
     minGapPx: { type: Number, default: 8 },
   },
@@ -76,7 +77,7 @@ export default {
       const cols = this.columnCount
       const baseCol = this.columnWidthPx
       const baseGap = this.columnGapPx
-      const available = Math.max(0, this.maxContentWidthPx - this.sidePaddingPxTotal)
+      const available = Math.max(0, (this.containerMaxWidth || this.maxContentWidthPx) - this.sidePaddingPxTotal)
       let gap = baseGap
       let col = baseCol
       // If base layout fits, return it
@@ -128,7 +129,9 @@ export default {
       staffPage: 1,
       staffLimit: 7,
       staffTotal: 0,
-      staffRows: []
+      staffRows: [],
+      containerMaxWidth: 0,
+      resizeObserver: null
     }
   },
   methods: {
@@ -180,6 +183,24 @@ export default {
     }
   },
   mounted() {
+    // Observe parent width to adapt grid/container width responsively
+    const parent = this.$el && this.$el.parentElement
+    const applyWidth = () => {
+      const w = (parent && parent.clientWidth) || 0
+      // keep a small margin by capping to maxContentWidthPx when provided
+      this.containerMaxWidth = Math.max(0, Math.min(w, this.maxContentWidthPx || w))
+    }
+    applyWidth()
+    if (window && 'ResizeObserver' in window && parent) {
+      this.resizeObserver = new ResizeObserver(() => applyWidth())
+      this.resizeObserver.observe(parent)
+    } else {
+      // fallback: update on window resize
+      window.addEventListener('resize', applyWidth, { passive: true })
+      this.resizeObserver = {
+        disconnect: () => window.removeEventListener('resize', applyWidth)
+      }
+    }
     // If fields/headers are not provided from parent, set sensible defaults matching API
     if (!Array.isArray(this.headers) || this.headers.length === 0) {
       this.headers = ['姓名', '设备编号', '岗位', '日均服务时间', '每周差评事件', '评分', '详情']
@@ -188,6 +209,9 @@ export default {
       this.fields = ['name', 'device_number', 'postion', 'day_time', 'day_bad_count', 'score', 'detail']
     }
     this.fetchStaff(true)
+  },
+  beforeUnmount() {
+    try { this.resizeObserver && this.resizeObserver.disconnect && this.resizeObserver.disconnect() } catch (e) {}
   }
 }
 </script>

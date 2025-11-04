@@ -1,5 +1,6 @@
 <template>
-  <div class="w-80 h-[471px] relative">
+  <div class="relative" :style="{ width: scaledWidth + 'px', height: scaledHeight + 'px' }">
+    <div class="relative" :style="scaledInnerStyle">
     <div class="w-80 h-[471px] left-0 top-0 absolute rounded-[38px] border border-border bg-card shadow-md"></div>
     <div class="left-[56px] top-[30px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">菜品差评数</div>
     <!-- Scroll viewport retains original layout area -->
@@ -30,6 +31,7 @@
       </template>
       <div v-if="displayItems.length === 0" class="text-neutral-400 text-center mt-8">暂无数据</div>
     </div>
+</div>
   </div>
 </template>
 
@@ -47,6 +49,21 @@ export default {
       if (Array.isArray(this.remoteItems) && this.remoteItems.length) return this.remoteItems
       if (!Array.isArray(this.items)) return []
       return this.items
+    },
+    // scaling 25% smaller
+    scaledWidth() {
+      return Math.round(320 * 0.75)
+    },
+    scaledHeight() {
+      return Math.round(471 * 0.75)
+    },
+    scaledInnerStyle() {
+      return {
+        width: 320 + 'px',
+        height: 471 + 'px',
+        transform: 'scale(0.75)',
+        transformOrigin: 'top left'
+      }
     }
   },
   data() {

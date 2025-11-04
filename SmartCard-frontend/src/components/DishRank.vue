@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full" :style="{ height: scaledHeight + 'px' }">
+  <div class="relative overflow-hidden" :style="{ width: scaledWidth + 'px', height: scaledHeight + 'px' }">
     <div class="w-[736px] h-[684px] relative transform origin-top-left" :style="scaledInnerStyle">
     <!-- Background card -->
     <div class="w-[736px] h-[684px] left-0 top-0 absolute bg-white rounded-[38px] shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)]"></div>
@@ -72,7 +72,7 @@ export default {
       ArrowIcon,
       baseWidth: 736,
       baseHeight: 684,
-      scale: 1,
+      scale: 0.75,
       page: 1,
       size: 7,
       total: 0,
@@ -81,15 +81,8 @@ export default {
   },
   methods: {
     updateScale() {
-      try {
-        const container = this.$el;
-        if (!container) return;
-        const available = container.clientWidth || this.baseWidth;
-        const nextScale = Math.max(0.5, Math.min(available / this.baseWidth, 1));
-        this.scale = nextScale;
-      } catch (e) {
-        // silent
-      }
+      // Fixed scale - 25% smaller (0.75 scale)
+      this.scale = 0.75;
     },
     openReport(item) {
       let name = '-'
@@ -178,6 +171,9 @@ export default {
     scaledHeight() {
       return Math.round(this.baseHeight * this.scale);
     },
+    scaledWidth() {
+      return Math.round(this.baseWidth * this.scale);
+    },
     scaledInnerStyle() {
       return {
         width: this.baseWidth + 'px',
@@ -199,13 +195,14 @@ export default {
     this.$nextTick(() => {
       this.updateScale();
     });
-    window.addEventListener('resize', this.updateScale, { passive: true });
+    // Disabled resize listener to prevent scaling
+    // window.addEventListener('resize', this.updateScale, { passive: true });
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.updateScale);
+    // window.removeEventListener('resize', this.updateScale);
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.updateScale);
+    // window.removeEventListener('resize', this.updateScale);
   }
 };
 export {};

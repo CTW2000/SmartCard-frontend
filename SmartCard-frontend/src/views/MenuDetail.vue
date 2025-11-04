@@ -42,7 +42,7 @@
         </div>
       </div>
       <div class="w-[777px] h-[1175px] left-[312px] top-[933px] absolute origin-top-left -rotate-90 bg-gray-50 shadow-[-3px_0px_4px_0px_rgba(204,204,204,0.25)]"></div>
-      <div class="left-[1246px] top-[114px] absolute justify-start text-zinc-500 text-base font-normal font-['Alibaba_PuHuiTi']">上次上传时间：2025/10/15</div>
+      <div class="left-[1246px] top-[114px] absolute justify-start text-zinc-500 text-base font-normal font-['Alibaba_PuHuiTi']">上次上传时间：{{ lastUploadTime }}</div>
       <!-- Pagination controls -->
       <div
         class="left-[800px] top-[869px] absolute justify-start text-neutral-800 text-xl font-light font-['Alibaba_PuHuiTi'] cursor-pointer"
@@ -86,12 +86,12 @@
       <div
         v-if="isBatchSelect"
         class="w-40 h-14 left-[1446px] top-[565px] absolute origin-top-left rotate-90 bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer"
-        @click="isSelectGroupOpen = true"
+        @click="openSelectGroup"
       ></div>
       <div
         v-if="isBatchSelect"
         class="w-5 left-[1407px] top-[589px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer"
-        @click="isSelectGroupOpen = true"
+        @click="openSelectGroup"
       >选择分组</div>
       
       <input
@@ -151,21 +151,21 @@
     </div>
     <!-- Select Group Panel -->
     <div v-if="isSelectGroupOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-      <div class="absolute inset-0 bg-black/30" @click="isSelectGroupOpen = false"></div>
+      <div class="absolute inset-0 bg-black/30" @click="closeSelectGroup"></div>
       <div class="relative z-10">
         <div class="w-96 h-60 relative">
           <div class="w-96 h-60 left-0 top-0 absolute bg-white rounded-[31px]"></div>
           <div class="left-[137px] top-[35px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">选择分组</div>
-          <div class="w-28 h-10 left-[145px] top-[177px] absolute bg-white rounded-[20px] border border-zinc-300"></div>
-          <div class="left-[180px] top-[184px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer" @click="isSelectGroupOpen = false">确认</div>
-          <div class="left-[130px] top-[110px] absolute justify-start text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi']">热销</div>
-          <div class="w-8 h-8 left-[82px] top-[111px] absolute bg-white rounded-full border border-stone-300"></div>
-          <div class="w-4 h-4 left-[90px] top-[119px] absolute">
+          <div class="w-28 h-10 left-[145px] top-[177px] absolute bg-white rounded-[20px] border border-zinc-300 cursor-pointer" @click="onConfirmSelectGroup"></div>
+          <div class="left-[180px] top-[184px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer" @click="onConfirmSelectGroup">确认</div>
+          <div class="left-[130px] top-[110px] absolute justify-start text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi'] cursor-pointer" @click="selectedGroup = 'top'">热销</div>
+          <div class="w-8 h-8 left-[82px] top-[111px] absolute bg-white rounded-full border border-stone-300 cursor-pointer" @click="selectedGroup = 'top'"></div>
+          <div v-if="selectedGroup === 'top'" class="w-4 h-4 left-[90px] top-[119px] absolute">
             <img :src="CheckMark" alt="checked" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="width: 12px; height: 6px;" />
           </div>
-          <div class="left-[271px] top-[109px] absolute justify-start text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi']">新菜</div>
-          <div class="w-8 h-8 left-[223px] top-[110px] absolute bg-white rounded-full border border-stone-300"></div>
-          <div class="w-4 h-4 left-[231px] top-[118px] absolute">
+          <div class="left-[271px] top-[109px] absolute justify-start text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi'] cursor-pointer" @click="selectedGroup = 'new'">新菜</div>
+          <div class="w-8 h-8 left-[223px] top-[110px] absolute bg-white rounded-full border border-stone-300 cursor-pointer" @click="selectedGroup = 'new'"></div>
+          <div v-if="selectedGroup === 'new'" class="w-4 h-4 left-[231px] top-[118px] absolute">
             <img :src="CheckMark" alt="checked" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="width: 12px; height: 6px;" />
           </div>
         </div>
@@ -243,6 +243,41 @@ const pageSize = ref(15)
 const total = ref(0)
 const totalPages = ref(1)
 const currentFilter = ref('all') // all | new | top | off
+const selectedGroup = ref(null) // 'top' | 'new' | null
+const lastUploadTime = ref('')
+
+function formatDate(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}/${month}/${day}`
+}
+
+function updateUploadTime() {
+  const now = new Date()
+  const formatted = formatDate(now)
+  console.log('Updating upload time to:', formatted)
+  lastUploadTime.value = formatted
+  try {
+    localStorage.setItem('lastUploadTime', formatted)
+    console.log('Upload time saved to localStorage')
+  } catch (e) {
+    console.error('Failed to save upload time to localStorage', e)
+  }
+}
+
+function loadUploadTime() {
+  try {
+    const stored = localStorage.getItem('lastUploadTime')
+    if (stored) {
+      lastUploadTime.value = stored
+    } else {
+      lastUploadTime.value = '2025/10/15' // default value
+    }
+  } catch (e) {
+    lastUploadTime.value = '2025/10/15' // default value
+  }
+}
 
 function onUploadConfirm(payload) {
   isUploadByHandOpen.value = false
@@ -295,6 +330,7 @@ function goPrev() { goToPage(currentPage.value - 1) }
 function goNext() { goToPage(currentPage.value + 1) }
 
 onMounted(() => {
+  loadUploadTime()
   fetchPage(currentPage.value)
 })
 
@@ -311,6 +347,16 @@ function toggleBatchSelect() {
   if (!isBatchSelect.value) {
     selectedIndexes.value = new Set()
   }
+}
+
+function openSelectGroup() {
+  selectedGroup.value = null
+  isSelectGroupOpen.value = true
+}
+
+function closeSelectGroup() {
+  selectedGroup.value = null
+  isSelectGroupOpen.value = false
 }
 
 function onSearchEnter() {
@@ -423,13 +469,88 @@ async function uploadExcel(file) {
     formData.append('excelFile', file)
     // Hide the panel immediately after file selection/drop
     isUploadExcelOpen.value = false
-    await postMultipart(PATHS.DISH_UPLOAD_EXCEL, formData)
+    console.log('Uploading Excel file...')
+    const response = await postMultipart(PATHS.DISH_UPLOAD_EXCEL, formData)
+    console.log('Upload successful, response:', response)
     selectedFileName.value = ''
-    fetchPage(currentPage.value)
+    // Update upload time on successful upload
+    updateUploadTime()
+    await fetchPage(currentPage.value)
+    console.log('Upload time updated to:', lastUploadTime.value)
   } catch (e) {
     console.error('Failed to upload excel', e)
+    // Don't update time if upload failed
   } finally {
     isUploading.value = false
+  }
+}
+
+async function onConfirmSelectGroup() {
+  try {
+    if (!selectedGroup.value) {
+      // No group selected, just close the modal
+      isSelectGroupOpen.value = false
+      return
+    }
+
+    if (!isBatchSelect.value || !selectedIndexes.value || selectedIndexes.value.size === 0) {
+      isSelectGroupOpen.value = false
+      return
+    }
+
+    // Get selected dish names from current page
+    const selectedNames = Array.from(selectedIndexes.value)
+      .map((i) => dishCards.value[i] && dishCards.value[i].name)
+      .filter(Boolean)
+    
+    if (!selectedNames.length) {
+      isSelectGroupOpen.value = false
+      return
+    }
+
+    // Get full dish data from localStorage
+    let allDishes = []
+    try {
+      const raw = localStorage.getItem('dish_list')
+      allDishes = raw ? JSON.parse(raw) : []
+    } catch (_) {
+      allDishes = []
+    }
+
+    // Filter to get selected dishes
+    const selectedDishes = allDishes.filter((d) => selectedNames.includes(d.dish_name))
+    
+    if (!selectedDishes.length) {
+      isSelectGroupOpen.value = false
+      return
+    }
+
+    // Update is_top and is_new based on selected group
+    const updatedDishes = selectedDishes.map((dish) => ({
+      ...dish,
+      is_top: selectedGroup.value === 'top',
+      is_new: selectedGroup.value === 'new',
+    }))
+
+    // Get IDs
+    const ids = updatedDishes
+      .map((d) => d && d._id)
+      .filter(Boolean)
+
+    // Post to API
+    await postForm(PATHS.DISH_EDIT, {
+      type: 'update',
+      data: JSON.stringify(updatedDishes),
+      ids: JSON.stringify(ids),
+    })
+
+    // Refresh list and clear selection
+    await fetchPage(currentPage.value)
+    selectedIndexes.value = new Set()
+    selectedGroup.value = null
+    isSelectGroupOpen.value = false
+  } catch (e) {
+    console.error('Failed to update dish group', e)
   }
 }
 </script>

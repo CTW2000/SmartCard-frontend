@@ -1,6 +1,6 @@
 <template>
   <section class="relative min-h-[calc(100vh-64px)] bg-background">
-    <div class="max-w-[1200px] mx-auto px-8 py-6">
+    <div class="max-w-[1600px] mx-auto px-8 py-6">
       <div class="m-0 mb-4">
         <template v-if="!isAddingOrganize && organizeName">
           <h1 class="m-0 text-[28px] font-extrabold tracking-[-0.02em] text-foreground">{{ organizeName }}</h1>

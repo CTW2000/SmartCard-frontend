@@ -15,6 +15,8 @@ export const PATHS = {
   DISH_UPLOAD_EXCEL: '/api/dish/upload/excel',
   DEVICE_ORGANIZE_EDIT: '/api/device/organize/edit',
   DEVICE_GROUP_EDIT: '/api/device/group/edit',
+  DEVICE_ORGANIZE_LIST: '/api/device/organize/list',
+  DEVICE_EDIT: '/api/device/edit',
 };
 
 

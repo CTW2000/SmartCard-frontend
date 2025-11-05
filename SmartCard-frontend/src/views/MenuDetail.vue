@@ -1,7 +1,7 @@
 <template>
   <section class="page">
-    <div class="origin-top-left" style="zoom: 0.85;">
-      <div class="w-[1487px] h-[933px] relative">
+    <div ref="wrapper" class="relative overflow-hidden responsive-menu" :style="{ height: wrapperHeight + 'px' }">
+      <div class="relative design-root" :style="designStyle">
       <div class="w-[1487px] h-[933px] left-0 top-0 absolute bg-white rounded-[38px] shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)]"></div>
       <div class="w-[1487px] h-[777px] left-0 top-[156px] absolute bg-white shadow-[0px_-2px_4px_0px_rgba(204,204,204,0.25)]"></div>
       
@@ -218,7 +218,7 @@ export default {
 <script setup>
 import ArrowLeft from '../../Resource/Menu/ArrowLeft.svg'
 import Upload from '../../Resource/Menu/Upload.svg'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import UploadDishByHand from '../components/uploadDishByHand.vue'
 import { postForm, postMultipart } from '../httpClient/client'
@@ -329,9 +329,63 @@ function goToPage(page) {
 function goPrev() { goToPage(currentPage.value - 1) }
 function goNext() { goToPage(currentPage.value + 1) }
 
+// responsive scaling
+const designWidth = 1487
+const designHeight = 933
+const scale = ref(1)
+const wrapperHeight = ref(designHeight)
+const ro = ref(null)
+
+function updateScale() {
+  const el = wrapper.value
+  if (!el) return
+  const availableWidth = el.clientWidth || 0
+  if (availableWidth <= 0) return
+  const s = availableWidth / designWidth
+  scale.value = s
+  wrapperHeight.value = Math.round(designHeight * s)
+}
+
+const wrapper = ref(null)
+
 onMounted(() => {
   loadUploadTime()
   fetchPage(currentPage.value)
+  // init responsive scaling
+  try {
+    updateScale()
+    ro.value = new ResizeObserver(() => updateScale())
+    if (wrapper.value) ro.value.observe(wrapper.value)
+  } catch (e) {
+    window.addEventListener('resize', updateScale)
+  }
+})
+
+onBeforeUnmount(() => {
+  try {
+    if (ro.value && ro.value.disconnect) ro.value.disconnect()
+  } catch (_) {}
+  window.removeEventListener('resize', updateScale)
+})
+
+const designStyle = ref({})
+
+// reactive style based on scale
+designStyle.value = {
+  width: designWidth + 'px',
+  height: designHeight + 'px',
+  transform: `scale(${scale.value})`,
+  transformOrigin: 'top left',
+}
+
+// keep style in sync when scale changes
+watchEffect(() => {
+  designStyle.value = {
+    width: designWidth + 'px',
+    height: designHeight + 'px',
+    transform: `scale(${scale.value})`,
+    transformOrigin: 'top left',
+  }
 })
 
 function setFilter(f) {
@@ -558,5 +612,8 @@ async function onConfirmSelectGroup() {
 <style scoped>
 .page {
   padding: 1rem;
+}
+.responsive-menu {
+  width: 100%;
 }
 </style>

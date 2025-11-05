@@ -156,7 +156,7 @@ export default {
     columnGapPx: { type: Number, default: 24 },
     sidePaddingPxTotal: { type: Number, default: 64 }, // px-8 => 32px left + 32px right
     // Fit control to keep many columns within screen/container
-    maxContentWidthPx: { type: Number, default: 1136 }, // Home max-w-[1200px] with px-8 container padding
+    maxContentWidthPx: { type: Number, default: null }, // null means no limit, will grow with viewport
     minColumnWidthPx: { type: Number, default: 130 },
     minGapPx: { type: Number, default: 8 },
   },
@@ -169,13 +169,31 @@ export default {
       const cols = this.columnCount
       const baseCol = this.columnWidthPx
       const baseGap = this.columnGapPx
-      const available = Math.max(0, this.maxContentWidthPx - this.sidePaddingPxTotal)
+      // Account for parent container padding (px-8 = 64px) and some additional margin
+      const parentPadding = 64 // px-8 from StaffManager
+      const extraMargin = 40
+      const viewportWidth = this.windowWidth - parentPadding - extraMargin
+      // Use maxContentWidthPx if set, otherwise use viewport width
+      const availableWidth = this.maxContentWidthPx != null 
+        ? Math.min(viewportWidth, this.maxContentWidthPx) 
+        : viewportWidth
+      const available = Math.max(0, availableWidth - this.sidePaddingPxTotal)
       let gap = baseGap
       let col = baseCol
-      // If base layout fits, return it
-      if (col * cols + gap * (cols - 1) <= available) {
+      const baseTotal = col * cols + gap * (cols - 1)
+      
+      // If there's extra space beyond base layout, expand gaps proportionally
+      if (available > baseTotal) {
+        const extraSpace = available - baseTotal
+        gap = baseGap + (extraSpace / Math.max(1, cols - 1))
         return { col, gap }
       }
+      
+      // If base layout fits exactly or within available space, return it
+      if (baseTotal <= available) {
+        return { col, gap }
+      }
+      
       // First, shrink gaps down to minGapPx if needed
       const minGap = this.minGapPx
       const totalWithMinGap = col * cols + minGap * (cols - 1)
@@ -193,7 +211,13 @@ export default {
     },
     containerWidth() {
       const { col, gap } = this.effectiveMeasures
-      return this.sidePaddingPxTotal + col * this.columnCount + gap * (this.columnCount - 1)
+      const calculatedWidth = this.sidePaddingPxTotal + col * this.columnCount + gap * (this.columnCount - 1)
+      // Component width grows with calculated measures (which now expand with viewport)
+      // Respect maxContentWidthPx if set, otherwise allow unlimited growth
+      if (this.maxContentWidthPx != null) {
+        return Math.min(calculatedWidth, this.maxContentWidthPx)
+      }
+      return calculatedWidth
     },
     gridStyle() {
       const { col, gap } = this.effectiveMeasures
@@ -253,6 +277,7 @@ export default {
       currentPage: 1,
       pageSize: 7,
       totalItems: null,
+      windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1920,
       
     }
   },
@@ -394,7 +419,31 @@ export default {
     if (!Array.isArray(this.fields) || this.fields.length === 0) {
       this.fields = ['name', 'device_number', 'postion', 'day_time', 'day_bad_count', 'score', 'detail']
     }
+    // Initialize window width
+    if (typeof window !== 'undefined') {
+      this.windowWidth = window.innerWidth
+      // Debounce resize handler for better performance
+      this.resizeTimeout = null
+      this.handleResize = () => {
+        if (this.resizeTimeout) {
+          clearTimeout(this.resizeTimeout)
+        }
+        this.resizeTimeout = setTimeout(() => {
+          this.windowWidth = window.innerWidth
+        }, 100) // Debounce by 100ms
+      }
+      window.addEventListener('resize', this.handleResize)
+    }
     this.fetchRows(this.currentPage, this.pageSize)
+  },
+  beforeDestroy() {
+    // Clean up resize listener and timeout
+    if (typeof window !== 'undefined' && this.handleResize) {
+      window.removeEventListener('resize', this.handleResize)
+    }
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout)
+    }
   }
 }
 </script>

@@ -1,57 +1,97 @@
 <template>
-  <div class="w-[867px] h-[471px] relative">
-    <div class="w-[867px] h-[471px] left-0 top-0 absolute rounded-[38px] border border-border bg-card shadow-md"></div>
-    <div class="left-[47px] top-[30px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">投流转化次数</div>
-    <div data-type="Indicator" class="w-1 h-1 p-1 left-[47px] top-[91px] absolute bg-cyan-950 rounded-2xl"></div>
-    <div class="left-[55px] top-[85px] absolute justify-start text-neutral-700 text-xs font-normal font-['Nunito']">抖音</div>
-    <div data-type="Indicator" class="w-1 h-1 p-1 left-[91px] top-[91px] absolute bg-red-700 rounded-2xl"></div>
-    <div data-type="Indicator" class="w-1 h-1 p-1 left-[157px] top-[91px] absolute bg-yellow-400 rounded-2xl"></div>
-    <div class="left-[99px] top-[85px] absolute justify-start text-neutral-700 text-xs font-normal font-['Nunito']">大众点评</div>
-    <div class="left-[165px] top-[85px] absolute justify-start text-neutral-700 text-xs font-normal font-['Nunito']">美团</div>
+  <div ref="containerEl" class="relative" :style="{ width: `${BASE_W * effectiveScale}px`, height: `${BASE_H * effectiveScale}px` }">
+    <div class="absolute left-0 top-0" :style="innerStyle">
+      <div class="w-[867px] h-[471px] left-0 top-0 absolute rounded-[38px] border border-border bg-card shadow-md"></div>
+      <div class="left-[47px] top-[30px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">投流转化次数</div>
+      <div data-type="Indicator" class="w-1 h-1 p-1 left-[47px] top-[91px] absolute bg-cyan-950 rounded-2xl"></div>
+      <div class="left-[55px] top-[85px] absolute justify-start text-neutral-700 text-xs font-normal font-['Nunito']">抖音</div>
+      <div data-type="Indicator" class="w-1 h-1 p-1 left-[91px] top-[91px] absolute bg-red-700 rounded-2xl"></div>
+      <div data-type="Indicator" class="w-1 h-1 p-1 left-[157px] top-[91px] absolute bg-yellow-400 rounded-2xl"></div>
+      <div class="left-[99px] top-[85px] absolute justify-start text-neutral-700 text-xs font-normal font-['Nunito']">大众点评</div>
+      <div class="left-[165px] top-[85px] absolute justify-start text-neutral-700 text-xs font-normal font-['Nunito']">美团</div>
 
-    <!-- chart grid + lines overlay -->
-    <svg class="absolute" :style="{ left: '51px', top: '117px' }" :viewBox="`0 0 ${W} ${H}`" :width="W" :height="H">
-      <!-- gridlines: all dotted -->
-      <g stroke="rgba(17,24,39,0.6)" stroke-width="1" stroke-dasharray="2 4">
-        <line v-for="y in gridYsTop" :key="'g-'+y" :x1="0" :x2="W" :y1="y" :y2="y" />
-        <line :x1="0" :x2="W" :y1="H" :y2="H" stroke-dasharray="2 4" />
-      </g>
+      <!-- chart grid + lines overlay -->
+      <svg class="absolute" :style="{ left: '51px', top: '117px' }" :viewBox="`0 0 ${W} ${H}`" :width="W" :height="H">
+        <!-- gridlines: all dotted -->
+        <g stroke="rgba(17,24,39,0.6)" stroke-width="1" stroke-dasharray="2 4">
+          <line v-for="y in gridYsTop" :key="'g-'+y" :x1="0" :x2="W" :y1="y" :y2="y" />
+          <line :x1="0" :x2="W" :y1="H" :y2="H" stroke-dasharray="2 4" />
+        </g>
 
-      <!-- smooth curves -->
-      <path :d="smoothPath(dy)" fill="none" stroke="#083344" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-      <path :d="smoothPath(dzp)" fill="none" stroke="#b91c1c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-      <path :d="smoothPath(mt)" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
+        <!-- smooth curves -->
+        <path :d="smoothPath(dy)" fill="none" stroke="#083344" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <path :d="smoothPath(dzp)" fill="none" stroke="#b91c1c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <path :d="smoothPath(mt)" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
 
-    <!-- month labels -->
-    <div class="left-[47px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Jan</div>
-    <div class="left-[111px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Fab</div>
-    <div class="left-[178px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Mar</div>
-    <div class="left-[247px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Apr</div>
-    <div class="left-[315px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">May</div>
-    <div class="left-[386px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Jun</div>
-    <div class="left-[451px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Jul</div>
-    <div class="left-[512px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Aug</div>
-    <div class="left-[583px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Sep</div>
-    <div class="left-[652px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Oct</div>
-    <div class="left-[719px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Nov</div>
-    <div class="left-[789px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Dec</div>
+      <!-- month labels -->
+      <div class="left-[47px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Jan</div>
+      <div class="left-[111px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Fab</div>
+      <div class="left-[178px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Mar</div>
+      <div class="left-[247px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Apr</div>
+      <div class="left-[315px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">May</div>
+      <div class="left-[386px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Jun</div>
+      <div class="left-[451px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Jul</div>
+      <div class="left-[512px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Aug</div>
+      <div class="left-[583px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Sep</div>
+      <div class="left-[652px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Oct</div>
+      <div class="left-[719px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Nov</div>
+      <div class="left-[789px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Dec</div>
 
-    <!-- y-axis labels -->
-    <div class="left-[49px] top-[118px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">1w</div>
-    <div class="left-[51px] top-[185px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">5000</div>
-    <div class="left-[51px] top-[254px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">3000</div>
-    <div class="left-[51px] top-[323px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">1000</div>
-    <div class="left-[51px] top-[389px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">0（次）</div>
+      <!-- y-axis labels -->
+      <div class="left-[49px] top-[118px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">1w</div>
+      <div class="left-[51px] top-[185px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">5000</div>
+      <div class="left-[51px] top-[254px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">3000</div>
+      <div class="left-[51px] top-[323px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">1000</div>
+      <div class="left-[51px] top-[389px] absolute justify-start text-neutral-400 text-[10px] font-bold font-['Alibaba_PuHuiTi']">0（次）</div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+const props = defineProps({
+  scale: { type: Number, default: null }
+})
 
 // chart inner size matches the provided layout
 const W = 760
 const H = 272
+
+// base design size
+const BASE_W = 867
+const BASE_H = 471
+
+const containerEl = ref(null)
+const internalScale = ref(1)
+const effectiveScale = computed(() => (typeof props.scale === 'number' && !Number.isNaN(props.scale) ? props.scale : internalScale.value))
+
+let resizeObserver
+onMounted(() => {
+  const update = () => {
+    if (!containerEl.value) return
+    if (props.scale != null) return
+    const parent = containerEl.value.parentElement
+    const cw = (parent && parent.clientWidth) || BASE_W
+    const next = cw / BASE_W
+    internalScale.value = Math.max(0.5, Math.min(2, next))
+  }
+  resizeObserver = new ResizeObserver(update)
+  if (containerEl.value) resizeObserver.observe(containerEl.value)
+  update()
+})
+
+onBeforeUnmount(() => {
+  if (resizeObserver && containerEl.value) resizeObserver.unobserve(containerEl.value)
+  resizeObserver = undefined
+})
+
+const innerStyle = computed(() => ({
+  width: `${BASE_W}px`,
+  height: `${BASE_H}px`,
+  transform: `scale(${effectiveScale.value})`,
+  transformOrigin: 'top left'
+}))
 
 // demo series data (12 months)
 const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']

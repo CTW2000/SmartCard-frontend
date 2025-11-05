@@ -1,6 +1,6 @@
 <template>
   <section class="min-h-[calc(100vh-60px)] bg-background">
-    <div class="max-w-[1200px] mx-auto px-8 py-6">
+    <div class="w-full px-8 py-6">
       <h1 class="m-0 mb-4 text-[20px] font-bold tracking-[0.02em] text-foreground">员工管理</h1>
 
       <!-- Top summary cards (3-column responsive, gap ≈ 12px) -->
@@ -11,7 +11,9 @@
       </div>
 
       <!-- Form section -->
-      <StaffForm :title="'员工服务评分'" :headers="headersStaff" :fields="fieldsStaff" :rows="rowsStaff" @rowAction="onRowAction" />
+      <div class="w-full">
+        <StaffForm :title="'员工服务评分'" :headers="headersStaff" :fields="fieldsStaff" :rows="rowsStaff" @rowAction="onRowAction" />
+      </div>
     </div>
 
     <!-- StaffReport modal overlay -->

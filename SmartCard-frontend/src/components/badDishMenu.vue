@@ -1,48 +1,70 @@
 <template>
-  <div class="relative w-80 h-[471px]">
-    <div class="w-80 h-[471px] left-0 top-0 absolute rounded-[38px] border border-border bg-card shadow-md"></div>
-    <div class="left-[56px] top-[30px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">菜品差评数</div>
-    <!-- Scroll viewport retains original layout area -->
-    <div class="absolute left-0 right-0 top-[100px] bottom-[24px] overflow-y-auto" @scroll="onScroll">
-      <template v-for="(item, i) in displayItems" :key="item?.name ?? i">
-        <!-- Index + name, same left as original (56px), base top=122px -->
-        <div
-          class="left-[56px] absolute justify-start text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi']"
-          :style="{ top: nameTop(i) }"
-        >
-          {{ indexText(i) }}{{ item?.name ?? '—' }}
-        </div>
+  <div ref="containerEl" class="relative" :style="outerStyle">
+    <div class="absolute left-0 top-0" :style="innerStyle">
+      <div class="w-80 h-[471px] left-0 top-0 absolute rounded-[38px] border border-border bg-card shadow-md"></div>
+      <div class="left-[56px] top-[30px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">菜品差评数</div>
+      <!-- Scroll viewport retains original layout area -->
+      <div class="absolute left-0 right-0 top-[100px] bottom-[24px] overflow-y-auto" @scroll="onScroll">
+        <template v-for="(item, i) in displayItems" :key="item?.name ?? i">
+          <!-- Index + name, same left as original (56px), base top=122px -->
+          <div
+            class="left-[56px] absolute justify-start text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi']"
+            :style="{ top: nameTop(i) }"
+          >
+            {{ indexText(i) }}{{ item?.name ?? '—' }}
+          </div>
 
-        <!-- Amount text, same left as original (86px), base top=161px -->
-        <div
-          class="left-[86px] absolute justify-start text-zinc-900 text-4xl font-medium font-['Alibaba_PuHuiTi']"
-          :style="{ top: amountTop(i) }"
-        >
-          {{ amountText(item?.amount) }}
-        </div>
+          <!-- Amount text, same left as original (86px), base top=161px -->
+          <div
+            class="left-[86px] absolute justify-start text-zinc-900 text-4xl font-medium font-['Alibaba_PuHuiTi']"
+            :style="{ top: amountTop(i) }"
+          >
+            {{ amountText(item?.amount) }}
+          </div>
 
-        <!-- Dot, same left as original (56px), base top=179px with fading opacity by index -->
-        <div
-          class="w-3.5 h-3.5 left-[56px] absolute rounded-full"
-          :class="dotOpacity(i)"
-          :style="{ top: dotTop(i) }"
-        ></div>
-      </template>
-      <div v-if="displayItems.length === 0" class="text-neutral-400 text-center mt-8">暂无数据</div>
+          <!-- Dot, same left as original (56px), base top=179px with fading opacity by index -->
+          <div
+            class="w-3.5 h-3.5 left-[56px] absolute rounded-full"
+            :class="dotOpacity(i)"
+            :style="{ top: dotTop(i) }"
+          ></div>
+        </template>
+        <div v-if="displayItems.length === 0" class="text-neutral-400 text-center mt-8">暂无数据</div>
+      </div>
     </div>
   </div>
   </template>
 
 <script>
+const BASE_W = 320
+const BASE_H = 471
+// Use the same width baseline as lineChartMenu for height scaling parity
+const HEIGHT_BASELINE_W = 867
 import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 export default {
   name: 'BadDish',
   props: {
     // items: [{ name: string, amount: number }]
-    items: { type: Array, default: () => [] }
+    items: { type: Array, default: () => [] },
+    scale: { type: Number, default: null }
   },
   computed: {
+    effectiveScale() {
+      if (typeof this.scale === 'number' && !Number.isNaN(this.scale)) return this.scale
+      return this.internalScale
+    },
+    outerStyle() {
+      return { width: `${BASE_W * this.effectiveScale}px`, height: `${BASE_H * this.effectiveScale}px` }
+    },
+    innerStyle() {
+      return {
+        width: `${BASE_W}px`,
+        height: `${BASE_H}px`,
+        transform: `scale(${this.effectiveScale})`,
+        transformOrigin: 'top left'
+      }
+    },
     displayItems() {
       if (Array.isArray(this.remoteItems) && this.remoteItems.length) return this.remoteItems
       if (!Array.isArray(this.items)) return []
@@ -51,6 +73,7 @@ export default {
   },
   data() {
     return {
+      internalScale: 1,
       page: 1,
       size: 7,
       total: 0,
@@ -125,7 +148,23 @@ export default {
   }
   ,
   mounted() {
+    const updateScale = () => {
+      if (typeof this.scale === 'number') return
+      const el = this.$refs && this.$refs.containerEl
+      const parent = el && el.parentElement
+      const cw = (parent && parent.clientWidth) || HEIGHT_BASELINE_W
+      const next = cw / HEIGHT_BASELINE_W
+      this.internalScale = Math.max(0.5, Math.min(2, next))
+    }
+    this.__ro = new ResizeObserver(updateScale)
+    if (this.$refs && this.$refs.containerEl) this.__ro.observe(this.$refs.containerEl)
+    updateScale()
     this.fetchBadDish(false)
+  }
+  ,
+  beforeUnmount() {
+    if (this.__ro && this.$refs && this.$refs.containerEl) this.__ro.unobserve(this.$refs.containerEl)
+    this.__ro = undefined
   }
 }
 </script>

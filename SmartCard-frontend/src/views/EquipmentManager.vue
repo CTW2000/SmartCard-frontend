@@ -33,11 +33,12 @@
           <button
             v-for="(g, idx) in groups"
             :key="g.id"
-            class="rounded-[8px] border px-3 py-2 text-[14px]"
+            class="relative rounded-[8px] border px-[18px] py-[9.2px] text-[14px]"
             :class="idx === activeGroupIndex ? 'bg-white border-[#007AFF] text-[#007AFF]' : 'bg-white border-[#DADADA] text-[rgba(0,0,0,0.80)]'"
             @click="selectGroup(idx)"
           >
             {{ g.name }}
+            <img v-if="isEditMode" :src="closeIcon" class="absolute -top-2 -right-2 w-[19px] h-[19px]" alt="关闭" />
           </button>
           <template v-if="isAddingGroup">
             <input
@@ -48,7 +49,7 @@
               @keyup.enter="submitGroup"
             />
           </template>
-          <template v-else>
+          <template v-else-if="isEditMode">
             <button
               class="group relative h-[44px] w-[44px] cursor-pointer transition-transform duration-200 hover:scale-105 hover:drop-shadow-md focus:outline-none"
               @click="startAddGroup"
@@ -58,16 +59,6 @@
               <img :src="whiteCrossIcon" class="absolute left-1/2 top-1/2 h-[24px] w-[24px] -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 group-hover:scale-110" alt="新建分组" />
             </button>
           </template>
-        </div>
-        <div class="flex items-center gap-2">
-          <button
-          class="rounded-[8px] border px-3 py-2 text-[14px]"
-          :class="groups.length > 1 ? 'bg-white border-[#DADADA] text-[rgba(0,0,0,0.80)] hover:bg-[#F4F4F4]' : 'bg-white border-[#E5E5E5] text-[rgba(0,0,0,0.35)]'"
-          :disabled="groups.length <= 1"
-          @click="deleteActiveGroup"
-        >
-          删除当前分组
-          </button>
         </div>
       </div>
     <!-- Select Staff Panel -->
@@ -115,16 +106,51 @@
             :role="p.role"
             :identifier="p.identifier"
             :avatarUrl="p.avatarUrl"
+            :phone="p.phone"
+            :email="p.email"
+            :location="p.location"
+            :organize-id="p.organize_id"
+            :group-id="p.group_id"
+            :device-number="p.device_number"
+            :device-name="p.device_name"
+            :device-id="p.device_id"
+            :staff-id="p.staff_id"
             :editMode="isEditMode"
             @close="removePerson"
             @save="(updated) => onPersonSave(i, updated)"
+            @updated="onCardUpdated"
             @edit="onCardEdit"
           />
         </div>
       </div>
+      
+      <!-- Device pagination controls -->
+      <div class="mt-6 flex items-center justify-center gap-4">
+        <button
+          type="button"
+          class="px-4 py-2 rounded-[8px] border border-[#DADADA] text-[14px] bg-white text-[rgba(0,0,0,0.80)] hover:bg-[#F4F4F4] disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="devicePage <= 1"
+          @click="prevDevicePage"
+        >
+          上一页
+        </button>
+        <span class="text-neutral-600 text-[14px] font-medium">
+          第{{ devicePage }}页
+        </span>
+        <button
+          type="button"
+          class="px-4 py-2 rounded-[8px] border border-[#DADADA] text-[14px] bg-white text-[rgba(0,0,0,0.80)] hover:bg-[#F4F4F4] disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="deviceTotal != null && devicePage >= Math.ceil(deviceTotal / devicePageSize)"
+          @click="nextDevicePage"
+        >
+          下一页
+        </button>
+      </div>
     </div>
     <div class="absolute right-6 top-6 flex items-center gap-3">
+      <!-- Add staff button - only show in edit mode -->
       <button
+        v-if="isEditMode"
         class="group relative h-[44px] w-[44px] cursor-pointer transition-transform duration-200 hover:scale-105 hover:drop-shadow-md focus:outline-none"
         @click="showAddPersonPanel = true"
         aria-label="Add person"
@@ -132,13 +158,23 @@
         <img :src="blackBGIcon" class="h-[44px] w-[44px] transition group-hover:brightness-110" alt="" />
         <img :src="whiteCrossIcon" class="absolute left-1/2 top-1/2 h-[24px] w-[24px] -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 group-hover:scale-110" alt="新增人员" />
       </button>
+      <!-- Edit/Complete button -->
       <button
-        class="group relative h-[42px] w-[42px] cursor-pointer transition-transform duration-200 hover:scale-105 hover:drop-shadow-md focus:outline-none"
+        class="group relative cursor-pointer transition-transform duration-200 hover:scale-105 hover:drop-shadow-md focus:outline-none"
+        :class="isEditMode ? 'h-[42px] w-[78px]' : 'h-[42px] w-[42px]'"
         @click="toggleEditMode"
-        aria-label="Edit"
+        :aria-label="isEditMode ? '完成' : '编辑'"
       >
-        <img :src="circleIcon" class="h-[42px] w-[42px] transition group-hover:brightness-95" alt="" />
-        <img :src="pencilIcon" class="absolute left-1/2 top-1/2 h-[20px] w-[20px] -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 group-hover:scale-110" alt="编辑" />
+        <template v-if="isEditMode">
+          <!-- Complete button with blackBG and white text -->
+          <img :src="blackBGIcon" class="h-[42px] w-[78px] transition group-hover:brightness-110" alt="" />
+          <span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-base font-medium">完成</span>
+        </template>
+        <template v-else>
+          <!-- Edit button with circle and pencil -->
+          <img :src="circleIcon" class="h-[42px] w-[42px] transition group-hover:brightness-95" alt="" />
+          <img :src="pencilIcon" class="absolute left-1/2 top-1/2 h-[20px] w-[20px] -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 group-hover:scale-110" alt="编辑" />
+        </template>
       </button>
     </div>
   </section>
@@ -192,6 +228,7 @@ import CircleIcon from '../../Resource/Staff/Circle.svg'
 import PencilIcon from '../../Resource/Staff/Pencil.svg'
 import BlackBG from '../../Resource/Staff/blackBG.svg'
 import WhiteCross from '../../Resource/Staff/whiteCross.svg'
+import CloseIcon from '../../Resource/Equipment/Close.svg'
 import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 export default {
@@ -204,6 +241,7 @@ export default {
       pencilIcon: PencilIcon,
       blackBGIcon: BlackBG,
       whiteCrossIcon: WhiteCross,
+      closeIcon: CloseIcon,
       organizeName: '',
       isAddingOrganize: false,
       organizeInput: '',
@@ -220,6 +258,9 @@ export default {
       staffPageSize: 7,
       staffTotal: null,
       selectedStaffId: '',
+      devicePage: 1,
+      devicePageSize: 20,
+      deviceTotal: null,
       addDeviceForm: {
         staffName: '',
         deviceNumber: '',
@@ -243,6 +284,12 @@ export default {
   methods: {
     selectGroup(idx) {
       this.activeGroupIndex = idx
+      // Reload devices for the selected group (reset to page 1)
+      const groupId = (this.groups[idx] && this.groups[idx].id) || null
+      if (groupId) {
+        this.devicePage = 1
+        this.fetchOrganizeList(false, groupId, 1, this.devicePageSize)
+      }
     },
     startAddGroup() {
       this.isAddingGroup = true
@@ -287,13 +334,6 @@ export default {
         alert('提交失败')
       }
     },
-    deleteActiveGroup() {
-      if (this.groups.length <= 1) return
-      this.groups.splice(this.activeGroupIndex, 1)
-      if (this.activeGroupIndex >= this.groups.length) {
-        this.activeGroupIndex = this.groups.length - 1
-      }
-    },
     onCardEdit(payload) {
       this.selectedPerson = { ...(payload || {}) }
       this.showDevicePanel = true
@@ -307,6 +347,14 @@ export default {
         g.people[idx] = { ...g.people[idx], ...updated }
       }
       this.showDevicePanel = false
+    },
+    onCardUpdated() {
+      const groupId = (this.groups[this.activeGroupIndex] && this.groups[this.activeGroupIndex].id) || null
+      if (groupId) {
+        this.fetchOrganizeList(false, groupId, this.devicePage, this.devicePageSize)
+      } else {
+        this.fetchOrganizeList(false)
+      }
     },
     async submitAddDevice() {
       // Use the active group's bound id
@@ -335,6 +383,9 @@ export default {
           console.log('[EquipmentManager] device edit success:', res.data)
           this.showAddPersonPanel = false
           this.addDeviceForm = { staffName: '', deviceNumber: '', deviceName: '' }
+          // Refresh the page with current active group
+          const activeGroupId = (this.groups[this.activeGroupIndex] && this.groups[this.activeGroupIndex].id) || ''
+          await this.fetchOrganizeList(false, activeGroupId)
         } else {
           alert('提交失败')
         }
@@ -343,25 +394,30 @@ export default {
         alert('提交失败')
       }
     },
+
     openSelectStaffPanel() {
       this.showSelectStaffPanel = true
       this.staffPage = 1
       this.fetchStaffPage(this.staffPage, this.staffPageSize)
     },
-    async fetchStaffPage(page = this.staffPage, size = this.staffPageSize) {
+    async fetchStaffPage(page = this.staffPage, limit = this.staffPageSize) {
       try {
-        const res = await postForm(PATHS.STAFF_SCORE_LIST, { page, size })
+        const res = await postForm(PATHS.STAFF_LIST, { 
+          page: String(page), 
+          limit: String(limit), 
+          name: '' 
+        })
         const data = res && res.data && res.data.data
-        const rawList = (data && Array.isArray(data.staff_score_list)) ? data.staff_score_list : (data && Array.isArray(data.result) ? data.result : [])
+        const rawList = (data && Array.isArray(data.staff_list)) ? data.staff_list : []
         this.staffList = rawList.map(it => ({
-          id: it._id || (it.staff_id && (it.staff_id._id || it.staff_id.id)) || it.id || '',
-          name: (it.staff_id && it.staff_id.name) || it.name || '',
-          phone: (it.phone || (it.staff_id && it.staff_id.phone)) || '',
+          id: it._id || it.id || '',
+          name: it.name || '',
+          phone: it.phone || '',
         }))
-        const detectedTotal = data && (data.total ?? data.total_count ?? data.count ?? data.page_total ?? data.totalRows)
+        const detectedTotal = data && data.total
         if (typeof detectedTotal === 'number' && detectedTotal >= 0) this.staffTotal = detectedTotal
         this.staffPage = page
-        this.staffPageSize = size
+        this.staffPageSize = limit
       } catch (e) {
         console.error('[EquipmentManager] fetch staff page error:', e)
       }
@@ -423,7 +479,7 @@ export default {
         alert('提交失败')
       }
     },
-    async fetchOrganizeList(returnRaw = false) {
+    async fetchOrganizeList(returnRaw = false, groupId = null, page = null, size = null) {
       // Get organize_id from localStorage
       let organizeId = ''
       try {
@@ -435,12 +491,18 @@ export default {
       } catch (e) {
         console.error('[EquipmentManager] Error reading now_organize from localStorage:', e)
       }
+      
+      // Use provided page/size or default to state values
+      const devicePage = page != null ? String(page) : String(this.devicePage)
+      const deviceSize = size != null ? String(size) : String(this.devicePageSize)
+      
       const payload = {
-        page: '1',
-        size: '20',
+        page: devicePage,
+        size: deviceSize,
         organize_id: organizeId,
-        group_id: ''
+        group_id: groupId || ''
       }
+      
       try {
         const res = await postForm(PATHS.DEVICE_ORGANIZE_LIST, payload)
         if (res && res.status >= 200 && res.status < 300) {
@@ -449,11 +511,27 @@ export default {
           // Rebuild in-memory group buttons from API data
           const groupList = Array.isArray(data.group_list) ? data.group_list : []
           this.groups = groupList.map(g => ({ id: g._id, name: g.group_name, people: [] }))
-          // Set default active group from now_group
-          const nowGroup = data.now_group
-          if (nowGroup && nowGroup._id) {
-            const idx = this.groups.findIndex(g => g.id === nowGroup._id)
+          
+          // Determine which group to use
+          let targetGroupId = groupId
+          if (!targetGroupId) {
+            // Use now_group as default if no group_id provided
+            const nowGroup = data.now_group
+            if (nowGroup && nowGroup._id) {
+              targetGroupId = nowGroup._id
+            }
+          }
+          // Set default active group
+          if (targetGroupId) {
+            const idx = this.groups.findIndex(g => g.id === targetGroupId)
             if (idx !== -1) this.activeGroupIndex = idx
+          } else {
+            // Fallback to first group if now_group exists but group_id doesn't match
+            const nowGroup = data.now_group
+            if (nowGroup && nowGroup._id) {
+              const idx = this.groups.findIndex(g => g.id === nowGroup._id)
+              if (idx !== -1) this.activeGroupIndex = idx
+            }
           }
           // Populate device list into corresponding group's people
           const deviceList = Array.isArray(data.device_list) ? data.device_list : []
@@ -462,16 +540,40 @@ export default {
             deviceList.forEach(dev => {
               const gIdx = groupIdToIndex.get(dev.group_id)
               if (gIdx != null && this.groups[gIdx]) {
+                // Pass full staff data to PersonCard
+                const staffData = dev.staff_id || {}
                 const person = {
-                  name: (dev.staff_id && dev.staff_id.name) || '未绑定',
-                  role: dev.online_device_count != null ? '' : (dev.status ? '在线' : '离线'),
+                  name: staffData.name || '未绑定',
+                  role: dev.status === true ? '在线' : '离线',
                   identifier: dev.device_number || dev._id || '',
-                  avatarUrl: (dev.staff_id && dev.staff_id.avatar) || ''
+                  device_number: dev.device_number || '',
+                  device_name: dev.device_name || '',
+                  device_id: dev._id || '',
+                  avatarUrl: staffData.avatar || '',
+                  phone: staffData.phone || '',
+                  email: staffData.email || '',
+                  location: staffData.location || '',
+                  // Keep full staff data for reference
+                  staff_id: (staffData && (staffData._id || staffData.id)) || '',
+                  staffData: staffData,
+                  // relation identifiers
+                  organize_id: organizeId,
+                  group_id: dev.group_id,
+                  deviceStatus: dev.status
                 }
                 this.groups[gIdx].people.push(person)
               }
             })
           }
+          // Store device total count for pagination
+          const detectedDeviceTotal = data && (data.total ?? data.total_count ?? data.count ?? data.device_total)
+          if (typeof detectedDeviceTotal === 'number' && detectedDeviceTotal >= 0) {
+            this.deviceTotal = detectedDeviceTotal
+          }
+          
+          // Update device page state
+          this.devicePage = page != null ? page : this.devicePage
+          
           // Also update now_organize if it exists in the response (for organize submission flow)
           const nowOrganize = data.now_organize
           if (nowOrganize) {
@@ -483,7 +585,20 @@ export default {
         console.error('[EquipmentManager] fetch organize list error:', e)
       }
       return null
-    }
+    },
+    prevDevicePage() {
+      if (this.devicePage <= 1) return
+      const prev = Math.max(1, this.devicePage - 1)
+      const groupId = (this.groups[this.activeGroupIndex] && this.groups[this.activeGroupIndex].id) || null
+      this.fetchOrganizeList(false, groupId, prev, this.devicePageSize)
+    },
+    nextDevicePage() {
+      const totalPages = this.deviceTotal != null && this.devicePageSize > 0 ? Math.max(1, Math.ceil(this.deviceTotal / this.devicePageSize)) : null
+      if (totalPages != null && this.devicePage >= totalPages) return
+      const next = this.devicePage + 1
+      const groupId = (this.groups[this.activeGroupIndex] && this.groups[this.activeGroupIndex].id) || null
+      this.fetchOrganizeList(false, groupId, next, this.devicePageSize)
+    },
   },
 }
 </script>

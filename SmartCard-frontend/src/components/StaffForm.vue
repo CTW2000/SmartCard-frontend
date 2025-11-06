@@ -1,7 +1,6 @@
 <template>
   <div
-    class="relative rounded-[38px] border border-border bg-card shadow-md px-8 py-6"
-    :style="{ width: containerWidth + 'px' }"
+    class="relative rounded-[38px] border border-border bg-card shadow-md px-8 py-6 w-full"
   >
     <div class="text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">{{ title }}</div>
 

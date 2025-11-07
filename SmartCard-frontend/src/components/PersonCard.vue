@@ -27,7 +27,7 @@
         <div class="text-[14px] font-medium text-foreground">{{ person.role }}</div>
 
         <div class="text-[14px] font-semibold text-[rgba(15,23,42,0.65)]">设备号</div>
-        <div class="text-[14px] font-medium text-foreground">{{ person.identifier }}</div>
+        <div class="text-[14px] font-medium text-foreground">{{ person.deviceName || person.identifier }}</div>
       </div>
 
       <!-- Inline bottom edit action (inside card) -->

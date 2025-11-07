@@ -2,7 +2,15 @@
   <section class="relative min-h-[calc(100vh-64px)] bg-background">
     <div class="max-w-[1600px] mx-auto px-8 py-6">
       <div class="m-0 mb-4">
-        <template v-if="!isAddingOrganize && organizeName">
+        <template v-if="isEditMode">
+          <input
+            v-model="organizeEditInput"
+            type="text"
+            class="w-full max-w-[520px] h-[44px] rounded-[8px] border border-[#DADADA] px-3 text-[16px] outline-none"
+            placeholder="请输入组织名称并按回车"
+          />
+        </template>
+        <template v-else-if="!isAddingOrganize && organizeName">
           <h1 class="m-0 text-[28px] font-extrabold tracking-[-0.02em] text-foreground">{{ organizeName }}</h1>
         </template>
         <template v-else-if="isAddingOrganize">
@@ -30,16 +38,38 @@
       <!-- Group controls -->
       <div class="mb-4 flex items-center justify-between">
         <div class="flex flex-wrap gap-2">
-          <button
-            v-for="(g, idx) in groups"
-            :key="g.id"
-            class="relative rounded-[8px] border px-[18px] py-[9.2px] text-[14px]"
-            :class="idx === activeGroupIndex ? 'bg-white border-[#007AFF] text-[#007AFF]' : 'bg-white border-[#DADADA] text-[rgba(0,0,0,0.80)]'"
-            @click="selectGroup(idx)"
-          >
-            {{ g.name }}
-            <img v-if="isEditMode" :src="closeIcon" class="absolute -top-2 -right-2 w-[19px] h-[19px]" alt="关闭" />
-          </button>
+          <template v-if="isEditMode">
+            <div
+              v-for="(g, idx) in groups"
+              :key="g.id"
+              class="relative inline-block"
+            >
+              <input
+                v-model="groupEditNames[g.id]"
+                type="text"
+                class="rounded-[8px] border px-[18px] py-[9.2px] text-[14px] outline-none"
+                :class="idx === activeGroupIndex ? 'bg-white border-[#007AFF] text-[#007AFF]' : 'bg-white border-[#DADADA] text-[rgba(0,0,0,0.80)]'"
+                @click="selectGroup(idx)"
+              />
+              <img
+                :src="closeIcon"
+                class="absolute -top-2 -right-2 w-[19px] h-[19px] cursor-pointer"
+                alt="关闭"
+                @click.stop="deleteGroup(g.id, idx)"
+              />
+            </div>
+          </template>
+          <template v-else>
+            <button
+              v-for="(g, idx) in groups"
+              :key="g.id"
+              class="relative rounded-[8px] border px-[18px] py-[9.2px] text-[14px]"
+              :class="idx === activeGroupIndex ? 'bg-white border-[#007AFF] text-[#007AFF]' : 'bg-white border-[#DADADA] text-[rgba(0,0,0,0.80)]'"
+              @click="selectGroup(idx)"
+            >
+              {{ g.name }}
+            </button>
+          </template>
           <template v-if="isAddingGroup">
             <input
               v-model="groupInput"
@@ -243,9 +273,11 @@ export default {
       whiteCrossIcon: WhiteCross,
       closeIcon: CloseIcon,
       organizeName: '',
+      organizeEditInput: '',
       isAddingOrganize: false,
       organizeInput: '',
       groups: [],
+      groupEditNames: {},
       isAddingGroup: false,
       groupInput: '',
       activeGroupIndex: 0,
@@ -276,6 +308,7 @@ export default {
         try {
           const nowOrg = JSON.parse(nowOrganizeStr)
           this.organizeName = (nowOrg && nowOrg.organize_name) || this.organizeName
+          this.organizeEditInput = this.organizeName
         } catch (_) {}
         this.fetchOrganizeList()
       }
@@ -332,6 +365,46 @@ export default {
       } catch (e) {
         console.error('[EquipmentManager] group edit error:', e)
         alert('提交失败')
+      }
+    },
+    async deleteGroup(groupId, idx) {
+      if (this.groups.length <= 1) {
+        alert('至少需要保留一个分组')
+        return
+      }
+      // Get organize_id from localStorage
+      let organizeId = ''
+      try {
+        const nowOrganizeStr = localStorage.getItem('now_organize')
+        if (nowOrganizeStr) {
+          const nowOrganize = JSON.parse(nowOrganizeStr)
+          organizeId = nowOrganize._id || ''
+        }
+      } catch (e) {
+        console.error('[EquipmentManager] Error reading now_organize from localStorage:', e)
+      }
+      const payload = {
+        type: 'delete',
+        data: JSON.stringify({ group_id: groupId, type: 'delete', organize_id: organizeId })
+      }
+      try {
+        const res = await postForm(PATHS.DEVICE_GROUP_EDIT, payload)
+        if (res && res.status >= 200 && res.status < 300) {
+          // Remove from local state
+          this.groups.splice(idx, 1)
+          // Adjust activeGroupIndex if needed
+          if (this.activeGroupIndex >= this.groups.length) {
+            this.activeGroupIndex = Math.max(0, this.groups.length - 1)
+          }
+          // Refresh the page data
+          const newGroupId = (this.groups[this.activeGroupIndex] && this.groups[this.activeGroupIndex].id) || null
+          await this.fetchOrganizeList(false, newGroupId, this.devicePage, this.devicePageSize)
+        } else {
+          alert('删除失败')
+        }
+      } catch (e) {
+        console.error('[EquipmentManager] group delete error:', e)
+        alert('删除失败')
       }
     },
     onCardEdit(payload) {
@@ -447,8 +520,26 @@ export default {
       const idx = g.people.findIndex(x => x.identifier === identifier)
       if (idx !== -1) g.people.splice(idx, 1)
     },
-    toggleEditMode() {
-      this.isEditMode = !this.isEditMode
+    async toggleEditMode() {
+      if (this.isEditMode) {
+        // Completing edit mode: submit organize name update if changed
+        const next = (this.organizeEditInput || '').trim()
+        if (next && next !== this.organizeName) {
+          await this.submitOrganizeUpdate()
+        }
+        // Submit all changed group names
+        await this.submitGroupUpdates()
+        this.isEditMode = false
+      } else {
+        // Entering edit mode: preload inputs with current names
+        this.isEditMode = true
+        this.organizeEditInput = this.organizeName
+        // Initialize group edit names
+        this.groupEditNames = {}
+        this.groups.forEach(g => {
+          this.groupEditNames[g.id] = g.name
+        })
+      }
     },
     startAddOrganize() {
       this.isAddingOrganize = true
@@ -477,6 +568,88 @@ export default {
       } catch (e) {
         console.error('[EquipmentManager] organize edit error:', e)
         alert('提交失败')
+      }
+    },
+    async submitOrganizeUpdate() {
+      const name = (this.organizeEditInput || '').trim()
+      if (!name) return
+      // read organize_id
+      let organizeId = ''
+      try {
+        const nowOrganizeStr = localStorage.getItem('now_organize')
+        if (nowOrganizeStr) {
+          const nowOrganize = JSON.parse(nowOrganizeStr)
+          organizeId = nowOrganize._id || ''
+        }
+      } catch (e) {
+        console.error('[EquipmentManager] read now_organize failed:', e)
+      }
+      const payload = {
+        type: 'update',
+        data: JSON.stringify({ organize_name: name, type: 'update', organize_id: organizeId })
+      }
+      try {
+        const res = await postForm(PATHS.DEVICE_ORGANIZE_EDIT, payload)
+        if (res && res.status >= 200 && res.status < 300) {
+          this.organizeName = name
+          // persist to localStorage
+          try {
+            const nowOrganizeStr = localStorage.getItem('now_organize')
+            const nowOrg = nowOrganizeStr ? JSON.parse(nowOrganizeStr) : {}
+            nowOrg.organize_name = name
+            localStorage.setItem('now_organize', JSON.stringify(nowOrg))
+          } catch (_) {}
+          // refresh page data
+          await this.fetchOrganizeList(false, (this.groups[this.activeGroupIndex] && this.groups[this.activeGroupIndex].id) || null, this.devicePage, this.devicePageSize)
+        } else {
+          alert('提交失败')
+        }
+      } catch (e) {
+        console.error('[EquipmentManager] organize update error:', e)
+        alert('提交失败')
+      }
+    },
+    async submitGroupUpdates() {
+      // Get organize_id from localStorage
+      let organizeId = ''
+      try {
+        const nowOrganizeStr = localStorage.getItem('now_organize')
+        if (nowOrganizeStr) {
+          const nowOrganize = JSON.parse(nowOrganizeStr)
+          organizeId = nowOrganize._id || ''
+        }
+      } catch (e) {
+        console.error('[EquipmentManager] Error reading now_organize from localStorage:', e)
+      }
+      
+      // Submit updates for all changed groups
+      const updatePromises = []
+      for (const group of this.groups) {
+        const editedName = (this.groupEditNames[group.id] || '').trim()
+        if (editedName && editedName !== group.name) {
+          const payload = {
+            type: 'update',
+            data: JSON.stringify({
+              group_name: editedName,
+              type: 'update',
+              group_id: group.id,
+              organize_id: organizeId
+            })
+          }
+          updatePromises.push(postForm(PATHS.DEVICE_GROUP_EDIT, payload))
+        }
+      }
+      
+      if (updatePromises.length > 0) {
+        try {
+          await Promise.all(updatePromises)
+          // Refresh the page data after all updates
+          const groupId = (this.groups[this.activeGroupIndex] && this.groups[this.activeGroupIndex].id) || null
+          await this.fetchOrganizeList(false, groupId, this.devicePage, this.devicePageSize)
+        } catch (e) {
+          console.error('[EquipmentManager] group update error:', e)
+          alert('部分分组更新失败')
+        }
       }
     },
     async fetchOrganizeList(returnRaw = false, groupId = null, page = null, size = null) {

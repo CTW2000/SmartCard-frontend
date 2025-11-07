@@ -261,8 +261,34 @@ function onSave(updated) {
   emit('save', updated)
 }
 
-function onCloseClick() {
-  emit('close', person.identifier)
+async function onCloseClick() {
+  // Call API to delete the device
+  const payload = {
+    type: 'delete',
+    data: JSON.stringify({
+      device_number: person.deviceNumber || person.identifier || props.deviceNumber || props.identifier || '',
+      staff_id: person.staffId || props.staffId || '',
+      device_name: person.deviceName || props.deviceName || '',
+      type: 'delete',
+      device_id: person.deviceId || props.deviceId || '',
+      group_id: person.groupId || props.groupId || '',
+    })
+  }
+  
+  try {
+    const res = await postForm(PATHS.DEVICE_EDIT, payload)
+    if (res && res.status >= 200 && res.status < 300) {
+      // Emit close event with identifier for parent to remove from list
+      emit('close', person.identifier)
+      // Emit updated event to refresh the page
+      emit('updated')
+    } else {
+      alert('删除失败')
+    }
+  } catch (e) {
+    console.error('[PersonCard] delete device error:', e)
+    alert('删除失败')
+  }
 }
 
 // Edit modal state and submit

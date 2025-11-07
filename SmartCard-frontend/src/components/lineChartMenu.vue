@@ -50,6 +50,8 @@
 
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+
+
 const props = defineProps({
   scale: { type: Number, default: null }
 })
@@ -64,7 +66,9 @@ const BASE_H = 471
 
 const containerEl = ref(null)
 const internalScale = ref(1)
-const effectiveScale = computed(() => (typeof props.scale === 'number' && !Number.isNaN(props.scale) ? props.scale : internalScale.value))
+const effectiveScale = computed(() => 
+(typeof props.scale === 'number' && !Number.isNaN(props.scale) ?
+ props.scale : internalScale.value))
 
 let resizeObserver
 onMounted(() => {

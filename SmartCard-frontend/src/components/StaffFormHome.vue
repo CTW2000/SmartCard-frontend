@@ -1,31 +1,36 @@
 <template>
+  
   <div
     class="relative rounded-[38px] border border-border bg-card shadow-md px-8 py-6"
-    :style="{ width: containerWidth + 'px' }"
-  >
-    <div class="text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">{{ title }}</div>
+    :style="containerStyle">
+    <div class="text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">员工服务评分</div>
+   
     <!-- Headers -->
+
     <div class="mt-6 grid items-center" :style="gridStyle">
       <div
         v-for="(h, i) in renderHeaders"
         :key="i"
-        class="text-stone-900 text-2xl font-normal font-['Alibaba_PuHuiTi'] text-center"
-      >
-        {{ displayHeader(h) }}
+        class="text-stone-900 text-2xl font-normal font-['Alibaba_PuHuiTi'] text-center">
+        {{ h }}
       </div>
     </div>
+
 
     <!-- Divider under headers -->
     <div class="mt-6 h-0 shadow-[1px_1px_4px_0px_rgba(153,153,153,0.25)] outline outline-2 outline-offset-[-1px] outline-neutral-200"></div>
 
+
     <!-- Rows in a scrollable container -->
     <div class="mt-4 max-h-[420px] overflow-y-auto pr-2" @scroll="onScroll">
-      <div v-for="(row, rIdx) in (staffRows.length ? staffRows : rows)" :key="row.id || rIdx" class="mb-4 grid items-center" :style="gridStyle">
+
+      <div v-for="(row, rIdx) in staffRows" :key="row.id || rIdx" class="mb-4 grid items-center" :style="gridStyle">
         <div
           v-for="(field, cIdx) in renderFields"
           :key="cIdx"
           class="text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi'] truncate text-center"
         >
+
           <template v-if="field === 'detail'">
             <button
               type="button"
@@ -39,6 +44,7 @@
           <template v-else>
             {{ row[field] }}
           </template>
+
         </div>
       </div>
     </div>
@@ -50,108 +56,56 @@
 import arrowIcon from '../../Resource/Staff/arrow.svg'
 import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
+
 export default {
   name: 'StaffFormHome',
   components: { },
-  props: {
-    title: { type: String, default: '' },
-    headers: { type: Array, default: () => [] },
-    fields: { type: Array, default: () => [] },
-    rows: { type: Array, default: () => [] },
-    // optional customization
-    columnWidthPx: { type: Number, default: 200 },
-    columnGapPx: { type: Number, default: 24 },
-    sidePaddingPxTotal: { type: Number, default: 64 }, // px-8 => 32px left + 32px right
-    // Fit control to keep many columns within screen/container
-    // Fallback maximum content width; component will auto-detect parent width when mounted
-    maxContentWidthPx: { type: Number, default: 1536 }, // Home container widened; px-8 padding already accounted externally
-    minColumnWidthPx: { type: Number, default: 130 },
-    minGapPx: { type: Number, default: 8 },
-  },
+
   computed: {
-    columnCount() {
-      const n = Array.isArray(this.renderHeaders) ? this.renderHeaders.length : 0
-      return Math.max(1, n)
-    },
-    effectiveMeasures() {
-      const cols = this.columnCount
-      const baseCol = this.columnWidthPx
-      const baseGap = this.columnGapPx
-      const available = Math.max(0, (this.containerMaxWidth || this.maxContentWidthPx) - this.sidePaddingPxTotal)
-      let gap = baseGap
-      let col = baseCol
-      // If base layout fits, return it
-      if (col * cols + gap * (cols - 1) <= available) {
-        return { col, gap }
+    containerStyle() {
+      return {
+        width: '100%',
+        minWidth: '800px'
       }
-      // First, shrink gaps down to minGapPx if needed
-      const minGap = this.minGapPx
-      const totalWithMinGap = col * cols + minGap * (cols - 1)
-      if (totalWithMinGap <= available) {
-        // compute exact gap to perfectly fit
-        gap = (available - col * cols) / Math.max(1, (cols - 1))
-        gap = Math.max(minGap, Math.min(baseGap, Math.floor(gap)))
-        return { col, gap }
-      }
-      // Then shrink columns down to minColumnWidthPx, keep gap at minGap
-      gap = minGap
-      const minCol = this.minColumnWidthPx
-      col = Math.max(minCol, Math.floor((available - gap * (cols - 1)) / Math.max(1, cols)))
-      return { col, gap }
-    },
-    containerWidth() {
-      const { col, gap } = this.effectiveMeasures
-      return this.sidePaddingPxTotal + col * this.columnCount + gap * (this.columnCount - 1)
     },
     gridStyle() {
-      const { col, gap } = this.effectiveMeasures
       return {
-        gridTemplateColumns: `repeat(${this.columnCount}, ${col}px)`,
-        columnGap: `${gap}px`,
+        gridTemplateColumns: `repeat(${this.renderHeaders.length}, minmax(50px, 1fr))`,
+        columnGap: `24px`,
       }
     },
+
     renderHeaders() {
-      if (this.staffRows && this.staffRows.length) {
-        return ['姓名', '设备编号', '岗位', '日均服务时间', '每周差评事件', '评分', '详情']
-      }
-      return Array.isArray(this.headers) ? this.headers : []
+      return ['姓名', '设备号', '岗位', '日均服务时间', '昨日差评事件', '评分', '详情']
     },
     renderFields() {
-      if (this.staffRows && this.staffRows.length) {
-        return ['name', 'device_number', 'postion', 'day_time', 'day_bad_count', 'score', 'detail']
-      }
-      return Array.isArray(this.fields) ? this.fields : []
+      return ['name', 'device_number', 'postion', 'day_time', 'day_bad_count', 'score', 'detail']
     }
   },
   data() {
     return {
       arrowIcon,
+
       staffPage: 1,
       staffLimit: 7,
+
       staffTotal: 0,
       staffRows: [],
-      containerMaxWidth: 0,
-      resizeObserver: null
     }
   },
+
   methods: {
-    displayHeader(h) {
-      if (h === '详情') {
-        return '服务报告'
-      }
-      return h
-    },
-    isCenteredIndex(i) {
-      const header = this.headers && this.headers[i]
-      return header === '日均服务时间' || header === '每周差评事件'
-    },
+
     async fetchStaff(reset = false) {
       try {
         const form = { page: this.staffPage, limit: this.staffLimit }
+
         const res = await postForm(PATHS.MANAGE_INDEX_STAFF, form)
         if (res && res.status >= 200 && res.status < 300) {
           const data = res.data && res.data.data
+
           const list = (data && Array.isArray(data.result)) ? data.result : []
+
           this.staffTotal = (data && Number(data.total)) || 0
           const mapped = list.map(it => ({
             id: it._id,
@@ -171,7 +125,10 @@ export default {
         // noop
       }
     },
+
+    
     onScroll(e) {
+
       const el = e.target
       if (!el) return
       const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 8
@@ -182,37 +139,12 @@ export default {
       }
     }
   },
+
+
   mounted() {
-    // Observe parent width to adapt grid/container width responsively
-    const parent = this.$el && this.$el.parentElement
-    const applyWidth = () => {
-      const w = (parent && parent.clientWidth) || 0
-      // keep a small margin by capping to maxContentWidthPx when provided
-      this.containerMaxWidth = Math.max(0, Math.min(w, this.maxContentWidthPx || w))
-    }
-    applyWidth()
-    if (window && 'ResizeObserver' in window && parent) {
-      this.resizeObserver = new ResizeObserver(() => applyWidth())
-      this.resizeObserver.observe(parent)
-    } else {
-      // fallback: update on window resize
-      window.addEventListener('resize', applyWidth, { passive: true })
-      this.resizeObserver = {
-        disconnect: () => window.removeEventListener('resize', applyWidth)
-      }
-    }
-    // If fields/headers are not provided from parent, set sensible defaults matching API
-    if (!Array.isArray(this.headers) || this.headers.length === 0) {
-      this.headers = ['姓名', '设备编号', '岗位', '日均服务时间', '每周差评事件', '评分', '详情']
-    }
-    if (!Array.isArray(this.fields) || this.fields.length === 0) {
-      this.fields = ['name', 'device_number', 'postion', 'day_time', 'day_bad_count', 'score', 'detail']
-    }
     this.fetchStaff(true)
   },
-  beforeUnmount() {
-    try { this.resizeObserver && this.resizeObserver.disconnect && this.resizeObserver.disconnect() } catch (e) {}
-  }
+ 
 }
 </script>
 

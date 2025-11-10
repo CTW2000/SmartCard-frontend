@@ -13,10 +13,14 @@
       <!-- chart grid + lines overlay -->
       <svg class="absolute" :style="{ left: '51px', top: '117px' }" :viewBox="`0 0 ${W} ${H}`" :width="W" :height="H">
         <!-- gridlines: all dotted -->
+         
         <g stroke="rgba(17,24,39,0.6)" stroke-width="1" stroke-dasharray="2 4">
+          
           <line v-for="y in gridYsTop" :key="'g-'+y" :x1="0" :x2="W" :y1="y" :y2="y" />
           <line :x1="0" :x2="W" :y1="H" :y2="H" stroke-dasharray="2 4" />
         </g>
+
+
 
         <!-- smooth curves -->
         <path :d="smoothPath(dy)" fill="none" stroke="#083344" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
@@ -24,6 +28,8 @@
         <path :d="smoothPath(mt)" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
 
+
+      
       <!-- month labels -->
       <div class="left-[47px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Jan</div>
       <div class="left-[111px] top-[408px] absolute justify-start text-neutral-700 text-sm font-normal font-['Nunito']">Fab</div>
@@ -49,6 +55,7 @@
 </template>
 
 <script setup>
+
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 
 
@@ -71,15 +78,22 @@ const effectiveScale = computed(() =>
  props.scale : internalScale.value))
 
 let resizeObserver
+
 onMounted(() => {
   const update = () => {
     if (!containerEl.value) return
     if (props.scale != null) return
+
     const parent = containerEl.value.parentElement
+
     const cw = (parent && parent.clientWidth) || BASE_W
+
     const next = cw / BASE_W
+
     internalScale.value = Math.max(0.5, Math.min(2, next))
   }
+
+  
   resizeObserver = new ResizeObserver(update)
   if (containerEl.value) resizeObserver.observe(containerEl.value)
   update()
@@ -121,7 +135,7 @@ function smoothPath(arr) {
     const p1 = pts[i]
     const p2 = pts[i + 1]
     const p3 = pts[i + 2] || p2
-    const t = 0.48
+    const t = 1
     const cp1x = p1[0] + (p2[0] - p0[0]) * t / 6
     const cp1y = p1[1] + (p2[1] - p0[1]) * t / 6
     const cp2x = p2[0] - (p3[0] - p1[0]) * t / 6

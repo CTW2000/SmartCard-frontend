@@ -1,7 +1,13 @@
 <template>
-  <section class="relative min-h-[calc(100vh-64px)] bg-background">
+
+
+  <section class="relative min-h-[calc(100vh)] bg-background">
+
     <div class="max-w-[1600px] mx-auto px-8 py-6">
+      
+      
       <div class="m-0 mb-4">
+        
         <template v-if="isEditMode">
           <input
             v-model="organizeEditInput"
@@ -10,9 +16,11 @@
             placeholder="请输入组织名称并按回车"
           />
         </template>
+
         <template v-else-if="!isAddingOrganize && organizeName">
           <h1 class="m-0 text-[28px] font-extrabold tracking-[-0.02em] text-foreground">{{ organizeName }}</h1>
         </template>
+
         <template v-else-if="isAddingOrganize">
           <input
             v-model="organizeInput"
@@ -22,6 +30,7 @@
             @keyup.enter="submitOrganize"
           />
         </template>
+        
         <template v-else>
           <button
             type="button"
@@ -33,7 +42,10 @@
             <img :src="whiteCrossIcon" class="absolute left-1/2 top-1/2 h-[24px] w-[24px] -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 group-hover:scale-110" alt="添加组织名称" />
           </button>
         </template>
+
       </div>
+
+
 
       <!-- Group controls -->
       <div class="mb-4 flex items-center justify-between">
@@ -91,6 +103,8 @@
           </template>
         </div>
       </div>
+
+      
     <!-- Select Staff Panel -->
     <div v-if="showSelectStaffPanel" class="fixed inset-0 z-50 flex items-center justify-center">
       <div class="absolute inset-0 bg-black/30" @click="showSelectStaffPanel = false"></div>
@@ -131,7 +145,6 @@
       <div class="flex flex-wrap gap-5">
         <div v-for="(p, i) in (groups[activeGroupIndex]?.people || [])" :key="p.identifier || i" class="m-0">
           <PersonCard
-            :open="true"
             :name="p.name"
             :role="p.role"
             :identifier="p.identifier"
@@ -177,6 +190,10 @@
         </button>
       </div>
     </div>
+
+
+
+
     <div class="absolute right-6 top-6 flex items-center gap-3">
       <!-- Add staff button - only show in edit mode -->
       <button
@@ -207,7 +224,15 @@
         </template>
       </button>
     </div>
+
+
+    
   </section>
+
+
+
+
+
     <DeviceEditPanel
       v-if="showDevicePanel"
       :modelValue="selectedPerson"
@@ -254,13 +279,18 @@
 <script>
 import PersonCard from '../components/PersonCard.vue'
 import DeviceEditPanel from '../components/DeviceEditPanel.vue'
+
 import CircleIcon from '../../Resource/Staff/Circle.svg'
 import PencilIcon from '../../Resource/Staff/Pencil.svg'
 import BlackBG from '../../Resource/Staff/blackBG.svg'
 import WhiteCross from '../../Resource/Staff/whiteCross.svg'
 import CloseIcon from '../../Resource/Equipment/Close.svg'
+
+
 import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
+
+
 export default {
   name: 'EquipmentManager',
   components: { PersonCard, DeviceEditPanel },
@@ -324,6 +354,7 @@ export default {
         this.fetchOrganizeList(false, groupId, 1, this.devicePageSize)
       }
     },
+    
     startAddGroup() {
       this.isAddingGroup = true
     },

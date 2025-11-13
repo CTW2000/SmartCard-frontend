@@ -48,6 +48,7 @@ import { PATHS } from '../httpClient/paths'
 const emit = defineEmits(['close', 'select'])
 
 const staffList = ref([])
+
 const staffPage = ref(1)
 const staffPageSize = ref(10)
 const staffTotal = ref(null)
@@ -90,8 +91,6 @@ async function fetchStaffPage(page = staffPage.value, limit = staffPageSize.valu
     staffPageSize.value = limit
   } catch (e) {}
 }
-
-
 
 function prevStaffPage() {
   if (staffPage.value <= 1) return

@@ -162,12 +162,10 @@ const editData = reactive({
 })
 
 
-
 function onEditClick() {
   editData.device_name = props.device_name || ''
   showEditModal.value = true
 }
-
 
 async function onCloseClick() {
 
@@ -197,8 +195,6 @@ async function onCloseClick() {
   }
 }
 
-
-
 async function submitEditDevice() {
   
   const payload = {
@@ -224,7 +220,6 @@ async function submitEditDevice() {
   } catch (_) {}
 }
 
-
 function openSelectStaffPanel() {
   showSelectStaffPanel.value = true
 }
@@ -234,6 +229,9 @@ function onStaffSelected(item) {
   editData.staff_id = item.id || ''
   showSelectStaffPanel.value = false
 }
+
+
+
 </script>
 
 <style scoped>

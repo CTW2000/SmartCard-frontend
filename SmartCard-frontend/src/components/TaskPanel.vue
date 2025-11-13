@@ -20,7 +20,9 @@
     <div class="w-14 h-14 left-[233px] top-[341px] absolute bg-white rounded-full"></div>
     <img v-if="staffTaskAvatars[2]" class="w-14 h-14 left-[233px] top-[341px] absolute rounded-[36px] border border-neutral-200" :src="staffTaskAvatars[2]" />
     <img class="w-[14px] h-[14px] left-[72.94px] top-[311.94px] absolute" :src="warningIcon" alt="warning" />
-    <div class="left-[72px] top-[33px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">任务中心</div>
+    <div class="left-[45px] top-[33px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">任务中心</div>
+    
+    <img class="w-7 h-7 left-[170px] top-[35px] absolute object-contain rotate-180 cursor-pointer" :src="ArrowLeft" alt="arrow" @click="goToTasksCenter" />
   </div>
 </template>
 
@@ -29,13 +31,14 @@ import warningIcon from '../../Resource/Home/warningIcon.svg'
 import AvatarMan from '../../Resource/Staff/AvatarMan.svg'
 import AvatarMan1 from '../../Resource/Staff/AvatarMan1.svg'
 import AvatarWoman from '../../Resource/Staff/AvatarWoman.svg'
+import ArrowLeft from '../../Resource/Menu/ArrowLeft.svg'
 export default {
   name: 'TaskPanel',
   props: {
     tasks: { type: Array, default: () => [] }
   },
   data() {
-    return { warningIcon }
+    return { warningIcon, ArrowLeft }
   },
   computed: {
     topTask() {
@@ -54,6 +57,11 @@ export default {
       const n = Number(v)
       if (Number.isNaN(n)) return '-%'
       return `${Math.max(0, Math.min(100, Math.round(n)))}%`
+    },
+    goToTasksCenter() {
+      if (this.$router) {
+        this.$router.push({ name: 'TaskCenter' })
+      }
     }
   }
 }

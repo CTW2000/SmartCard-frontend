@@ -1,8 +1,6 @@
 <template>
 
   <div class="relative inline-block">
-
-
     <div class="relative rounded-[16px] bg-card border border-border p-5 w-[220px]" style="box-shadow: 0 8px 20px rgba(16,24,40,0.12)">
      
       <!-- Close button -->

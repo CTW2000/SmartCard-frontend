@@ -38,6 +38,16 @@ const routes = [
     component: () => import('../views/MenuDetail.vue'),
   },
   {
+    path: '/tasks',
+    name: 'SpecificTasks',
+    component: () => import('../views/SpecificTasks.vue'),
+  },
+  {
+    path: '/taskscenter',
+    name: 'TaskCenter',
+    component: () => import('../views/TaskCenter.vue'),
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue'),

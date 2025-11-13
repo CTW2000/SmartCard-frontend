@@ -79,6 +79,7 @@
 
       <!-- Active group's cards -->
       <div class="flex flex-wrap gap-5">
+        
         <div v-for="(p, i) in (fetchData.groups[activeGroupIndex]?.people || [])" :key="p.device_id" class="m-0">
           <PersonCard
             :staff_name="p.staff_name"
@@ -92,6 +93,7 @@
             @updated="onCardUpdated"
           />
         </div>
+        
       </div>
       
 

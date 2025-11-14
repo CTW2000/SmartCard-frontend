@@ -260,36 +260,26 @@ const showSelectStaffPanel = ref(false)
 
 onMounted(async () => {
   try {
-    // Check if now_organize exists in localStorage
-    //localStorage.removeItem('now_organize')
-    
-    const nowOrganizeStr = localStorage.getItem('now_organize')
-    
-    if (!nowOrganizeStr) {
- 
-      const payload = {
-          type: 'add',
-          data: JSON.stringify({
-            organize_name: "",
-            type:"add",
-    })
-  }
-      try {
-        const res = await postForm(PATHS.DEVICE_ORGANIZE_EDIT, payload)
-        if (res && res.status >= 200 && res.status < 300) {
-          console.log('[EquipmentManager] Organize added successfully:', res.data)
-          // After adding, fetch the organize list
-          await fetchOrganizeList()
-        } else {
-          console.error('[EquipmentManager] Failed to add organize')
-        }
-      } catch (e) {
-        console.error('[EquipmentManager] Error adding organize:', e)
-      }
-    } else {
-      // If it exists, just fetch the organize list
-      await fetchOrganizeList()
+    const payload = {
+      type: 'add',
+      data: JSON.stringify({
+        organize_name: "",
+        type:"add",
+      })
     }
+    try {
+      const res = await postForm(PATHS.DEVICE_ORGANIZE_EDIT, payload)
+      if (res && res.status >= 200 && res.status < 300) {
+        console.log('[EquipmentManager] Organize added successfully:', res.data)
+      } else {
+        console.error('[EquipmentManager] Failed to add organize')
+      }
+    } catch (e) {
+      console.error('[EquipmentManager] Error adding organize:', e)
+    }
+    
+    // Always fetch the organize list after adding
+    await fetchOrganizeList()
   } catch (_) {}
 })
 
@@ -379,7 +369,6 @@ async function deleteGroup(groupId, idx) {
     alert('删除失败')
   }
 }
-
 
 function onCardUpdated() {
   const currentGroup = fetchData.groups[activeGroupIndex.value]
@@ -588,6 +577,7 @@ async function fetchOrganizeList(page = staffPage.value, limit = staffPageSize.v
       if (typeof detectedDeviceTotal === 'number' && detectedDeviceTotal >= 0) {
         staffTotal.value = detectedDeviceTotal
       }
+      
       staffPage.value = page != null ? page : staffPage.value
 
    

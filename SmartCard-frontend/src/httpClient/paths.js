@@ -18,6 +18,8 @@ export const PATHS = {
   DEVICE_GROUP_EDIT: '/api/device/group/edit',
   DEVICE_ORGANIZE_LIST: '/api/device/organize/list',
   DEVICE_EDIT: '/api/device/edit',
+  TASK_LIST: '/api/task/list',
+  TASK_TYPE_LIST: '/api/task/type/list',
 };
 
 

@@ -6,8 +6,6 @@ const routes = [
     redirect: '/login',
   },
   {
-  },
-  {
     path: '/home',
     name: 'Home',
     component: () => import('../views/Home.vue'),
@@ -38,9 +36,24 @@ const routes = [
     component: () => import('../views/MenuDetail.vue'),
   },
   {
-    path: '/tasks',
+    path: '/tasks/:task_id',
     name: 'SpecificTasks',
     component: () => import('../views/SpecificTasks.vue'),
+    props: route => {
+      let taskInfo = {}
+      const raw = typeof route.query.taskInfo === 'string' ? route.query.taskInfo : ''
+      if (raw) {
+        try {
+          taskInfo = JSON.parse(decodeURIComponent(raw)) || {}
+        } catch (error) {
+          console.warn('[Router] Failed to parse task info from query', error)
+        }
+      }
+      return {
+        task_id: route.params.task_id || '',
+        taskInfo
+      }
+    },
   },
   {
     path: '/taskscenter',

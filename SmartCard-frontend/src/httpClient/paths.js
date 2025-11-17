@@ -1,5 +1,6 @@
 export const BASE_URL = 'http://192.168.0.135:3000';
-
+// https://117.148.167.102:3000
+// https://wanwu.chat/
 export const PATHS = {
   REGISTER: '/api/users/register',
   LOGIN: '/api/users/login',
@@ -20,6 +21,7 @@ export const PATHS = {
   DEVICE_EDIT: '/api/device/edit',
   TASK_LIST: '/api/task/list',
   TASK_TYPE_LIST: '/api/task/type/list',
+  TASK_ADD: '/api/task/add',
 };
 
 

@@ -38,7 +38,6 @@
 export default {
   name: 'SmartDialoge',
 }
-export {};
 </script>
 
 <style scoped>

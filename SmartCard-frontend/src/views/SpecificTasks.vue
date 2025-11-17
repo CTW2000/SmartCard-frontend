@@ -23,11 +23,16 @@
             
             <div class="h-0 left-[40px] right-[40px] top-[80px] absolute outline outline-2 outline-offset-[-1px] outline-zinc-300"></div>
 
-
-
-            
-            <NewDishRecommend />
-
+            <NewDishRecommend  
+              :dish_name="taskInfo.dish_name"
+              :task_type="taskInfo.task_type"
+              :task_belong="taskInfo.task_belong"
+              :task_status="taskInfo.task_status"
+              :task_endtime="taskInfo.task_endtime"
+              :task_progress="taskInfo.task_progress"
+              :content="taskInfo.content"
+              :createdAt="taskInfo.createdAt"
+            />
             <StaffTaskComplete />
 
         </div>
@@ -35,25 +40,35 @@
 </template>
 
 <script setup>
+
 import { useRouter } from 'vue-router'
 import arrowLeft from '../../Resource/Menu/ArrowLeft.svg'
 import NewDishRecommend from '../components/TaskCenterComponents/NewDishRecommend.vue'
 import StaffTaskComplete from '../components/TaskCenterComponents/StaffTaskComplete.vue'
 
-
-
-
-
+const props = defineProps({
+  task_id: { type: String, default: '' },
+  taskInfo: {
+    type: Object,
+    default: () => ({
+      task_id: '',
+      task_type: '',
+      task_belong: '',
+      task_status: '',
+      task_endtime: '',
+      task_progress: '',
+      dish_name: '',
+      content: '',
+      createdAt: ''
+    })
+  }
+})
 
 const router = useRouter()
 const goToTaskCenter = () => {
   router.push({ name: 'TaskCenter' })
 }
-
-
 </script>
 
 <style scoped>
 </style>
-
-

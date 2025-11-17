@@ -163,7 +163,6 @@ export default {
     window.removeEventListener('resize', this.updateScale);
   },
 }
-export {};
 </script>
 
 

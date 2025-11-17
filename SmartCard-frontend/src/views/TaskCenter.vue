@@ -67,8 +67,8 @@
 
 
            <div class="left-[40px] right-[40px] top-[220px] absolute flex flex-wrap gap-8">
-                <TaskCard 
-                  v-for="task in fetchTaskData.tasks" 
+                <TaskCard
+                  v-for="task in fetchTaskData.tasks"
                   :key="task.task_id"
                   :task_id="task.task_id"
                   :task_type="task.task_type"
@@ -77,9 +77,13 @@
                   :task_endtime="task.task_endtime"
                   :task_progress="task.task_progress"
                   :dish_name="task.dish_name"
+                  @goToDetail="handleGoToDetail"
                 />
             </div>
 
+
+
+            
             <!-- Task pagination controls -->
             <div class="left-[40px] right-[40px] bottom-[40px] absolute flex items-center justify-center gap-4">
               <button
@@ -106,6 +110,8 @@
             <CreateNewTask
               v-if="showCreateTaskPanel"
               @close="showCreateTaskPanel = false"
+              @submit="handleTaskSubmit"
+              :task_type="fetchTaskData.taskTypes"
             />
         </div>
      </section>
@@ -189,6 +195,8 @@ async function fetchTaskList(page = taskPage.value, size = taskPageSize.value, s
             task_endtime: task.end_time || '',
             task_progress: task.progress || '',
             dish_name: task.dish_name || '',
+            content: task.content || '',
+            createdAt: task.createdAt || '',
           }
           fetchTaskData.tasks.push(taskInfo)
         }
@@ -232,10 +240,44 @@ function nextTaskPage() {
   fetchTaskList(next, taskPageSize.value, selectedStatus.value, selectedBelong.value)
 }
 
+function handleTaskSubmit() {
+  fetchTaskList(taskPage.value, taskPageSize.value, selectedStatus.value, selectedBelong.value)
+  showCreateTaskPanel.value = false
+}
+
+
+
+function handleGoToDetail(taskId) {
+  if (!taskId) return
+  // Find the task data from current list
+  const taskData = Array.isArray(fetchTaskData.tasks)
+    ? fetchTaskData.tasks.find(t => t.task_id === taskId)
+    : null
+
+  const query = {}
+  
+  if (taskData) {
+    try {
+      query.taskInfo = encodeURIComponent(JSON.stringify(taskData))
+    } catch (error) {
+      console.warn('[TaskCenter] Failed to serialize task info', error)
+    }
+  }
+
+  router.push({
+    name: 'SpecificTasks',
+    params: { task_id: taskId },
+    query
+  })
+}
+
+
+
+
+
 onMounted(() => {
  fetchTaskList(1, taskPageSize.value, selectedStatus.value, selectedBelong.value)
 })
-
 const router = useRouter()
 const goToHome = () => {
   router.push({ name: 'Home' })

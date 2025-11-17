@@ -8,21 +8,40 @@
       <div class="relative h-[444.75px] w-[605.25px]">
         <div class="absolute left-0 top-0 h-[389.25px] w-[605.25px] rounded-[31px] bg-white"></div>
         <div class="absolute left-[45px] top-[31.5px] justify-start text-[18px] font-medium text-neutral-800 font-['Alibaba_PuHuiTi']">新建任务</div>
+        <button
+          type="button"
+          class="absolute right-[45px] top-[22px] h-[36px] px-6 rounded-[18px] bg-neutral-900 text-white text-[16px] font-medium font-['Alibaba_PuHuiTi'] shadow-[0px_2px_4px_rgba(0,0,0,0.1)] hover:bg-neutral-800 transition-colors"
+          @click="handleSubmit"
+        >
+          提交
+        </button>
         <div class="absolute left-[45px] top-[76.5px] h-[1.5px] w-[516px] rounded-[73px] bg-gray-200"></div>
         <div class="absolute left-[45px] top-[195px] justify-start text-[18px] font-normal text-neutral-950 font-['Alibaba_PuHuiTi']">任务描述</div>
         <div class="absolute left-[45px] top-[110.25px] justify-start text-[18px] font-normal text-neutral-950 font-['Alibaba_PuHuiTi']">任务类型</div>
         <div class="absolute left-[319.5px] top-[110.25px] justify-start text-[18px] font-normal text-neutral-950 font-['Alibaba_PuHuiTi']">菜品名字</div>
         <div class="absolute left-[45.75px] top-[321.75px] justify-start text-[18px] font-normal text-neutral-950 font-['Alibaba_PuHuiTi']">截止时间</div>
+        
         <div class="absolute left-[143.25px] top-[179.25px] h-[108px] w-[417.75px] rounded-xl border border-zinc-300 shadow-[0px_1px_2px_0px_rgba(150,150,150,0.25)]"></div>
-        <div class="absolute left-[252px] top-[321.75px] h-[36px] w-[108px] rounded-xl border border-neutral-300 bg-slate-50"></div>
-        <div class="absolute left-[273.75px] top-[329.25px] justify-start text-[15px] font-normal text-zinc-800 font-['Alibaba_PuHuiTi']">选择日期</div>
-        <div class="absolute left-[163.5px] top-[197.25px] justify-start text-[15px] font-normal text-zinc-800 opacity-50 font-['Alibaba_PuHuiTi']">请输入您想要创建的任务内容</div>
-        <div class="absolute left-[143.25px] top-[93.75px] h-[60px] w-[156px] rounded-2xl border border-stone-300 bg-white"></div>
         
+        <div
+          class="absolute left-[252px] top-[321.75px] h-[36px] w-[176px] rounded-xl border border-neutral-300 bg-slate-50 cursor-pointer flex items-center justify-center"
+          @click="toggleDatePanel"
+        >
+          <span class="text-[15px] font-normal text-zinc-800 font-['Alibaba_PuHuiTi']">
+            {{ formattedEndTime }}
+          </span>
+        </div>
+
         
-       
-        <div class="absolute left-[168px] top-[110.25px] flex items-center gap-2">
-          <span class="text-[18px] font-normal text-zinc-800 font-['Alibaba_PuHuiTi']">{{ editData.task_type || '菜品推广' }}</span>
+        <textarea
+          v-model="editData.content"
+          class="absolute left-[143.25px] top-[179.25px] h-[108px] w-[417.75px] rounded-xl border border-zinc-300 bg-transparent px-5 py-4 text-[15px] font-normal text-zinc-800 font-['Alibaba_PuHuiTi'] resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 placeholder:text-zinc-400 placeholder:opacity-70"
+          placeholder="请输入您想要创建的任务内容"
+        ></textarea>
+        <div class="absolute left-[143.25px] top-[93.75px] h-[60px] w-[156px] rounded-2xl border border-stone-300 bg-white flex items-center justify-between px-4">
+          <span class="text-[18px] font-normal text-zinc-800 font-['Alibaba_PuHuiTi']">
+            {{ editData.task_type_label || '菜品推广' }}
+          </span>
           <img
             :src="triangleIcon"
             alt=""
@@ -90,7 +109,33 @@
           </div>
         </div>
 
-
+        <!-- Date Panel -->
+        <div v-if="showDatePanel" class="absolute left-[45px] top-[360px] w-[516px] z-20">
+          <div class="w-full bg-white rounded-2xl border border-stone-300 shadow-[0px_4px_8px_rgba(0,0,0,0.05)] px-6 py-5">
+            <div class="text-[18px] font-medium text-neutral-800 font-['Alibaba_PuHuiTi'] mb-4">选择截止时间</div>
+            <input
+              type="datetime-local"
+              v-model="datePanelInput"
+              class="w-full rounded-xl border border-stone-300 px-4 py-3 text-[16px] font-normal text-neutral-800 font-['Alibaba_PuHuiTi'] focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+            <div class="mt-5 flex justify-end gap-3">
+              <button
+                type="button"
+                class="px-4 py-2 rounded-xl border border-stone-300 text-neutral-600 text-[15px] font-['Alibaba_PuHuiTi'] hover:bg-stone-50"
+                @click="cancelDateSelection"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                class="px-4 py-2 rounded-xl bg-neutral-800 text-white text-[15px] font-['Alibaba_PuHuiTi'] hover:bg-neutral-700"
+                @click="confirmDateSelection"
+              >
+                确认
+              </button>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 </template>
@@ -102,7 +147,7 @@ import { reactive, ref, computed } from 'vue'
 import { postForm } from '../../httpClient/client'
 import { PATHS } from '../../httpClient/paths'
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'submit'])
 
 const dishPage = ref(1)
 const dishPageSize = ref(10)
@@ -122,8 +167,9 @@ const fetchData = reactive({
 const editData = reactive({
      dish_id:'',
      dish_name:'',
+     task_type_label:'',
      task_type_value:'',
-     context:'',
+     content:'',
      end_time:''
 })
 
@@ -131,6 +177,22 @@ const showDishPanel = ref(false)
 const showTaskTypePanel = ref(false)
 
 
+const showDatePanel = ref(false)
+const datePanelInput = ref('')
+
+const formattedEndTime = computed(() => {
+  if (!editData.end_time) return '选择日期'
+  const timestamp = Number(editData.end_time)
+  if (Number.isNaN(timestamp)) return '选择日期'
+  const date = new Date(timestamp)
+  if (Number.isNaN(date.getTime())) return '选择日期'
+  const yyyy = date.getFullYear()
+  const mm = String(date.getMonth() + 1).padStart(2, '0')
+  const dd = String(date.getDate()).padStart(2, '0')
+  const hh = String(date.getHours()).padStart(2, '0')
+  const min = String(date.getMinutes()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}`
+})
 
 function toggleDishPanel() {
   showDishPanel.value = !showDishPanel.value
@@ -146,9 +208,7 @@ function toggleDishPanel() {
 
 function toggleTaskTypePanel() {
   showTaskTypePanel.value = !showTaskTypePanel.value
-  if (showTaskTypePanel.value) {
-    showDishPanel.value = false
-  }
+  
 }
 
 async function fetchTheDishes() {
@@ -233,10 +293,83 @@ function handleDishSearch() {
 
 function handleTaskTypeSelect(task) {
   editData.task_type_value = task.value
+  editData.task_type_label=task.label
   showTaskTypePanel.value = false
 }
 
 
 
-</script>
 
+//time choose control panel
+
+function toggleDatePanel() {
+  showDatePanel.value = !showDatePanel.value
+  if (showDatePanel.value) {
+    showDishPanel.value = false
+    showTaskTypePanel.value = false
+    const baseTimestamp = (!editData.end_time || Number.isNaN(Number(editData.end_time)))
+      ? Date.now()
+      : Number(editData.end_time)
+    datePanelInput.value = toDateInputValue(baseTimestamp)
+  }
+}
+
+function toDateInputValue(timestamp) {
+  if (!timestamp) return ''
+  const numeric = Number(timestamp)
+  if (Number.isNaN(numeric)) return ''
+  const date = new Date(numeric)
+  if (Number.isNaN(date.getTime())) return ''
+  const offset = date.getTimezoneOffset() * 60000
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16)
+}
+
+function confirmDateSelection() {
+  if (!datePanelInput.value) {
+    editData.end_time = ''
+  } else {
+    const timestamp = new Date(datePanelInput.value).getTime()
+    if (!Number.isNaN(timestamp)) {
+      editData.end_time = String(timestamp)
+    }
+  }
+  showDatePanel.value = false
+}
+
+function cancelDateSelection() {
+  showDatePanel.value = false
+  datePanelInput.value = ''
+}
+
+async function handleSubmit() {
+  const dishName = (editData.dish_name || '').trim()
+  const matchedDish = fetchData.dish_name.find(dish => dish.name === dishName)
+
+  const payload = {
+    dish_id: matchedDish?.id || '',
+    dish_name: dishName,
+    label_value: editData.task_type_value || '',
+    content: (editData.content || '').trim(),
+    end_time: editData.end_time || ''
+  }
+
+  if (!payload.dish_id || !payload.dish_name || !payload.label_value || !payload.content || !payload.end_time) {
+    console.warn('[CreateNewTask] Missing required fields, aborting submit', payload)
+    return
+  }
+
+  try {
+    const response = await postForm(PATHS.TASK_ADD, payload)
+    if (response && response.status >= 200 && response.status < 300) {
+      emit('submit')
+    }
+  } catch (error) {
+    console.error('[CreateNewTask] Failed to submit task:', error)
+  }
+}
+
+
+
+
+
+</script>

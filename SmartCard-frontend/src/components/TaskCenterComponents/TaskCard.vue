@@ -9,9 +9,14 @@
     <div class="left-[48px] top-[137px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">昨日完成情况 {{ task_progress || '0' }}%</div>
     <div class="w-[398px] h-[24px] left-[47px] top-[107px] absolute bg-slate-100 rounded-[12px]"></div>
     <div class="h-[24px] left-[47px] top-[107px] absolute bg-slate-900 rounded-tl-[12px] rounded-bl-[12px]" :style="{ width: progressWidth }"></div>
-    <div class="w-[108px] h-[48px] left-[228px] top-[176px] absolute bg-slate-100 rounded-[9px] shadow-[0px_4px_4px_0px_rgba(168,168,168,0.25)]"></div>
+    <button
+      type="button"
+      class="w-[108px] h-[48px] left-[228px] top-[176px] absolute bg-slate-100 rounded-[9px] shadow-[0px_4px_4px_0px_rgba(168,168,168,0.25)] flex items-center justify-center text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi'] hover:bg-slate-200 transition-colors"
+      @click="goToTaskDetail"
+    >
+      查看详情
+    </button>
     <div class="w-[108px] h-[48px] left-[341px] top-[176px] absolute bg-slate-900 rounded-[9px] shadow-[0px_4px_4px_0px_rgba(168,168,168,0.25)]"></div>
-    <div class="left-[244px] top-[187px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']">查看详情</div>
     <div class="left-[356px] top-[187px] absolute justify-start text-white text-[18px] font-normal font-['Alibaba_PuHuiTi']">任务作废</div>
   </div>
 </div>
@@ -29,6 +34,8 @@ const props = defineProps({
   task_progress: { type: String, default: '' },
   dish_name: { type: String, default: '' },
 })
+
+const emit = defineEmits(['goToDetail'])
 
 // Task name: dish_name + task_type
 const taskName = computed(() => {
@@ -85,6 +92,10 @@ const progressWidth = computed(() => {
   const width = Math.min(Math.max(progress, 0), 100) / 100 * maxWidth
   return `${width}px`
 })
+
+function goToTaskDetail() {
+  emit('goToDetail', props.task_id)
+}
 </script>
 
 <style scoped>

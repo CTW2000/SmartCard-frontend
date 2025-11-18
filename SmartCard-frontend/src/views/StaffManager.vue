@@ -5,9 +5,9 @@
 
       <!-- Top summary cards (3-column responsive, gap ≈ 12px) -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-        <StatCard title="本周店长评分" :value="managerScoreDisplay" metaLabel="同比上周增长" :metaValue="formatPercent(managerScoreRatio)" :trend="managerTrend" />
-        <StatCard title="员工服务评分" :value="staffScoreDisplay" metaLabel="同比上周增长" :metaValue="formatPercent(staffScoreRatio)" :trend="staffTrend" />
-        <StatCard title="员工差评原因TOP榜单" :items="badReasonItems" />
+        <ScoreCard title="本周店长评分" :value="managerScoreDisplay" metaLabel="同比上周增长" :metaValue="formatPercent(managerScoreRatio)" :trend="managerTrend" />
+        <ScoreCard title="员工服务评分" :value="staffScoreDisplay" metaLabel="同比上周增长" :metaValue="formatPercent(staffScoreRatio)" :trend="staffTrend" />
+        <ScoreCard title="员工差评原因TOP榜单" :items="badReasonItems" />
       </div>
 
       <!-- Form section -->
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import StatCard from '../components/StatCard.vue'
+import ScoreCard from '../components/General/ScoreCard.vue'
 import StaffForm from '../components/StaffForm.vue'
 import StaffReport from '../components/staffReport.vue'
 import { postForm } from '../httpClient/client'
@@ -35,7 +35,7 @@ import { PATHS } from '../httpClient/paths'
 
 export default {
   name: 'StaffManagement',
-  components: { StatCard, StaffForm, StaffReport },
+  components: { ScoreCard, StaffForm, StaffReport },
   data() {
     return {
       managerScore: 0,

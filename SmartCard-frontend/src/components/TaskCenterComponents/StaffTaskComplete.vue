@@ -13,71 +13,206 @@
 
 
     <div class="right-[440px] top-[182px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">完成率</div>
-    <div class="w-[84px] h-[44px] right-[263px] top-[95px] absolute bg-white rounded-2xl border border-stone-300"></div>
-    <div class="w-[84px] h-[44px] right-[85px] top-[95px] absolute bg-white rounded-2xl border border-stone-300"></div>
-
-    <div class="right-[276px] top-[103px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']">上一页</div>
-    <div class="right-[100px] top-[103px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']">下一页</div>
+    
+    <!-- Pagination buttons -->
+    <button
+      type="button"
+      class="w-[84px] h-[44px] right-[263px] top-[95px] absolute bg-white rounded-2xl border border-stone-300 text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi'] hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      :disabled="staffPage <= 1"
+      @click="prevStaffPage"
+    >
+      上一页
+    </button>
+    <button
+      type="button"
+      class="w-[84px] h-[44px] right-[85px] top-[95px] absolute bg-white rounded-2xl border border-stone-300 text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi'] hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      :disabled="staffTotal != null && staffPage >= Math.ceil(staffTotal / staffPageSize)"
+      @click="nextStaffPage"
+    >
+      下一页
+    </button>
     <div class="w-[156px] h-[60px] left-[89px] top-[86px] absolute bg-white rounded-2xl border border-stone-300"></div>
 
     <div class="left-[113px] top-[103px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']">全部</div>
     <div class="w-[84px] h-8 left-[269px] top-[100px] absolute bg-indigo-100 rounded-[15px]"></div>
-    <div class="left-[287px] top-[105px] absolute justify-start text-neutral-600 text-[15px] font-normal font-['Alibaba_PuHuiTi']">总计4人</div>
-    <div class="right-[194px] top-[105px] absolute justify-start text-neutral-600 text-[15px] font-normal font-['Alibaba_PuHuiTi']">第1/1页</div>
-    <div class="h-0 left-[40px] right-[40px] top-[310px] absolute outline outline-1 outline-offset-[-0.50px] outline-gray-200"></div>
-    <div class="h-0 left-[40px] right-[40px] top-[395px] absolute outline outline-1 outline-offset-[-0.50px] outline-gray-200"></div>
-    <div class="h-0 left-[40px] right-[40px] top-[479px] absolute outline outline-1 outline-offset-[-0.50px] outline-gray-200"></div>
+    <div class="left-[287px] top-[105px] absolute justify-start text-neutral-600 text-[15px] font-normal font-['Alibaba_PuHuiTi']">
+      总计{{ staffTotal != null ? staffTotal : 0 }}人
+    </div>
+    <div class="right-[194px] top-[105px] absolute justify-start text-neutral-600 text-[15px] font-normal font-['Alibaba_PuHuiTi']">
+      第{{ staffPage }}/{{ staffTotal != null && staffPageSize > 0 ? Math.max(1, Math.ceil(staffTotal / staffPageSize)) : 1 }}页
+    </div>
+    <!-- Dynamic separator lines -->
+    <template v-for="(item, index) in staffList" :key="'separator-' + index">
+      <div 
+        v-if="index > 0"
+        class="h-0 left-[40px] right-[40px] absolute outline outline-1 outline-offset-[-0.50px] outline-gray-200"
+        :style="{ top: (310 + (index - 1) * 85) + 'px' }"
+      ></div>
+    </template>
 
-    
-    <div class="w-12 h-12 left-[53px] top-[242px] absolute bg-slate-200 rounded-full"></div>
-    <div class="left-[62px] top-[255px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']">孙七</div>
-    <div class="w-12 h-12 left-[53px] top-[326px] absolute bg-slate-200 rounded-full"></div>
-    <div class="left-[62px] top-[340px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']">张三</div>
-    <div class="w-12 h-12 left-[53px] top-[411px] absolute bg-slate-200 rounded-full"></div>
-    <div class="left-[62px] top-[425px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']">李四</div>
-    <div class="w-12 h-12 left-[53px] top-[496px] absolute bg-slate-200 rounded-full"></div>
-    <div class="left-[62px] top-[509px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']">赵六</div>
+    <!-- Dynamic staff list -->
+    <template v-for="(item, index) in staffList" :key="'staff-' + (item._id || index)">
+      <!-- Avatar -->
+      <div 
+        class="w-12 h-12 left-[53px] absolute bg-slate-200 rounded-full"
+        :style="{ top: (214 + 28 + 85 * index) + 'px' }"
+      >
+        <img 
+          v-if="item.staff_id?.avatar" 
+          :src="item.staff_id.avatar" 
+          :alt="item.staff_id?.name || ''"
+          class="w-full h-full rounded-full object-cover"
+        />
+      </div>
+      
+      <!-- Staff name (small) -->
+      <div 
+        class="left-[62px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']"
+        :style="{ top: (214 + 41 + 85 * index) + 'px' }"
+      >
+        {{ item.staff_id?.name || '未知' }}
+      </div>
 
-    
-    <div class="left-[119px] top-[241px] absolute justify-start text-zinc-800 text-[22.5px] font-normal font-['Alibaba_PuHuiTi'] tracking-wider">1.孙七</div>
-    <div class="left-[119px] top-[326px] absolute justify-start text-zinc-800 text-[22.5px] font-normal font-['Alibaba_PuHuiTi'] tracking-wider">2.张三</div>
-    <div class="left-[119px] top-[410px] absolute justify-start text-zinc-800 text-[22.5px] font-normal font-['Alibaba_PuHuiTi'] tracking-wider">3.李四</div>
-    <div class="left-[119px] top-[495px] absolute justify-start text-zinc-800 text-[22.5px] font-normal font-['Alibaba_PuHuiTi'] tracking-wider">4.赵六</div>
-    <div class="left-[122px] top-[269px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">55/80桌</div>
-    <div class="left-[122px] top-[354px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">40/60桌</div>
-    <div class="left-[122px] top-[439px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">30/50桌</div>
-    <div class="left-[122px] top-[524px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">30/50桌</div>
-    
-    <div class="right-[60px] top-[251px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">60%</div>
-    <div class="w-72 h-6 right-[200px] top-[252px] absolute bg-slate-100 rounded-2xl"></div>
-    <div class="w-48 h-6 right-[300px] top-[252px] absolute bg-slate-900 rounded-tl-2xl rounded-bl-2xl"></div>
-    <div class="w-[84px] h-8 right-[100px] top-[248px] absolute bg-rose-100 rounded-[15px]"></div>
-    <div class="right-[121px] top-[254px] absolute justify-start text-rose-700 text-[15px] font-normal font-['Alibaba_PuHuiTi']">未达标</div>
+      <!-- Rank and name (large) -->
+      <div 
+        class="left-[119px] absolute justify-start text-zinc-800 text-[22.5px] font-normal font-['Alibaba_PuHuiTi'] tracking-wider"
+        :style="{ top: (214 + 27 + 85 * index) + 'px' }"
+      >
+        {{ (staffPage - 1) * staffPageSize + index + 1 }}.{{ item.staff_id?.name || '未知' }}
+      </div>
 
-    <div class="right-[60px] top-[336px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">60%</div>
-    <div class="w-72 h-6 right-[200px] top-[337px] absolute bg-slate-100 rounded-2xl"></div>
-    <div class="w-48 h-6 right-[300px] top-[337px] absolute bg-slate-900 rounded-tl-2xl rounded-bl-2xl"></div>
-    <div class="w-[84px] h-8 right-[100px] top-[333px] absolute bg-rose-100 rounded-[15px]"></div>
-    <div class="right-[121px] top-[338px] absolute justify-start text-rose-700 text-[15px] font-normal font-['Alibaba_PuHuiTi']">未达标</div>
+      <!-- Progress percentage -->
+      <div 
+        class="right-[60px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']"
+        :style="{ top: (214 + 37 + 85 * index) + 'px' }"
+      >
+        {{ item.progress || 0 }}%
+      </div>
 
-    <div class="right-[60px] top-[421px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">60%</div>
-    <div class="w-72 h-6 right-[200px] top-[422px] absolute bg-slate-100 rounded-2xl"></div>
-    <div class="w-48 h-6 right-[300px] top-[422px] absolute bg-slate-900 rounded-tl-2xl rounded-bl-2xl"></div>
-    <div class="w-[84px] h-8 right-[100px] top-[418px] absolute bg-rose-100 rounded-[15px]"></div>
-    <div class="right-[121px] top-[424px] absolute justify-start text-rose-700 text-[15px] font-normal font-['Alibaba_PuHuiTi']">未达标</div>
+      <!-- Progress bar background -->
+      <div 
+        class="w-72 h-6 right-[200px] absolute bg-slate-100 rounded-2xl"
+        :style="{ top: (214 + 38 + 85 * index) + 'px' }"
+      ></div>
 
-    <div class="right-[60px] top-[506px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">60%</div>
-    <div class="w-72 h-6 right-[200px] top-[506px] absolute bg-slate-100 rounded-2xl"></div>
-    <div class="w-48 h-6 right-[300px] top-[506px] absolute bg-slate-900 rounded-tl-2xl rounded-bl-2xl"></div>
-    <div class="w-[84px] h-8 right-[100px] top-[503px] absolute bg-rose-100 rounded-[15px]"></div>
-    <div class="right-[121px] top-[508px] absolute justify-start text-rose-700 text-[15px] font-normal font-['Alibaba_PuHuiTi']">未达标</div>
+      <!-- Progress bar fill -->
+      <div 
+        class="h-6 right-[300px] absolute bg-slate-900 rounded-tl-2xl rounded-bl-2xl"
+        :style="{ 
+          top: (214 + 38 + 85 * index) + 'px',
+          width: Math.min(100, Math.max(0, item.progress || 0)) * 2.88 + 'px'
+        }"
+      ></div>
+
+      <!-- Status badge -->
+      <div 
+        class="w-[84px] h-8 right-[100px] absolute rounded-[15px]"
+        :class="getStatusInfo(item.status).badgeClass"
+        :style="{ top: (214 + 34 + 85 * index) + 'px' }"
+      ></div>
+      <div 
+        class="right-[121px] absolute justify-start text-[15px] font-normal font-['Alibaba_PuHuiTi']"
+        :class="getStatusInfo(item.status).textClass"
+        :style="{ top: (214 + 40 + 85 * index) + 'px' }"
+      >
+        {{ getStatusInfo(item.status).text }}
+      </div>
+    </template>
 </div>
 </template>
 
 
 <script setup>
+
+import { ref, onMounted, reactive } from 'vue'
+import { postForm } from '../../httpClient/client'
+import { PATHS } from '../../httpClient/paths'
+
+const props = defineProps({
+  task_id: { type: String, default: '' }
+})
+
+const staffPage = ref(1)
+const staffPageSize = ref(6)
+const staffTotal = ref(null)
+
+const staffList = ref([])
+
+async function fetchTaskList(page = staffPage.value, size = staffPageSize.value) {
+  try {
+    const payload = {
+      page: String(page),
+      size: String(size),
+      task_id: props.task_id,
+      gruop_id: ''
+    }
+    const res = await postForm(PATHS.TASK_INFO, payload)
+
+    if (res && res.status >= 200 && res.status < 300) {
+      const responseData = res.data || {}
+      const data = responseData.data || {}
+      const infoList = Array.isArray(data.task_info_list) ? data.task_info_list : []
+
+      // Store the full task info objects
+      staffList.value = infoList.map(item => ({
+        _id: item?._id || null,
+        staff_id: item?.staff_id || null,
+        progress: typeof item?.progress === 'number' ? item.progress : 0,
+        status: typeof item?.status === 'number' ? item.status : 0
+      }))
+
+      const total = typeof data.total === 'number' ? data.total : null
+      staffTotal.value = total
+      staffPage.value = page != null ? page : staffPage.value
+    }
+  } catch (error) {
+    console.error('[StaffTaskComplete] Failed to fetch task info:', error)
+  }
+}
+
+function getStatusInfo(status) {
+  // Status: 0 = 未达标 (not meeting standard), 1 = 达标 (meeting standard), etc.
+  if (status === 0) {
+    return {
+      text: '未达标',
+      badgeClass: 'bg-rose-100',
+      textClass: 'text-rose-700'
+    }
+  }
+  if (status === 1) {
+    return {
+      text: '达标',
+      badgeClass: 'bg-green-100',
+      textClass: 'text-green-700'
+    }
+  }
+  return {
+    text: '未达标',
+    badgeClass: 'bg-rose-100',
+    textClass: 'text-rose-700'
+  }
+}
+
+function prevStaffPage() {
+  if (staffPage.value <= 1) return
+  const prev = Math.max(1, staffPage.value - 1)
+  fetchTaskList(prev, staffPageSize.value)
+}
+
+function nextStaffPage() {
+  const totalPages = staffTotal.value != null && staffPageSize.value > 0 ? Math.max(1, Math.ceil(staffTotal.value / staffPageSize.value)) : null
+  if (totalPages != null && staffPage.value >= totalPages) return
+  const next = staffPage.value + 1
+  fetchTaskList(next, staffPageSize.value)
+}
+
+onMounted(async () => {
+  await fetchTaskList(staffPage.value, staffPageSize.value)
+})
+
 </script>
 
 <style scoped>
 </style>
+
 

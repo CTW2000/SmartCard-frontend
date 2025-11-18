@@ -22,6 +22,7 @@ export const PATHS = {
   TASK_LIST: '/api/task/list',
   TASK_TYPE_LIST: '/api/task/type/list',
   TASK_ADD: '/api/task/add',
+  TASK_INFO: '/api/task/info',
 };
 
 

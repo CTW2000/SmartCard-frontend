@@ -19,8 +19,6 @@
             </div>
 
 
-
-            
             <div class="h-0 left-[40px] right-[40px] top-[80px] absolute outline outline-2 outline-offset-[-1px] outline-zinc-300"></div>
 
             <NewDishRecommend  
@@ -33,14 +31,12 @@
               :content="taskInfo.content"
               :createdAt="taskInfo.createdAt"
             />
-            <StaffTaskComplete />
-
+            <StaffTaskComplete :task_id="task_id" />
         </div>
     </section>
 </template>
 
 <script setup>
-
 import { useRouter } from 'vue-router'
 import arrowLeft from '../../Resource/Menu/ArrowLeft.svg'
 import NewDishRecommend from '../components/TaskCenterComponents/NewDishRecommend.vue'
@@ -63,12 +59,10 @@ const props = defineProps({
     })
   }
 })
-
 const router = useRouter()
 const goToTaskCenter = () => {
   router.push({ name: 'TaskCenter' })
 }
 </script>
-
 <style scoped>
 </style>

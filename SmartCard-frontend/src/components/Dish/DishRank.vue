@@ -1,5 +1,5 @@
 <template>
-  <form class="relative w-full h-[684px] rounded-[38px] bg-white shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)] p-[40px] flex flex-col">
+  <form class="relative min-w-[700px] w-full h-[684px] rounded-[38px] bg-white shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)] p-[40px] flex flex-col">
     
     <!-- Title -->
     <div class="flex items-center">
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Headers -->
-    <div class="mt-6 grid items-center " :style="gridStyle">
+    <div class="mt-6 grid items-center" :style="gridStyle">
       <div
         v-for="(header, idx) in headerLabels"
         :key="idx"
@@ -32,11 +32,11 @@
 
     <div class="mt-3 h-0 shadow-[1px_1px_4px_0px_rgba(153,153,153,0.25)] outline outline-2 outline-offset-[-1px] outline-neutral-200"></div>
 
-    <!-- Rows -->
-    <div class="mt-4 flex-1 overflow-y-auto " @scroll="handleScroll">
+    <!-- Rows (scrollable with infinite load) -->
+    <div class="mt-4 flex-1 overflow-y-auto" @scroll="handleScroll">
       <div
         v-if="fetchDishRankData.length"
-        class="space-y-13"
+        class="space-y-10"
       >
         <div
           v-for="(dish, index) in fetchDishRankData"
@@ -50,17 +50,17 @@
           <span class="text-xl text-stone-900">
             {{ dish.dish_name || '—' }}
           </span>
-          <span class="text-xl text-red-500 font-semibold">
+          <span class="text-xl text-red-500 font-semibold pl-[15px]">
             {{ dish.bad_count }}
           </span>
           <div class="flex justify-center">
             <button
               type="button"
-              class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-neutral-100 transition-colors"
+              class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-neutral-100 transition-colors pl-[10px]"
               @click="openReport(dish)"
               aria-label="查看菜品差评详情"
             >
-              <img :src="ArrowIcon" alt="详情" class="w-[22px] h-[22px]" />
+              <img :src="ArrowIcon" alt="详情" class="w-[22px] h-[22px] " />
             </button>
           </div>
         </div>
@@ -71,7 +71,16 @@
       </div>
     </div>
 
+    <!-- Modal: Dish Report -->
+    <div v-if="showReportModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="closeReport">
+      <div class="relative flex flex-col items-center">
+        <DishReport :dish-name="selectedDish?.dish_name || ''"
+        :dish_id="selectedDish?.dish_id || ''" 
+        @close="closeReport" />
+      </div>
+    </div>
 
+    
   </form>
 </template>
 
@@ -80,6 +89,7 @@ import { computed, onMounted, ref } from 'vue'
 
 import ArrowUpDown from '../../../Resource/Menu/ArrowUpDown.svg'
 import ArrowIcon from '../../../Resource/Staff/arrow.svg'
+import DishReport from './DishReport.vue'
 
 import { postForm } from '../../httpClient/client'
 import { PATHS } from '../../httpClient/paths'
@@ -97,8 +107,8 @@ const fetchDishRankData = ref([])
 const hasMorePages = ref(true)
 const isLoadingMore = ref(false)
 
-const emit = defineEmits(['open-report'])
-
+const showReportModal = ref(false)
+const selectedDish = ref(null)
 const headerLabels = ['排名', '菜名', '差评数', '详情']
 
 const gridStyle = computed(() => ({
@@ -107,11 +117,17 @@ const gridStyle = computed(() => ({
 }))
 
 function openReport(item) {
-  emit('open-report', item)
+  selectedDish.value = item
+  showReportModal.value = true
+}
+
+function closeReport() {
+  showReportModal.value = false
+  selectedDish.value = null
 }
 
 async function fetchDishRank(type = 'top') {
-  // Prevent duplicate requests or loading when no more pages
+  // Prevent duplicate requests or loading when there are no more pages
   if (isLoadingMore.value || !hasMorePages.value) return
 
   isLoadingMore.value = true
@@ -128,8 +144,9 @@ async function fetchDishRank(type = 'top') {
 
     const dishRankList = data.bad_dish_list || []
     const simplifiedList = dishRankList.map((item) => ({
-      dish_name: item.dish_name || item.dish_id?.dish_name || '',
+      dish_name:  item.dish_id?.dish_name || '',
       bad_count: item.bad_count ?? 0,
+      dish_id: item.dish_id?._id || '',
     }))
 
     if (dishpage.value === 1) {
@@ -144,7 +161,7 @@ async function fetchDishRank(type = 'top') {
     dishtotal.value = total
 
     if (total > 0) {
-      // Use total if backend provides it
+      // Use total from backend if provided
       hasMorePages.value = fetchDishRankData.value.length < total
     } else {
       // Fallback: if we got a full page, assume there might be more

@@ -1,85 +1,112 @@
 <template>
-  <section class="page">
-    <div ref="wrapper" class="relative overflow-hidden responsive-menu" :style="{ height: wrapperHeight + 'px' }">
-      <div class="relative design-root" :style="designStyle">
-      <div class="w-[1487px] h-[933px] left-0 top-0 absolute bg-white rounded-[38px] shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)]"></div>
-      <div class="w-[1487px] h-[777px] left-0 top-[156px] absolute bg-white shadow-[0px_-2px_4px_0px_rgba(204,204,204,0.25)]"></div>
-      
-      <div class="w-[676px] h-[1487px] left-0 top-[933px] absolute origin-top-left -rotate-90 bg-white shadow-[0px_-2px_4px_0px_rgba(204,204,204,0.25)]"></div>
-      <div class="w-[568px] h-[1487px] left-0 top-[933px] absolute origin-top-left -rotate-90 bg-white shadow-[0px_-2px_4px_0px_rgba(204,204,204,0.25)]"></div>
-      <div class="w-[463px] h-[1487px] left-0 top-[933px] absolute origin-top-left -rotate-90 bg-white shadow-[0px_-2px_4px_0px_rgba(204,204,204,0.25)]"></div>
-      <img
+
+  <section class="p-[25px]">
+
+    <div class="relative   min-w-[1550px]  min-h-[1000px]  left-0 top-0 absolute bg-white rounded-[38px] shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)]" >
+     
+    
+     <img
         :src="ArrowLeft"
         alt="back"
         class="w-7 h-7 left-[68px] top-[54px] absolute object-contain cursor-pointer"
         role="button"
         @click="goDishManager"
       />
+     
+
       <div class="left-[111px] top-[54px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">菜单详情</div>
-      <div class="w-40 h-14 left-[1279px] top-[40px] absolute bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer" @click="isUploadExcelOpen = true"></div>
-      <div class="w-20 left-[1344.67px] top-[52.89px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer" @click="isUploadExcelOpen = true">上传菜单</div>
-      <div class="w-14 h-12 left-[1293px] top-[42px] absolute bg-white rounded-full"></div>
-      <img :src="Upload" alt="upload" class="w-6 h-6 left-[1306.59px] top-[54.77px] absolute object-contain cursor-pointer" @click="isUploadExcelOpen = true" />
+      
+      
+      <div class="w-40 h-14 left-[1279px] top-[40px] absolute bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer" @click="isUploadExcelOpen = true">
+        <div class="left-[53px] top-[13px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi']">上传菜单</div>
+        <img :src="Upload" alt="upload" class="w-6 h-6 left-[20px] top-[15px] absolute object-contain " />
+      </div>
+      
+
       <!-- Left menu buttons (full-area clickable, active = black background) -->
-      <div class="absolute left-[80px] top-[178px] w-[210px] h-[60px] cursor-pointer" @click="setFilter('all')">
-        <div class="absolute inset-0 rounded-2xl flex items-center justify-center" :class="currentFilter==='all' ? 'bg-black text-white' : 'text-zinc-800'">
-          <span class="text-2xl font-normal font-['Alibaba_PuHuiTi']">全部</span>
+      <div class="absolute  top-[178px] w-[310px] h-[90px] cursor-pointer" @click="setFilter('all')">
+        <div class="absolute  w-full h-full rounded-xl flex items-center justify-center" :class="currentFilter==='all' ? 'bg-black text-white' : 'text-zinc-800'">
+          <span class="absolute left-[130px] text-2xl font-normal font-['Alibaba_PuHuiTi']">全部</span>
         </div>
       </div>
-      <div class="absolute left-[80px] top-[278px] w-[210px] h-[60px] cursor-pointer" @click="setFilter('new')">
-        <div class="absolute inset-0 rounded-2xl flex items-center justify-center" :class="currentFilter==='new' ? 'bg-black text-white' : 'text-zinc-800'">
-          <span class="text-2xl font-normal font-['Alibaba_PuHuiTi']">新菜</span>
+
+      <div class="absolute  top-[278px] w-[310px] h-[90px] cursor-pointer" @click="setFilter('new')">
+        <div class="absolute w-full h-full rounded-xl flex items-center justify-center" :class="currentFilter==='new' ? 'bg-black text-white' : 'text-zinc-800'">
+          <span class="absolute left-[130px] text-2xl font-normal font-['Alibaba_PuHuiTi']">新菜</span>
         </div>
       </div>
-      <div class="absolute left-[80px] top-[386px] w-[210px] h-[60px] cursor-pointer" @click="setFilter('top')">
-        <div class="absolute inset-0 rounded-2xl flex items-center justify-center" :class="currentFilter==='top' ? 'bg-black text-white' : 'text-zinc-800'">
+
+      <div class="absolute  top-[386px] w-[310px] h-[90px] cursor-pointer" @click="setFilter('top')">
+        <div class="absolute w-full h-full rounded-xl flex items-center justify-center" :class="currentFilter==='top' ? 'bg-black text-white' : 'text-zinc-800'">
           <span class="text-2xl font-normal font-['Alibaba_PuHuiTi']">热销</span>
         </div>
       </div>
-      <div class="absolute left-[80px] top-[495px] w-[210px] h-[60px] cursor-pointer" @click="setFilter('off')">
-        <div class="absolute inset-0 rounded-2xl flex items-center justify-center" :class="currentFilter==='off' ? 'bg-black text-white' : 'text-zinc-800'">
+
+      <div class="absolute  top-[495px] w-[310px] h-[90px] cursor-pointer" @click="setFilter('off')">
+        <div class="absolute w-full h-full rounded-xl flex items-center justify-center" :class="currentFilter==='off' ? 'bg-black text-white' : 'text-zinc-800'">
           <span class="text-2xl font-normal font-['Alibaba_PuHuiTi']">已下架</span>
         </div>
       </div>
+
+
       <div class="w-[777px] h-[1175px] left-[312px] top-[933px] absolute origin-top-left -rotate-90 bg-gray-50 shadow-[-3px_0px_4px_0px_rgba(204,204,204,0.25)]"></div>
-      <div class="left-[1246px] top-[114px] absolute justify-start text-zinc-500 text-base font-normal font-['Alibaba_PuHuiTi']">上次上传时间：{{ lastUploadTime }}</div>
+      
+     
+  
       <!-- Pagination controls -->
-      <div
-        class="left-[800px] top-[869px] absolute justify-start text-neutral-800 text-xl font-light font-['Alibaba_PuHuiTi'] cursor-pointer"
-        @click="goPrev"
-      >上一页</div>
-      <div
-        class="left-[890px] top-[869px] absolute justify-start text-neutral-800 text-xl font-light font-['Alibaba_PuHuiTi'] cursor-pointer"
-        @click="goToPage(currentPage)"
-      >{{ currentPage }}</div>
-      <div
-        class="left-[930px] top-[869px] absolute justify-start text-zinc-400 text-xl font-light font-['Alibaba_PuHuiTi'] cursor-pointer"
-        @click="goToPage(currentPage + 1)"
-      >{{ Math.min(currentPage + 1, totalPages) }}</div>
-      <div
-        class="left-[970px] top-[869px] absolute justify-start text-neutral-800 text-xl font-light font-['Alibaba_PuHuiTi'] cursor-pointer"
-        @click="goNext"
-      >下一页</div>
+      <div class="left-[800px] top-[869px] absolute flex items-center justify-center gap-4">
+        <button
+          type="button"
+          class="px-4 py-2 rounded-[8px] border border-[#DADADA] text-[14px] bg-white text-[rgba(0,0,0,0.80)] hover:bg-[#F4F4F4] disabled:opacity-50 disabled:cursor-not-allowed font-['Alibaba_PuHuiTi']"
+          :disabled="currentPage <= 1"
+          @click="goPrev"
+        >
+          上一页
+        </button>
+
+        <span class="text-neutral-600 text-[14px] font-medium font-['Alibaba_PuHuiTi']">
+          第{{ currentPage }} / {{ totalPages }} 页
+        </span>
+
+        <button
+          type="button"
+          class="px-4 py-2 rounded-[8px] border border-[#DADADA] text-[14px] bg-white text-[rgba(0,0,0,0.80)] hover:bg-[#F4F4F4] disabled:opacity-50 disabled:cursor-not-allowed font-['Alibaba_PuHuiTi']"
+          :disabled="currentPage >= totalPages"
+          @click="goNext"
+        >
+          下一页
+        </button>
+      </div>
+     
+     
+      
       <div
         class="w-40 h-14 left-[1446px] top-[242px] absolute origin-top-left rotate-90 bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer"
         @click="isUploadByHandOpen = true"
-      ></div>
+      >
+        <div class="left-[65px] bottom-[-28px] absolute rotate-270 flex flex-col items-center justify-center text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer">
+          <span>手</span>
+          <span>动</span>
+          <span>录</span>
+          <span>菜</span>
+        </div>
+      </div>
 
-      <div
-        class="w-5 left-[1410px] top-[265px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer"
-        @click="isUploadByHandOpen = true"
-      >手动录菜</div>
+     
+
+
       <!-- Delete button under 手动录菜 -->
       <div
         v-if="isBatchSelect"
         class="w-30 h-14 left-[1446px] top-[420px] absolute origin-top-left rotate-90 bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer"
         @click="onDeleteSelected"
-      ></div>
-      <div
-        v-if="isBatchSelect"
-        class="w-5 left-[1407px] top-[450px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer"
-        @click="onDeleteSelected"
-      >删除</div>
+      >
+        <div class="left-[48px]  absolute rotate-270 flex flex-col items-center justify-center text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer">
+          <span>删</span>
+          <span>除</span>
+        </div>
+      </div>
+     
       <!-- Click overlay to make the whole button area clickable -->
 
       <!-- Select Group button under 删除 -->
@@ -87,44 +114,70 @@
         v-if="isBatchSelect"
         class="w-40 h-14 left-[1446px] top-[565px] absolute origin-top-left rotate-90 bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer"
         @click="openSelectGroup"
-      ></div>
-      <div
-        v-if="isBatchSelect"
-        class="w-5 left-[1407px] top-[589px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer"
-        @click="openSelectGroup"
-      >选择分组</div>
+      >
+        <div class="left-[68px] bottom-[-28px]  absolute rotate-270 flex flex-col items-center justify-center text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer">
+          <span>选</span>
+          <span>择</span>
+          <span>分</span>
+          <span>组</span>
+        </div>
+      </div>
+     
       
+      <!-- Search input -->
       <input
         v-model="searchText"
         @keyup.enter="onSearchEnter"
         class="absolute left-[1118px] top-[176px] w-80 h-10 bg-stone-50 rounded-md border border-neutral-200 px-3 text-neutral-800 placeholder-zinc-500"
         placeholder="请问想搜索什么菜？"
       />
+
+
+
+
       <!-- Dish name cards grid -->
       <div v-if="dishCards.length" class="absolute left-[387px] top-[242px]">
+
         <div class="grid grid-cols-3 gap-x-[90px] gap-y-[37.5px]">
+          
           <div v-for="(card, idx) in dishCards" :key="idx" class="w-60 h-20 relative">
+
             <div class="w-60 h-20 left-0 top-0 absolute bg-white rounded-3xl border border-zinc-300"></div>
+           
             <div
               v-if="isBatchSelect"
               class="left-[-55px] top-1/2 -translate-y-1/2 absolute w-[40px] h-[40px] cursor-pointer"
-              @click="onClickWhiteIcon(idx)"
+              @click="onClickWhiteIcon(card.id)"
             >
+            
               <img :src="WhiteCircle" alt="select" class="w-full h-full object-contain" />
+              
               <img
-                v-if="selectedIndexes.has(idx)"
+                v-if="selectedIndexes.has(card.id)"
                 :src="CheckMark"
                 alt="checked"
                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                style="width: 20px; height: 10px;"
-              />
+                style="width: 20px; height: 20px;"
+              /> 
             </div>
-            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi'] text-center">{{ card.name }}</div>
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 
+            -translate-y-1/2 text-neutral-500 text-2xl 
+            font-medium font-['Alibaba_PuHuiTi'] text-center 
+            truncate max-w-[180px]">
+            {{ card.name }}
+          </div>
+
+
           </div>
         </div>
       </div>
       
+
+
+
+      <!-- Batch select button -->
       <div class="left-[1011px] top-[184px] absolute justify-start text-zinc-500 text-base font-normal font-['Alibaba_PuHuiTi'] cursor-pointer" @click="toggleBatchSelect">批量选择</div>
+     
       <div class="w-5 h-5 left-[983px] top-[186px] absolute bg-white rounded-sm border border-zinc-400 cursor-pointer relative" @click="toggleBatchSelect">
         <img
           v-if="isBatchSelect"
@@ -134,8 +187,10 @@
           style="width: 15px; height: 7.5px;"
         />
       </div>
+
       </div>
-    </div>
+   
+
     <!-- Overlay Modal -->
     <div
       v-if="isUploadByHandOpen"
@@ -145,33 +200,57 @@
         class="absolute inset-0 bg-black/30"
         @click="isUploadByHandOpen = false"
       ></div>
+
       <div class="relative z-10">
         <UploadDishByHand @confirm="onUploadConfirm" />
       </div>
     </div>
+
+
     <!-- Select Group Panel -->
     <div v-if="isSelectGroupOpen" class="fixed inset-0 z-50 flex items-center justify-center">
+      
       <div class="absolute inset-0 bg-black/30" @click="closeSelectGroup"></div>
-      <div class="relative z-10">
-        <div class="w-96 h-60 relative">
+      
+      
+      <div class="relative z-10 w-96 h-60">
+      
           <div class="w-96 h-60 left-0 top-0 absolute bg-white rounded-[31px]"></div>
+         
           <div class="left-[137px] top-[35px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">选择分组</div>
-          <div class="w-28 h-10 left-[145px] top-[177px] absolute bg-white rounded-[20px] border border-zinc-300 cursor-pointer" @click="onConfirmSelectGroup"></div>
-          <div class="left-[180px] top-[184px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer" @click="onConfirmSelectGroup">确认</div>
-          <div class="left-[130px] top-[110px] absolute justify-start text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi'] cursor-pointer" @click="selectedGroup = 'top'">热销</div>
-          <div class="w-8 h-8 left-[82px] top-[111px] absolute bg-white rounded-full border border-stone-300 cursor-pointer" @click="selectedGroup = 'top'"></div>
-          <div v-if="selectedGroup === 'top'" class="w-4 h-4 left-[90px] top-[119px] absolute">
-            <img :src="CheckMark" alt="checked" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="width: 12px; height: 6px;" />
+          
+          <div class="w-28 h-10 left-[135px] top-[177px] absolute bg-white rounded-[20px] border border-zinc-300 cursor-pointer" @click="onConfirmSelectGroup">
+            <div class="left-[35px] top-[5px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer">确认</div>
           </div>
-          <div class="left-[271px] top-[109px] absolute justify-start text-neutral-500 text-2xl font-medium font-['Alibaba_PuHuiTi'] cursor-pointer" @click="selectedGroup = 'new'">新菜</div>
+          
+     
+
+          <div class="left-[120px] top-[110px] absolute justify-start text-neutral-500 text-3xl font-medium font-['Alibaba_PuHuiTi'] cursor-pointer" @click="selectedGroup = 'top'">热销</div>
+          <div class="w-8 h-8 left-[72px] top-[111px] absolute bg-white rounded-full border border-stone-300 cursor-pointer" @click="selectedGroup = 'top'">
+          
+            <div v-if="selectedGroup === 'top'" class="w-4 h-4 left-[8px] top-[8px] absolute">
+            <img :src="CheckMark" alt="checked" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="width: 40px; height: 40px;" />
+          </div>
+
+          </div>
+         
+          
+
+
+          <div class="left-[271px] top-[110px] absolute justify-start text-neutral-500 text-3xl font-medium font-['Alibaba_PuHuiTi'] cursor-pointer" @click="selectedGroup = 'new'">新菜</div>
           <div class="w-8 h-8 left-[223px] top-[110px] absolute bg-white rounded-full border border-stone-300 cursor-pointer" @click="selectedGroup = 'new'"></div>
           <div v-if="selectedGroup === 'new'" class="w-4 h-4 left-[231px] top-[118px] absolute">
-            <img :src="CheckMark" alt="checked" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="width: 12px; height: 6px;" />
+            <img :src="CheckMark" alt="checked" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="width: 40px; height: 40px;" />
           </div>
+
         </div>
-      </div>
+      
     </div>
+
+
   </section>
+
+
   <!-- Upload Excel Modal -->
   <div v-if="isUploadExcelOpen" class="fixed inset-0 z-50 flex items-center justify-center">
     <div class="absolute inset-0 bg-black/30" @click="isUploadExcelOpen = false"></div>
@@ -207,194 +286,128 @@
       </div>
     </div>
   </div>
+
+
 </template>
 
-<script>
-export default {
-  name: 'MenuDetail',
-}
-</script>
+
 
 <script setup>
+
 import ArrowLeft from '../../Resource/Menu/ArrowLeft.svg'
 import Upload from '../../Resource/Menu/Upload.svg'
-import { ref, onMounted, onBeforeUnmount, watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
-import UploadDishByHand from '../components/uploadDishByHand.vue'
-import { postForm, postMultipart } from '../httpClient/client'
-import { PATHS } from '../httpClient/paths'
 import ExcelIcon from '../../Resource/Menu/ExcelIcon.svg'
 import WhiteCircle from '../../Resource/Menu/whiteCircle.svg'
 import CheckMark from '../../Resource/Menu/CheckMark.svg'
 
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+import UploadDishByHand from '../components/Dish/uploadDishByHand.vue'
+
+import { postForm, postMultipart } from '../httpClient/client'
+import { PATHS } from '../httpClient/paths'
+
+
 const isUploadByHandOpen = ref(false)
+
 const isUploadExcelOpen = ref(false)
 const isDragging = ref(false)
 const isUploading = ref(false)
-const isSelectGroupOpen = ref(false)
 const selectedFileName = ref('')
 const fileInputRef = ref(null)
+
+
+const isSelectGroupOpen = ref(false)
+const selectedGroup = ref(null) // 'top' | 'new' | null
+
+
 const isBatchSelect = ref(false)
 const selectedIndexes = ref(new Set())
-const searchText = ref('')
+
 const dishCards = ref([])
+
+const searchText = ref('')
+
+
 const currentPage = ref(1)
 const pageSize = ref(15)
-const total = ref(0)
 const totalPages = ref(1)
+
 const currentFilter = ref('all') // all | new | top | off
-const selectedGroup = ref(null) // 'top' | 'new' | null
-const lastUploadTime = ref('')
 
-function formatDate(date) {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}/${month}/${day}`
-}
 
-function updateUploadTime() {
-  const now = new Date()
-  const formatted = formatDate(now)
-  console.log('Updating upload time to:', formatted)
-  lastUploadTime.value = formatted
-  try {
-    localStorage.setItem('lastUploadTime', formatted)
-    console.log('Upload time saved to localStorage')
-  } catch (e) {
-    console.error('Failed to save upload time to localStorage', e)
+
+async function fetchPage() {
+    
+  const payload = {
+    query: buildQuery(),
+    page: String(currentPage.value),
+    size: String(pageSize.value),
   }
-}
 
-function loadUploadTime() {
   try {
-    const stored = localStorage.getItem('lastUploadTime')
-    if (stored) {
-      lastUploadTime.value = stored
-    } else {
-      lastUploadTime.value = '2025/10/15' // default value
+    const res = await postForm(PATHS.DISH_LIST, payload)
+    const responseData = res && res.data && res.data.data
+    
+    if (responseData) {
+      const dishList = responseData.dish_list || []
+      const totalCount = responseData.total || 0
+      
+     
+      // Update pagination info
+      totalPages.value = Math.max(1, Math.ceil(totalCount / pageSize.value))
+      
+      // Map dish_list to dishCards format
+      dishCards.value = dishList
+        .map((item) => ({ id: item._id || '', name: item.dish_name || '' }))
     }
   } catch (e) {
-    lastUploadTime.value = '2025/10/15' // default value
-  }
-}
-
-function onUploadConfirm(payload) {
-  isUploadByHandOpen.value = false
-  if (payload && payload.ok) {
-    fetchPage(currentPage.value)
+    console.error('Failed to fetch dishes list', e)
   }
 }
 
 function buildQuery() {
   const name = (searchText.value || '').trim()
   if (name) return JSON.stringify({ dish_name: name })
+
   if (currentFilter.value === 'new') return JSON.stringify({ is_new: 'true' })
   if (currentFilter.value === 'top') return JSON.stringify({ is_top: 'true' })
   if (currentFilter.value === 'off') return JSON.stringify({ status: 'true' })
   return '{}'
 }
 
-async function fetchPage(page) {
-  try {
-    const res = await postForm(PATHS.DISH_LIST, {
-      query: buildQuery(),
-      page: String(page),
-      size: String(pageSize.value),
-    })
-    const data = res && res.data && res.data.data
-    const list = (data && data.dish_list) || []
-    try {
-      localStorage.setItem('dish_list', JSON.stringify(list))
-    } catch (e) {
-      // ignore storage errors
-    }
-    total.value = (data && data.total) || 0
-    totalPages.value = Math.max(1, Math.ceil(total.value / pageSize.value))
-    dishCards.value = list
-      .map((item) => ({ name: item.dish_name || '' }))
-      .filter((c) => c.name)
-  } catch (e) {
-    console.error('Failed to fetch dishes list', e)
-  }
+function onUploadConfirm() {
+  isUploadByHandOpen.value = false
+    fetchPage()
 }
+
 
 function goToPage(page) {
-  const target = Math.min(totalPages.value, Math.max(1, page))
-  if (target !== currentPage.value) {
-    currentPage.value = target
-    fetchPage(currentPage.value)
-  }
-}
-function goPrev() { goToPage(currentPage.value - 1) }
-function goNext() { goToPage(currentPage.value + 1) }
-
-// responsive scaling
-const designWidth = 1487
-const designHeight = 933
-const scale = ref(1)
-const wrapperHeight = ref(designHeight)
-const ro = ref(null)
-
-function updateScale() {
-  const el = wrapper.value
-  if (!el) return
-  const availableWidth = el.clientWidth || 0
-  if (availableWidth <= 0) return
-  const s = availableWidth / designWidth
-  scale.value = s
-  wrapperHeight.value = Math.round(designHeight * s)
+  currentPage.value = Math.min(totalPages.value, Math.max(1, page))
+  fetchPage()
 }
 
-const wrapper = ref(null)
+function goPrev() {
+  goToPage(currentPage.value - 1)
+}
+
+function goNext() {
+  goToPage(currentPage.value + 1)
+}
 
 onMounted(() => {
-  loadUploadTime()
-  fetchPage(currentPage.value)
-  // init responsive scaling
-  try {
-    updateScale()
-    ro.value = new ResizeObserver(() => updateScale())
-    if (wrapper.value) ro.value.observe(wrapper.value)
-  } catch (e) {
-    window.addEventListener('resize', updateScale)
-  }
-})
-
-onBeforeUnmount(() => {
-  try {
-    if (ro.value && ro.value.disconnect) ro.value.disconnect()
-  } catch (_) {}
-  window.removeEventListener('resize', updateScale)
-})
-
-const designStyle = ref({})
-
-// reactive style based on scale
-designStyle.value = {
-  width: designWidth + 'px',
-  height: designHeight + 'px',
-  transform: `scale(${scale.value})`,
-  transformOrigin: 'top left',
-}
-
-// keep style in sync when scale changes
-watchEffect(() => {
-  designStyle.value = {
-    width: designWidth + 'px',
-    height: designHeight + 'px',
-    transform: `scale(${scale.value})`,
-    transformOrigin: 'top left',
-  }
+  fetchPage()
 })
 
 function setFilter(f) {
   if (f !== currentFilter.value) {
     currentFilter.value = f
     currentPage.value = 1
-    fetchPage(currentPage.value)
+    fetchPage()
   }
 }
+
 
 function toggleBatchSelect() {
   isBatchSelect.value = !isBatchSelect.value
@@ -416,59 +429,90 @@ function closeSelectGroup() {
 function onSearchEnter() {
   currentFilter.value = 'all'
   currentPage.value = 1
-  fetchPage(currentPage.value)
+  fetchPage()
 }
 
-function onClickWhiteIcon(idx) {
+function onClickWhiteIcon(dishId) {
   if (!isBatchSelect.value) return
+
   const next = new Set(selectedIndexes.value)
-  if (next.has(idx)) next.delete(idx)
-  else next.add(idx)
+
+  if (next.has(dishId)) next.delete(dishId)
+
+  else next.add(dishId)
+
   selectedIndexes.value = next
 }
 
 async function onDeleteSelected() {
+  
   try {
     if (!isBatchSelect.value || !selectedIndexes.value || selectedIndexes.value.size === 0) {
       return
     }
-    const selectedNames = Array.from(selectedIndexes.value)
-      .map((i) => dishCards.value[i] && dishCards.value[i].name)
-      .filter(Boolean)
-    if (!selectedNames.length) return
 
-    let allDishes = []
-    try {
-      const raw = localStorage.getItem('dish_list')
-      allDishes = raw ? JSON.parse(raw) : []
-    } catch (_) {
-      allDishes = []
+    const selectedIds = Array.from(selectedIndexes.value)
+      .filter(Boolean)
+
+    if (!selectedIds.length) {
+      return
+    }
+    
+
+    const payload = {
+      type: 'delete',
+      data: '{}',
+      ids: JSON.stringify(selectedIds),
     }
 
-    const selectedDishes = allDishes.filter((d) => selectedNames.includes(d.dish_name))
-    const ids = selectedDishes
-      .map((d) => d && d._id)
-      .filter(Boolean)
+    await postForm(PATHS.DISH_EDIT, payload)
+    
 
-    await postForm(PATHS.DISH_EDIT, {
-      type: 'delete',
-      data: JSON.stringify(selectedDishes),
-      ids: JSON.stringify(ids),
-    })
-
-    // refresh list and storage
-    await fetchPage(currentPage.value)
-    // clear selection after delete
+    await fetchPage()
     selectedIndexes.value = new Set()
-  } catch (e) {
-    console.error('Failed to delete selected dishes', e)
+    isBatchSelect.value = false
+  }
+   catch (e) {
+    console.error('Failed to delete dishes', e)
   }
 }
 
+async function onConfirmSelectGroup() {
+  
+  try {
+    if (!selectedGroup.value) {
+      return
+    }
+    const selectedIds = Array.from(selectedIndexes.value)
+    .filter(Boolean)
+
+    const payload = {
+      type: 'update',
+      data: JSON.stringify({ is_top: selectedGroup.value === 'top', is_new: selectedGroup.value === 'new' }),
+      ids: JSON.stringify(selectedIds),
+    }
+
+    await postForm(PATHS.DISH_EDIT, payload)
+    await fetchPage()
+
+    isSelectGroupOpen.value = false
+    selectedIndexes.value = new Set()
+    isBatchSelect.value = false
+  } catch (e) {
+    console.error('Failed to select group', e)
+  }
+}
+
+
+
 const router = useRouter()
+
 function goDishManager() {
   router.push({ name: 'DishManager' })
 }
+
+
+//excel upload
 
 function triggerFileBrowse() {
   if (isUploading.value) return
@@ -528,9 +572,8 @@ async function uploadExcel(file) {
     console.log('Upload successful, response:', response)
     selectedFileName.value = ''
     // Update upload time on successful upload
-    updateUploadTime()
-    await fetchPage(currentPage.value)
-    console.log('Upload time updated to:', lastUploadTime.value)
+    
+    await fetchPage()
   } catch (e) {
     console.error('Failed to upload excel', e)
     // Don't update time if upload failed
@@ -539,81 +582,9 @@ async function uploadExcel(file) {
   }
 }
 
-async function onConfirmSelectGroup() {
-  try {
-    if (!selectedGroup.value) {
-      // No group selected, just close the modal
-      isSelectGroupOpen.value = false
-      return
-    }
 
-    if (!isBatchSelect.value || !selectedIndexes.value || selectedIndexes.value.size === 0) {
-      isSelectGroupOpen.value = false
-      return
-    }
 
-    // Get selected dish names from current page
-    const selectedNames = Array.from(selectedIndexes.value)
-      .map((i) => dishCards.value[i] && dishCards.value[i].name)
-      .filter(Boolean)
-    
-    if (!selectedNames.length) {
-      isSelectGroupOpen.value = false
-      return
-    }
-
-    // Get full dish data from localStorage
-    let allDishes = []
-    try {
-      const raw = localStorage.getItem('dish_list')
-      allDishes = raw ? JSON.parse(raw) : []
-    } catch (_) {
-      allDishes = []
-    }
-
-    // Filter to get selected dishes
-    const selectedDishes = allDishes.filter((d) => selectedNames.includes(d.dish_name))
-    
-    if (!selectedDishes.length) {
-      isSelectGroupOpen.value = false
-      return
-    }
-
-    // Update is_top and is_new based on selected group
-    const updatedDishes = selectedDishes.map((dish) => ({
-      ...dish,
-      is_top: selectedGroup.value === 'top',
-      is_new: selectedGroup.value === 'new',
-    }))
-
-    // Get IDs
-    const ids = updatedDishes
-      .map((d) => d && d._id)
-      .filter(Boolean)
-
-    // Post to API
-    await postForm(PATHS.DISH_EDIT, {
-      type: 'update',
-      data: JSON.stringify(updatedDishes),
-      ids: JSON.stringify(ids),
-    })
-
-    // Refresh list and clear selection
-    await fetchPage(currentPage.value)
-    selectedIndexes.value = new Set()
-    selectedGroup.value = null
-    isSelectGroupOpen.value = false
-  } catch (e) {
-    console.error('Failed to update dish group', e)
-  }
-}
 </script>
 
 <style scoped>
-.page {
-  padding: 1rem;
-}
-.responsive-menu {
-  width: 100%;
-}
 </style>

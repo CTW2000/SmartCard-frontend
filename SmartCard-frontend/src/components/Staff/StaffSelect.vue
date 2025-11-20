@@ -42,8 +42,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { postForm } from '../httpClient/client'
-import { PATHS } from '../httpClient/paths'
+import { postForm } from '../../httpClient/client'
+import { PATHS } from '../../httpClient/paths'
 
 const emit = defineEmits(['close', 'select'])
 

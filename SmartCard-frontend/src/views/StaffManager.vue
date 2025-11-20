@@ -26,81 +26,82 @@
   </section>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue'
 import ScoreCard from '../components/General/ScoreCard.vue'
-import StaffForm from '../components/StaffForm.vue'
-import StaffReport from '../components/staffReport.vue'
+import StaffForm from '../components/Staff/StaffForm.vue'
+import StaffReport from '../components/Staff/staffReport.vue'
 import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 
-export default {
-  name: 'StaffManagement',
-  components: { ScoreCard, StaffForm, StaffReport },
-  data() {
-    return {
-      managerScore: 0,
-      managerScoreRatio: 0,
-      staffScore: 0,
-      staffScoreRatio: 0,
-      badReasons: [],
-      showReport: false,
-      selectedRow: null
-    }
-  },
-  computed: {
-    managerTrend() {
-      return this.managerScoreRatio >= 0 ? 'up' : 'down'
-    },
-    staffTrend() {
-      return this.staffScoreRatio >= 0 ? 'up' : 'down'
-    },
-    managerScoreDisplay() {
-      return `${this.managerScore} 分`
-    },
-    staffScoreDisplay() {
-      return `${this.staffScore} 分`
-    },
-    badReasonItems() {
-      return (this.badReasons || []).slice(0, 3).map((r, idx) => ({
-        value: `TOP${idx + 1}`,
-        metaValue: r?.resaon_name || ''
-      }))
-    }
-  },
-  methods: {
-    onRowAction(row) {
-      this.selectedRow = row
-      this.showReport = true
-    },
-    closeReport() {
-      this.showReport = false
-      this.selectedRow = null
-    },
-    formatPercent(value) {
-      const num = Number(value) || 0
-      if (Math.abs(num) <= 1) {
-        return `${Math.round(num * 100)}%`
-      }
-      return `${num}%`
-    }
-  },
-  mounted() {
-    postForm(PATHS.STAFF_NAV)
-      .then(({ data }) => {
-        const json = data
-        const result = json && json.data && Array.isArray(json.data.result) ? json.data.result[0] : null
-        if (result) {
-          this.managerScore = result.manager_score ?? 0
-          this.managerScoreRatio = result.manager_score_ratio ?? 0
-          this.staffScore = result.staff_score ?? 0
-          this.staffScoreRatio = result.staff_score_ratio ?? 0
-          this.badReasons = result.bad_rank || []
-        }
-      })
-      .catch(() => {})
-  },
-  beforeDestroy() {}
+// Reactive state
+const managerScore = ref(0)
+const managerScoreRatio = ref(0)
+const staffScore = ref(0)
+const staffScoreRatio = ref(0)
+const badReasons = ref([])
+const showReport = ref(false)
+const selectedRow = ref(null)
+
+// Computed properties
+const managerTrend = computed(() => 
+  managerScoreRatio.value >= 0 ? 'up' : 'down'
+)
+
+const staffTrend = computed(() => 
+  staffScoreRatio.value >= 0 ? 'up' : 'down'
+)
+
+const managerScoreDisplay = computed(() => 
+  `${managerScore.value} 分`
+)
+
+const staffScoreDisplay = computed(() => 
+  `${staffScore.value} 分`
+)
+
+const badReasonItems = computed(() => 
+  (badReasons.value || []).slice(0, 3).map((r, idx) => ({
+    value: `TOP${idx + 1}`,
+    metaValue: r?.resaon_name || ''
+  }))
+)
+
+// Methods
+function onRowAction(row) {
+  selectedRow.value = row
+  showReport.value = true
 }
+
+function closeReport() {
+  showReport.value = false
+  selectedRow.value = null
+}
+
+function formatPercent(value) {
+  const num = Number(value) || 0
+  if (Math.abs(num) <= 1) {
+    return `${Math.round(num * 100)}%`
+  }
+  return `${num}%`
+}
+
+// Lifecycle
+onMounted(() => {
+  postForm(PATHS.STAFF_NAV)
+    .then(({ data }) => {
+      const json = data
+      const result = json && json.data && Array.isArray(json.data.result) ? json.data.result[0] : null
+      if (result) {
+        managerScore.value = result.manager_score ?? 0
+        managerScoreRatio.value = result.manager_score_ratio ?? 0
+        staffScore.value = result.staff_score ?? 0
+        staffScoreRatio.value = result.staff_score_ratio ?? 0
+        badReasons.value = result.bad_rank || []
+      }
+    })
+    .catch(() => {})
+})
 </script>
 
 <style scoped>

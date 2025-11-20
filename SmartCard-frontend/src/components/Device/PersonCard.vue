@@ -126,12 +126,13 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import AvatarMan from '../../Resource/Staff/AvatarMan.svg'
-import StaffSelect from './StaffSelect.vue'
+
+import AvatarMan from '../../../Resource/Staff/AvatarMan.svg'
+import StaffSelect from '../Staff/StaffSelect.vue'
 
 
-import { postForm } from '../httpClient/client'
-import { PATHS } from '../httpClient/paths'
+import { postForm } from '../../httpClient/client'
+import { PATHS } from '../../httpClient/paths'
 
 
 

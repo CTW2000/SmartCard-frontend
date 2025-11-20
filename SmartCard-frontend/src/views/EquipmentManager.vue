@@ -222,8 +222,8 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import PersonCard from '../components/PersonCard.vue'
-import StaffSelect from '../components/StaffSelect.vue'
+import PersonCard from '../components/Device/PersonCard.vue'
+import StaffSelect from '../components/Staff/StaffSelect.vue'
 
 import circleIcon from '../../Resource/Staff/Circle.svg'
 import pencilIcon from '../../Resource/Staff/Pencil.svg'

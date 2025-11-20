@@ -13,7 +13,7 @@
         class="left-[56px] absolute justify-start text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi'] truncate"
         :style="{ top: nameTop(index) + 'px', maxWidth: '250px' }"
       >
-        {{ String(index + 1).padStart(2, '0') }}：{{ item.resaon_name || '—' }}
+        {{ String(index + 1).padStart(2, '0') }}：{{ item.dish_name || '—' }}
       </div>
       
       <!-- Count -->
@@ -34,6 +34,8 @@
     <div v-if="badRank.length === 0" class="text-gray-400 text-center py-8">暂无数据</div>
   </div>
 </template>
+
+
 
 <script setup>
 defineProps({

@@ -26,7 +26,9 @@ export function postStoredCredentials(url) {
 // Generic helper to POST x-www-form-urlencoded data
 // Accepts a plain object or URLSearchParams
 export function postForm(url, form, extraHeaders = {}) {
+  
   const token = localStorage.getItem('token');
+ 
   const formData = form instanceof URLSearchParams
     ? form
     : (() => {
@@ -41,6 +43,14 @@ export function postForm(url, form, extraHeaders = {}) {
   const headers = { 'Content-Type': 'application/x-www-form-urlencoded', ...extraHeaders };
   if (token && !headers['authorization']) headers['authorization'] = `Bearer ${token}`;
   return client.post(url, formData, { headers });
+}
+
+// Generic helper for GET requests with optional params
+export function getRequest(url, params = {}, extraHeaders = {}) {
+  const token = localStorage.getItem('token');
+  const headers = { ...extraHeaders };
+  if (token && !headers['authorization']) headers['authorization'] = `Bearer ${token}`;
+  return client.get(url, { params, headers });
 }
 
 

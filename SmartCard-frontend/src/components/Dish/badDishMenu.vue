@@ -1,11 +1,11 @@
 <template>
-  <div class="relative w-[280px] h-[355px]">
+  <div class="relative w-full min-w-[230px] max-w-[330px] h-[355px] overflow-hidden">
     
-    <div class="w-[280px] h-[355px] left-0 top-0 absolute rounded-[25px] border border-border bg-card shadow-md"></div>
+    <div class="w-full h-[355px] left-0 top-0 absolute rounded-[25px] border border-border bg-card shadow-md"></div>
     <div class="left-[36px] top-[25px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">菜品差评数</div>
    
     <div 
-      class="absolute inset-0 overflow-y-auto"
+      class="absolute inset-0 overflow-y-auto overflow-x-hidden"
       style="top: 70px; bottom: 0;"
       @scroll="handleScroll"
     >
@@ -23,8 +23,9 @@
           >
             <!-- Item name -->
             <div
-              class="left-[36px] absolute justify-start text-neutral-500 text-xl font-normal font-['Alibaba_PuHuiTi'] truncate"
-              :style="{ top: nameTop(index) + 'px', maxWidth: '220px' }"
+              class="left-[36px] absolute justify-start text-neutral-500 text-xl font-normal font-['Alibaba_PuHuiTi'] truncate  cursor-pointer hover:text-teal-600 transition-colors"
+              :style="{ top: nameTop(index) + 'px', maxWidth: '320px' }"
+              @click="openReport(item)"
             >
               {{ String(index + 1).padStart(2, '0') }}：{{ item.dish_name || '—' }}
             </div>
@@ -55,6 +56,15 @@
       
       </div>
     </div>
+
+    <!-- Modal: Dish Report -->
+    <div v-if="showReportModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="closeReport">
+      <div class="relative flex flex-col items-center">
+        <DishReport :dish-name="selectedDish?.dish_name || ''" 
+        :dish_id="selectedDish?.dish_id || ''" 
+        @close="closeReport" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -63,6 +73,8 @@ import { reactive, ref, onMounted } from 'vue'
 import { postForm } from '../../httpClient/client'
 import { PATHS } from '../../httpClient/paths'
 
+import DishReport from './DishReport.vue'
+
 const dishPage = ref(1)
 const dishPageSize = ref(10)
 
@@ -70,6 +82,9 @@ const dishPageSize = ref(10)
 const badRank = reactive([])
 const hasMorePages = ref(true)
 const isLoadingMore = ref(false)
+
+const showReportModal = ref(false)
+const selectedDish = ref(null)
 
 const nameTop = (index) => {
   const base = [20, 100, 180]
@@ -93,6 +108,16 @@ const dotClass = () => {
   return 'bg-teal-300'
 }
 
+function openReport(item) {
+  selectedDish.value = item
+  showReportModal.value = true
+}
+
+function closeReport() {
+  showReportModal.value = false
+  selectedDish.value = null
+}
+
 async function fetchbadDishRank() {
   
   if (isLoadingMore.value || !hasMorePages.value) return
@@ -111,7 +136,8 @@ async function fetchbadDishRank() {
       // Append new data to existing list (only _id, dish_name, and bad_count)
       const newItems = badDishList.map(item => ({
         _id: item._id,
-        dish_name: item.dish_name,
+        dish_id: item.dish_id?._id || '',
+        dish_name: item.dish_id?.dish_name || '',
         bad_count: item.bad_count
       }))
       

@@ -3,10 +3,10 @@
 
     
       <div class="grid grid-cols-4 gap-6">
-        <ScoreCard title="本周店长评分" :value="fetchhomeData.manager_score + '分'" color="primary" metaLabel="同比上周" :metaValue="fetchhomeData.manager_score_ratio" :trend="trendOf(fetchhomeData.manager_score_ratio)" />
-        <ScoreCard title="员工服务评分" :value="fetchhomeData.staff_score + '分'" color="primary" metaLabel="同比上周" :metaValue="fetchhomeData.staff_score_ratio" :trend="trendOf(fetchhomeData.staff_score_ratio)" />
-        <ScoreCard title="菜品差评分" :value="fetchhomeData.dish_bad_score + '分'" color="accent" metaLabel="与上周相比" :metaValue="fetchhomeData.dish_bad_ratio" :trend="trendOf(fetchhomeData.dish_bad_ratio)" />
-        <ScoreCard title="昨日预警分数" :value="fetchhomeData.warn_score + '分'" color="accent" metaLabel="与上周相比" :metaValue="fetchhomeData.warn_ratio" :trend="trendOf(fetchhomeData.warn_ratio)" />
+        <ScoreCard title="昨日店长评分" :value="fetchhomeData.manager_score + '分'" valueColor="text-red-500" :percentValue="fetchhomeData.manager_score_ratio"  />
+        <ScoreCard title="昨日员工服务评分" :value="fetchhomeData.staff_score + '分'" valueColor="text-red-500" :percentValue="fetchhomeData.staff_score_ratio" />
+        <ScoreCard title="昨日菜品差评率" :value="fetchhomeData.dish_bad_score + '%'" valueColor="text-green-800" :percentValue="fetchhomeData.dish_bad_ratio" />
+        <ScoreCard title="昨日预警事件" :value="fetchhomeData.warn_score + '%'" valueColor="text-green-800" :percentValue="fetchhomeData.warn_ratio" />
       </div>
 
 
@@ -67,17 +67,6 @@ const fetchhomeData = reactive({
   bad_rank: [],
   task_list: [],
 })
-
-
-const trendOf = (metaValue) => {
-  if (metaValue === null || metaValue === undefined) return ''
-  const s = String(metaValue).trim()
-  if (s.startsWith('-')) return 'down'
-  if (s.startsWith('+')) return 'up'
-  const n = Number(s.replace('%', ''))
-  if (!Number.isNaN(n)) return n < 0 ? 'down' : n > 0 ? 'up' : ''
-  return ''
-}
 
 
 async function fetchHomeData() {

@@ -53,15 +53,12 @@
               暂时没有账号？
               <router-link to="/createaccounts" class="text-black">注册</router-link>
             </div>
-          </form>
-
-       
-        
+          </form>  
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, watch } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
@@ -73,6 +70,7 @@ const form = reactive({ account: '', password: '' })
 const remember = ref(false)
 
 async function onSubmit() {
+
   try {
     const res = await postForm(PATHS.LOGIN, {
       account: form.account,
@@ -81,6 +79,7 @@ async function onSubmit() {
     const body = res?.data
     if (body?.success === true || body?.code === 200) {
       const token = body?.data?.token
+      
       if (token) localStorage.setItem('token', token)
       localStorage.removeItem('currentAccount')
       localStorage.removeItem('currentPassword')
@@ -117,12 +116,7 @@ onMounted(() => {
   }
 })
 
-watch(remember, (newVal) => {
-  if (!newVal) {
-    localStorage.removeItem('remembered_account')
-    localStorage.removeItem('remembered_password')
-  }
-})
+
 </script>
 
 <style scoped>

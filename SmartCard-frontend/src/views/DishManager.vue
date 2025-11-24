@@ -81,10 +81,6 @@
             </div>
           </button>
 
-
-
-
-
         </div>
     </div>
 
@@ -106,10 +102,6 @@ import DishRank from '../components/Dish/DishRank.vue'
 import ThreeGang from '../../Resource/Menu/ThreeGang.svg'
 
 const router = useRouter()
-
-
-
-
 
 // Methods
 function goMenuDetail() {

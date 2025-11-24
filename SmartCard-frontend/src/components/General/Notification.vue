@@ -2,7 +2,7 @@
   <button
     class="relative bg-[#F4F6F9] border border-black/5 rounded-full px-2 py-1 cursor-pointer"
     aria-label="Notifications"
-    @click="$emit('click')"
+    @click="emit('click')"
   >
     🔔
     <span
@@ -12,18 +12,18 @@
   </button>
 </template>
 
-<script>
-export default {
-  name: 'Notification',
-  props: {
-    count: { type: Number, default: 3 },
-  },
-  computed: {
-    displayCount() {
-      return this.count > 9 ? '9+' : String(this.count)
-    },
-  },
-}
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+  count: { type: Number, default: 3 },
+})
+
+const emit = defineEmits(['click'])
+
+const displayCount = computed(() => {
+  return props.count > 9 ? '9+' : String(props.count)
+})
 </script>
 
 <style scoped>

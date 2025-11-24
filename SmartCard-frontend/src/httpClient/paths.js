@@ -1,6 +1,10 @@
-export const BASE_URL = 'http://192.168.0.135:3000';
+// Get BASE_URL from environment variable, with fallback to default
+// Vite exposes env variables with VITE_ prefix
+export const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://192.168.0.135:3000';
+
 // https://117.148.167.102:3000
 // https://wanwu.chat/
+
 export const PATHS = {
   REGISTER: '/api/users/register',
   LOGIN: '/api/users/login',
@@ -26,6 +30,7 @@ export const PATHS = {
   TASK_TYPE_LIST: '/api/task/type/list',
   TASK_ADD: '/api/task/add',
   TASK_INFO: '/api/task/info',
+  SESSION: '/api/complete/session',
 };
 
 

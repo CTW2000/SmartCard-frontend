@@ -83,7 +83,7 @@
   
 
 
-  <div class="left-[36px] top-[78px] absolute w-96 space-y-4 max-h-[420px] overflow-y-auto pr-2">
+  <div class="left-[36px] top-[78px] absolute w-96 space-y-4 max-h-[370px] overflow-y-auto pr-2">
     <template v-if="staffReport.staff_feedback_list.length">
       <div
         v-for="(feedback, index) in staffReport.staff_feedback_list"
@@ -93,8 +93,16 @@
         <div class="text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi']">
           {{ (feedback.start_time || '--:--') + ' -- ' + (feedback.end_time || '--:--') }}
         </div>
-        <div class="text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi'] leading-relaxed">
-          {{ feedback.content || '暂无反馈' }}
+        <div v-if="feedback.tag" class="text-zinc-600 text-sm font-normal font-['Alibaba_PuHuiTi']">
+          {{ feedback.tag }}
+        </div>
+        <div class="flex items-start gap-2 text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi'] leading-relaxed">
+          <img
+            :src="feedback.type ? smileIcon : sadIcon"
+            :alt="feedback.type ? 'smile' : 'sad'"
+            class="w-6 h-6 flex-shrink-0 mt-0.5 object-contain"
+          />
+          <span>{{ feedback.content || '暂无反馈' }}</span>
         </div>
       </div>
     </template>
@@ -110,8 +118,6 @@
       </div>
     </div>
   </div>
-
-
   </div>
 </div>
 </template>
@@ -121,6 +127,8 @@ import { ref, onMounted } from 'vue'
 import arrowLeft from '../../../Resource/Menu/ArrowLeft.svg'
 import yellowStar from '../../../Resource/Dish/yellowStar.svg'
 import messageIcon from '../../../Resource/Dish/message.svg'
+import sadIcon from '../../../Resource/Staff/Sad.svg'
+import smileIcon from '../../../Resource/Staff/smile.svg'
 import { postForm } from '../../httpClient/client'
 import { PATHS } from '../../httpClient/paths'
 

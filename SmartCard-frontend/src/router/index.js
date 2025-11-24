@@ -26,6 +26,11 @@ const routes = [
     component: () => import('../views/SmartDialoge.vue'),
   },
   {
+    path: '/history-dialogue',
+    name: 'HistoryDialogue',
+    component: () => import('../views/HistoryDialogue.vue'),
+  },
+  {
     path: '/equipment',
     name: 'EquipmentManager',
     component: () => import('../views/EquipmentManager.vue'),

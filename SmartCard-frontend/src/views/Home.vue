@@ -45,7 +45,7 @@
 import { reactive, onMounted } from 'vue'
 
 import ScoreCard from '../components/General/ScoreCard.vue'
-import LineChart from '../components/lineChart.vue'
+import LineChart from '../components/Dish/lineChart.vue'
 import StaffFormHome from '../components/Staff/StaffFormHome.vue'
 import BadDish from '../components/Dish/badDishHome.vue'
 import TaskPanel from '../components/TaskCenterComponents/TaskPanel.vue'
@@ -80,7 +80,6 @@ const trendOf = (metaValue) => {
 }
 
 
-
 async function fetchHomeData() {
   try {
     const res = await postForm(PATHS.MANAGE_INDEX, { account: '', password: '' })
@@ -105,7 +104,6 @@ async function fetchHomeData() {
     console.error('Failed to fetch home data:', error)
   }
 }
-
 
 
 onMounted(() => {

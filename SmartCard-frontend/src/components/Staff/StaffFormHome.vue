@@ -1,6 +1,6 @@
 <template>
   
-  <div class="relative rounded-[38px] min-w-[1230px] border border-border bg-card shadow-md px-8 py-6">
+  <div class="relative rounded-[38px] h-[450px] min-w-[1230px] border border-border bg-card shadow-md px-8 py-6">
 
     <div class="text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">员工管理</div>
    
@@ -41,7 +41,7 @@
         
         <!-- Day Time -->
         <div class="text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi'] truncate text-center">
-          {{ row.day_time }}
+          {{ formatTimeToHours(row.day_time) }}
         </div>
         
         <!-- Day Bad Count -->
@@ -110,6 +110,12 @@ const gridStyle = computed(() => ({
 }))
 
 // Methods
+function formatTimeToHours(seconds) {
+  if (typeof seconds !== 'number' || seconds < 0) return '0小时'
+  const hours = (seconds / 3600).toFixed(1)
+  return `${hours}小时`
+}
+
 async function fetchStaff() {
   try {
     const payload = {

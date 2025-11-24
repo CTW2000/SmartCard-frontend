@@ -29,3 +29,8 @@ coverage
 
 *.tsbuildinfo
 .env
+.env.local
+.env.*.local
+# Keep .env.example as a template
+!.env.example
+

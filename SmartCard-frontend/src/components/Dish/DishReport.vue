@@ -81,12 +81,31 @@
       
 
 
-      <div class="left-[36px] top-[78px] absolute w-96 bg-white rounded-2xl shadow-[0px_4px_4px_0px_rgba(205,205,205,0.25)] border border-neutral-200 px-6 py-4 space-y-3">
-        <div class="text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi']">
-          {{ firstFeedbackStart }} -- {{ firstFeedbackEnd }}
-        </div>
-        <div class="text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi'] leading-relaxed">
-          {{ firstFeedbackSource }}
+      <div class="left-[36px] top-[78px] absolute w-96 space-y-4 max-h-[370px] overflow-y-auto pr-2">
+        <template v-if="dishReport.feedback_list.length">
+          <div
+            v-for="(feedback, index) in dishReport.feedback_list"
+            :key="feedback._id || index"
+            class="bg-white rounded-2xl shadow-[0px_4px_4px_0px_rgba(205,205,205,0.25)] border border-neutral-200 px-6 py-4 space-y-3"
+          >
+            <div class="text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi']">
+              {{ (feedback.start_time || '--:--') + ' -- ' + (feedback.end_time || '--:--') }}
+            </div>
+            <div class="text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi'] leading-relaxed">
+              {{ feedback.source || '暂无反馈' }}
+            </div>
+          </div>
+        </template>
+        <div
+          v-else
+          class="bg-white rounded-2xl shadow-[0px_4px_4px_0px_rgba(205,205,205,0.25)] border border-neutral-200 px-6 py-4 space-y-3"
+        >
+          <div class="text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi']">
+            --:-- -- --:--
+          </div>
+          <div class="text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi'] leading-relaxed">
+            暂无反馈
+          </div>
         </div>
       </div>
 
@@ -96,7 +115,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 
 import { postForm } from '../../httpClient/client'
 import { PATHS } from '../../httpClient/paths'
@@ -114,25 +133,6 @@ const dishReport = ref({
   feedback_list: [],
   total: 0,
 })
-
-const firstFeedbackSource = computed(() => {
-  const list = dishReport.value?.feedback_list || []
-  if (!list.length) return '暂无反馈'
-  return list[0]?.source || '暂无反馈'
-})
-
-const firstFeedbackStart = computed(() => {
-  const list = dishReport.value?.feedback_list || []
-  if (!list.length) return '--:--'
-  return list[0]?.start_time || '--:--'
-})
-
-const firstFeedbackEnd = computed(() => {
-  const list = dishReport.value?.feedback_list || []
-  if (!list.length) return '--:--'
-  return list[0]?.end_time || '--:--'
-})
-
 
 defineEmits(['close'])
 

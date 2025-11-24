@@ -1,7 +1,7 @@
 <template>
 
   
-  <div class="relative rounded-[38px] min-w-[1230px] border border-border bg-card shadow-md px-8 py-6 w-full">
+  <div class="relative rounded-[38px] min-w-[1230px] h-[750px] border border-border bg-card shadow-md px-8 py-6 w-full">
     
     <div class="text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">员工管理</div>
    
@@ -46,7 +46,7 @@
 
         <!-- Day Time -->
         <div class="text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi'] truncate text-center">
-          {{ row.day_time }}
+          {{ formatTimeToHours(row.day_time) }}
         </div>
 
         <!-- Day Bad Count -->
@@ -164,10 +164,8 @@
 
 
     <!-- Pagination controls -->
-    <div class="mt-4 flex items-center justify-center">
-
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 w-full flex items-center justify-center px-8">
       <div class="flex items-center gap-3">
-        
         <button
           type="button"
           class="px-3 py-1 rounded-md border border-neutral-200 text-lg disabled:opacity-50"
@@ -232,7 +230,6 @@ const selectedStaff = ref(null)
 
 const reportStaff = ref(null)
 
-
 const currentPage = ref(1)
 const pageSize = ref(10)
 const totalItems = ref(null)
@@ -277,6 +274,12 @@ const canGoNext = computed(() => {
 })
 
 // Methods
+function formatTimeToHours(seconds) {
+  if (typeof seconds !== 'number' || seconds < 0) return '0小时'
+  const hours = (seconds / 3600).toFixed(1)
+  return `${hours}小时`
+}
+
 function onEditClick() {
   isEditing.value = !isEditing.value
  

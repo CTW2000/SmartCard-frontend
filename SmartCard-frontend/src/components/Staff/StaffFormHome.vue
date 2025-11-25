@@ -1,12 +1,12 @@
 <template>
   
-  <div class="relative rounded-[38px] h-[450px] min-w-[1230px] border border-border bg-card shadow-md px-8 py-6">
+  <div class="relative rounded-[38px] h-[450px] min-w-[1500px] border border-border bg-card shadow-md px-8 py-6">
 
-    <div class="text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">员工管理</div>
+    <div class="absolute left-[50px] top-[38px] text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">员工管理</div>
    
     <!-- Headers -->
 
-    <div class="mt-6 grid items-center" :style="gridStyle">
+    <div class="mt-20 grid items-center form-grid" :style="gridStyle">
       <div
         v-for="(h, i) in renderHeaders"
         :key="i"
@@ -17,13 +17,13 @@
 
 
     <!-- Divider under headers -->
-    <div class="mt-6 h-0 shadow-[1px_1px_4px_0px_rgba(153,153,153,0.25)] outline outline-2 outline-offset-[-1px] outline-neutral-200"></div>
+    <div class="mt-2 mb-7 h-0 shadow-[1px_1px_4px_0px_rgba(153,153,153,0.25)] outline outline-2 outline-offset-[-1px] outline-neutral-200"></div>
 
 
     <!-- Rows -->
     <div class="mt-4">
 
-      <div v-for="(row, rIdx) in staffRows" :key="row.id || rIdx" class="mb-4 grid items-center" :style="gridStyle">
+      <div v-for="(row, rIdx) in staffRows" :key="row.id || rIdx" class="mb-4 grid items-center form-grid" :style="gridStyle">
         <!-- Name -->
         <div class="text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi'] truncate text-center">
           {{ row.name }}
@@ -168,6 +168,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.form-grid {
+  margin-left: -72px;
+  margin-right: -56px;
+}
 </style>
 
 

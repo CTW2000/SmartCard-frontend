@@ -6,7 +6,7 @@
       <!-- Close button -->
       <button
         v-if="editMode"
-        class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white border-2 flex items-center justify-center"
+        class="absolute bottom-68 left-50 w-8 h-8 rounded-full bg-white border-2 flex items-center justify-center"
         style="border-color: rgba(0,0,0,0.16)"
         aria-label="Close"
         @click="onCloseClick"
@@ -14,26 +14,30 @@
         ✕
       </button>
 
+      <!-- state color -->
+      <div class="w-2.5 h-2.5 rounded-full" :class="props.device_status === '在线' ? 'bg-green-400' : 'bg-red-400'"></div>
+
 
       <!-- Portrait + Title -->
       <div class="flex flex-col items-center">
         <img :src="AvatarMan" alt="avatar" class="w-[96px] h-[96px] rounded-full object-cover ring-2" style="--tw-ring-color: rgba(0,0,0,0.08)" />
-        <h3 class="mt-1 mb-2 text-[18px] font-bold tracking-[-0.01em] text-foreground text-center max-w-[260px]">{{ props.staff_name || '—' }}</h3>
+        <h3 class="mt-1 mb-2  tracking-[-0.01em]  text-center max-w-[260px] text-black text-[20px] font-normal font-['Alibaba_PuHuiTi']">{{ props.staff_name || '—' }}</h3>
       </div>
 
 
       <!-- Divider -->
-      <div class="h-px my-3" style="background: rgba(0,0,0,0.08)"></div>
+      <div class="h-px my-1 mb-3" style="background: rgba(0,0,0,0.08)"></div>
 
 
 
       <!-- Minimal info list -->
-      <div class="grid grid-cols-[96px_1fr] gap-y-2 items-baseline">
-        <div class="text-[14px] font-semibold text-[rgba(15,23,42,0.65)]">设备名称</div>
-        <div class="text-[14px] font-medium text-foreground">{{ props.device_name || '—' }}</div>
-        <div class="text-[14px] font-semibold text-[rgba(15,23,42,0.65)]">设备号</div>
-        <div class="text-[14px] font-medium text-foreground">{{ props.device_number || '—' }}</div>
-      </div>
+        <div class="flex items-center justify-center gap-2 ">
+          <span class="text-black text-[15px] font-light font-['Alibaba_PuHuiTi']">工牌状态:</span>
+          <span class="text-black text-[15px] font-light font-['Alibaba_PuHuiTi']">{{ props.device_status || '—' }}</span>
+        </div>
+        
+        <div class="text-teal-600 text-[15px] font-normal font-['Alibaba_PuHuiTi'] text-center">{{ props.device_name || '—' }}</div>
+     
 
 
 
@@ -142,9 +146,11 @@ const props = defineProps({
   device_id: { type: String, default: '' },
   device_name: { type: String, default: '' },
   device_number: { type: String, default: '' },
+  device_status: { type: String, default: '' },
   staff_id: { type: String, default: '' },
   group_id: { type: String, default: '' },
   editMode: { type: Boolean, default: false },
+
 })
 
 

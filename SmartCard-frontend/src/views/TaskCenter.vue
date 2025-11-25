@@ -1,6 +1,6 @@
 <template>
     <section class="p-[25px]">
-         <div class="min-w-[1200px]  min-h-[1000px] bg-background rounded-[50px] relative ">
+         <div class="min-w-[1500px]  min-h-[1000px] bg-background rounded-[50px] relative ">
           
             <div class="left-[30px] top-[30px] absolute flex items-center gap-3">
               
@@ -78,6 +78,7 @@
                   :task_progress="task.task_progress"
                   :dish_name="task.dish_name"
                   @goToDetail="handleGoToDetail"
+                  @statusUpdated="handleTaskStatusUpdated"
                 />
             </div>
 
@@ -245,7 +246,9 @@ function handleTaskSubmit() {
   showCreateTaskPanel.value = false
 }
 
-
+function handleTaskStatusUpdated() {
+  fetchTaskList(taskPage.value, taskPageSize.value, selectedStatus.value, selectedBelong.value)
+}
 
 function handleGoToDetail(taskId) {
   if (!taskId) return

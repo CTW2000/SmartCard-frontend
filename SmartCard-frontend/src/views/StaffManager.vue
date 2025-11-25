@@ -1,12 +1,52 @@
 <template>
  <section class="p-[25px]">
 
-      <!-- Top summary cards (3-column responsive, gap ≈ 12px) -->
-      <div class="grid grid-cols-3 gap-3 mb-6">
-        <ScoreCard title="昨日店长评分" :value="fetchTaskData.manager_score + '分'" valueColor="text-red-500" :percentValue="fetchTaskData.manager_score_ratio" />
-        <ScoreCard title="员工服务评分" :value="fetchTaskData.staff_score + '分'" valueColor="text-red-500" :percentValue="fetchTaskData.staff_score_ratio" />
-        <StaffBadcountCard title="差评事件" :reasons="fetchTaskData.bad_reason_list" />
-      </div>
+     <!-- Top summary cards + filter buttons -->
+     <div class="flex items-start gap-6 mb-6 min-w-[1500px]">
+       <div class="grid grid-cols-3 gap-3 flex-1">
+         <ScoreCard title="昨日店长评分" :value="fetchTaskData.manager_score + '分'" valueColor="text-red-700" :percentValue="fetchTaskData.manager_score_ratio" />
+         <ScoreCard title="员工服务评分" :value="fetchTaskData.staff_score + '分'" valueColor="text-red-700" :percentValue="fetchTaskData.staff_score_ratio" />
+         <StaffBadcountCard title="员工差评原因TOP榜单" :reasons="fetchTaskData.bad_reason_list" />
+       </div>
+
+       <div class="flex flex-col items-center gap-3">
+         <button
+           type="button"
+           aria-label="day filter"
+           class="flex flex-col items-center justify-center w-[40px] h-[40px] cursor-pointer"
+         >
+           <div class="flex items-center justify-center w-full h-full bg-white rounded-full border border-gray-200">
+             <span class="text-neutral-500 text-xl font-normal font-['Alibaba_PuHuiTi']">
+               日
+             </span>
+           </div>
+         </button>
+
+         <button
+           type="button"
+           aria-label="week filter"
+           class="flex flex-col items-center justify-center w-[40px] h-[40px] cursor-pointer"
+         >
+           <div class="flex items-center justify-center w-full h-full bg-white rounded-full border border-gray-200">
+             <span class="text-neutral-500 text-xl font-normal font-['Alibaba_PuHuiTi']">
+               周
+             </span>
+           </div>
+         </button>
+
+         <button
+           type="button"
+           aria-label="month filter"
+           class="flex flex-col items-center justify-center w-[40px] h-[40px] cursor-pointer"
+         >
+           <div class="flex items-center justify-center w-full h-full bg-white rounded-full border border-gray-200">
+             <span class="text-neutral-500 text-xl font-normal font-['Alibaba_PuHuiTi']">
+               月
+             </span>
+           </div>
+         </button>
+       </div>
+     </div>
 
       <!-- Form section -->
         <StaffForm @rowAction="onRowAction" />

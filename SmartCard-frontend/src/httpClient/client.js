@@ -1,10 +1,27 @@
 import axios from 'axios';
 import { BASE_URL } from './paths';
+import { setNetworkError } from '../composables/useNetworkError';
 
 const client = axios.create({
   baseURL: BASE_URL,
   timeout: 15000,
 });
+
+// Response interceptor to catch POST request failures
+client.interceptors.response.use(
+  (response) => {
+    // Reset error state on successful response
+    setNetworkError(false);
+    return response;
+  },
+  (error) => {
+    // Check if it's a POST request that failed
+    if (error.config && error.config.method && error.config.method.toLowerCase() === 'post') {
+      setNetworkError(true);
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default client;
 
@@ -118,6 +135,8 @@ export async function streamChat(content, onChunk, onComplete, onError) {
     }
   } catch (error) {
     console.error('Stream chat error:', error);
+    // Show network error page for POST request failures
+    setNetworkError(true);
     if (onError) {
       onError(error);
     } else {

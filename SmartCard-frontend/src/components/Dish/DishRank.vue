@@ -1,5 +1,5 @@
 <template>
-  <form class="relative min-w-[700px] w-full h-[610px] rounded-[38px] bg-white shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)] p-[40px] flex flex-col">
+  <form class="relative min-w-[600px] w-full h-[610px] rounded-[38px] bg-white shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)] p-[40px] flex flex-col">
     
     <!-- Title -->
     <div class="flex items-center">

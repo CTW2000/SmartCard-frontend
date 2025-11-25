@@ -1,6 +1,6 @@
 <template>
     <section class="p-[25px] ">
-        <div class="min-w-[1200px]  min-h-[1000px] bg-background rounded-[50px] relative ">
+        <div class="min-w-[1500px]  min-h-[1000px] bg-background rounded-[50px] relative ">
         <div class="left-[30px] top-[30px] absolute flex items-center gap-3">
               
               <img 

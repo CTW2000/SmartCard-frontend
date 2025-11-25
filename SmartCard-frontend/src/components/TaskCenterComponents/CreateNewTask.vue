@@ -10,10 +10,14 @@
         <div class="absolute left-[45px] top-[31.5px] justify-start text-[18px] font-medium text-neutral-800 font-['Alibaba_PuHuiTi']">新建任务</div>
         <button
           type="button"
-          class="absolute right-[45px] top-[22px] h-[36px] px-6 rounded-[18px] bg-neutral-900 text-white text-[16px] font-medium font-['Alibaba_PuHuiTi'] shadow-[0px_2px_4px_rgba(0,0,0,0.1)] hover:bg-neutral-800 transition-colors"
+          class="absolute right-[45px] top-[22px] h-[36px] px-6 rounded-[18px] 
+          bg-neutral-900 text-white text-[16px] font-medium 
+          font-['Alibaba_PuHuiTi'] shadow-[0px_2px_4px_rgba(0,0,0,0.1)] 
+          hover:bg-neutral-800 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           @click="handleSubmit"
+          :disabled="isSubmitting"
         >
-          提交
+          {{ isSubmitting ? '提交中...' : '提交' }}
         </button>
         <div class="absolute left-[45px] top-[76.5px] h-[1.5px] w-[516px] rounded-[73px] bg-gray-200"></div>
         <div class="absolute left-[45px] top-[195px] justify-start text-[18px] font-normal text-neutral-950 font-['Alibaba_PuHuiTi']">任务描述</div>
@@ -179,6 +183,7 @@ const showTaskTypePanel = ref(false)
 
 const showDatePanel = ref(false)
 const datePanelInput = ref('')
+const isSubmitting = ref(false)
 
 const formattedEndTime = computed(() => {
   if (!editData.end_time) return '选择日期'
@@ -342,6 +347,7 @@ function cancelDateSelection() {
 }
 
 async function handleSubmit() {
+  if (isSubmitting.value) return
   const dishName = (editData.dish_name || '').trim()
   const matchedDish = fetchData.dish_name.find(dish => dish.name === dishName)
 
@@ -357,7 +363,8 @@ async function handleSubmit() {
     console.warn('[CreateNewTask] Missing required fields, aborting submit', payload)
     return
   }
-
+ 
+  isSubmitting.value = true
   try {
     const response = await postForm(PATHS.TASK_ADD, payload)
     if (response && response.status >= 200 && response.status < 300) {
@@ -365,7 +372,10 @@ async function handleSubmit() {
     }
   } catch (error) {
     console.error('[CreateNewTask] Failed to submit task:', error)
+  } finally {
+    isSubmitting.value = false
   }
+
 }
 
 

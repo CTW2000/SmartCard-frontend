@@ -1,8 +1,7 @@
 <template>
   <section class="p-[25px]">
 
-    
-      <div class="grid grid-cols-4 gap-6">
+      <div class="grid grid-cols-4 gap-6 min-w-[1500px]">
         <ScoreCard title="昨日店长评分" :value="fetchhomeData.manager_score + '分'" valueColor="text-red-500" :percentValue="fetchhomeData.manager_score_ratio"  />
         <ScoreCard title="昨日员工服务评分" :value="fetchhomeData.staff_score + '分'" valueColor="text-red-500" :percentValue="fetchhomeData.staff_score_ratio" />
         <ScoreCard title="昨日菜品差评率" :value="fetchhomeData.dish_bad_score + '%'" valueColor="text-green-800" :percentValue="fetchhomeData.dish_bad_ratio" />
@@ -10,7 +9,7 @@
       </div>
 
 
-      <div class="mt-6 overflow-x-auto flex gap-6">
+      <div class="mt-6 overflow-x-auto flex gap-6 min-w-[1500px]">
   
           <div class="flex-none w-[240px] h-[353.25px]">
             <div class="transform origin-top-left scale-75">
@@ -24,10 +23,8 @@
             </div>
           </div>
 
-          <div class="flex-none w-[650.25px] h-[353.25px]">
-            <div class="transform origin-top-left scale-75">
-              <LineChart />
-            </div>
+          <div class="flex-auto min-w-[500px]">
+            <LineChart />
           </div>
     
       </div>

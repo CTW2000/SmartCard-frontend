@@ -1,8 +1,9 @@
 <template>
 
 
-  <section class="relative min-h-[calc(100vh)] bg-background">
-
+<section class="p-[25px]">
+  <div class="min-w-[1500px]  min-h-[1000px] bg-background rounded-[50px] relative ">
+   
     <div class="max-w-[1600px] mx-auto px-8 py-6">
       
       <div class="m-0 mb-4">
@@ -19,6 +20,7 @@
         </template>
       </div>
 
+      <div class="w-[1388px] h-0.5 bg-gray-200 rounded-[73px] mb-4"></div>
 
       
       <!-- Group controls -->
@@ -62,8 +64,8 @@
             <button
               v-for="(g, idx) in fetchData.groups"
               :key="g.id"
-              class="relative rounded-[8px] border px-[18px] py-[9.2px] text-[14px]"
-              :class="idx === activeGroupIndex ? 'bg-white border-[#007AFF] text-[#007AFF]' : 'bg-white border-[#DADADA] text-[rgba(0,0,0,0.80)]'"
+              class="relative w-44 h-12 rounded-xl border text-[14px] flex items-center justify-center cursor-pointer"
+              :class="idx === activeGroupIndex ? 'bg-neutral-700 text-white border-neutral-700' : 'bg-white border-[#DADADA] text-[rgba(0,0,0,0.80)]'"
               @click="selectGroup(idx)"
             >
               {{ g.name }}
@@ -74,7 +76,7 @@
         </div>
       </div>
 
-    
+      <div class="w-[1388px] h-0.5 bg-gray-200 rounded-[73px] mb-4"></div>
 
 
       <!-- Active group's cards -->
@@ -88,6 +90,7 @@
             :device_name="p.device_name"
             :device_id="p.device_id"
             :staff_id="p.staff_id"
+            :device_status="p.device_status"
             :editMode="isEditMode"
             @close="onCardUpdated"
             @updated="onCardUpdated"
@@ -95,32 +98,31 @@
         </div>
         
       </div>
-      
+    </div>
 
 
 
-      <!-- Device pagination controls -->
-      <div class="mt-6 flex items-center justify-center gap-4">
-        <button
-          type="button"
-          class="px-4 py-2 rounded-[8px] border border-[#DADADA] text-[14px] bg-white text-[rgba(0,0,0,0.80)] hover:bg-[#F4F4F4] disabled:opacity-50 disabled:cursor-not-allowed"
-          :disabled="staffPage <= 1"
-          @click="prevDevicePage"
-        >
-          上一页
-        </button>
-        <span class="text-neutral-600 text-[14px] font-medium">
-          第{{ staffPage }}页
-        </span>
-        <button
-          type="button"
-          class="px-4 py-2 rounded-[8px] border border-[#DADADA] text-[14px] bg-white text-[rgba(0,0,0,0.80)] hover:bg-[#F4F4F4] disabled:opacity-50 disabled:cursor-not-allowed"
-          :disabled="staffTotal != null && staffPage >= Math.ceil(staffTotal / staffPageSize)"
-          @click="nextDevicePage"
-        >
-          下一页
-        </button>
-      </div>
+    <!-- Device pagination controls -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 w-full flex items-center justify-center gap-4">
+      <button
+        type="button"
+        class="px-4 py-2 rounded-[8px] border border-[#DADADA] text-[14px] bg-white text-[rgba(0,0,0,0.80)] hover:bg-[#F4F4F4] disabled:opacity-50 disabled:cursor-not-allowed"
+        :disabled="staffPage <= 1"
+        @click="prevDevicePage"
+      >
+        上一页
+      </button>
+      <span class="text-neutral-600 text-[14px] font-medium">
+        第{{ staffPage }}页
+      </span>
+      <button
+        type="button"
+        class="px-4 py-2 rounded-[8px] border border-[#DADADA] text-[14px] bg-white text-[rgba(0,0,0,0.80)] hover:bg-[#F4F4F4] disabled:opacity-50 disabled:cursor-not-allowed"
+        :disabled="staffTotal != null && staffPage >= Math.ceil(staffTotal / staffPageSize)"
+        @click="nextDevicePage"
+      >
+        下一页
+      </button>
     </div>
 
 
@@ -162,8 +164,8 @@
     </div>
 
 
-    
-  </section>
+  </div>
+</section>
 
 
 

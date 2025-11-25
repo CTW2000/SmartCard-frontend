@@ -1,12 +1,12 @@
 <template>
 
   
-  <div class="relative rounded-[38px] min-w-[1230px] h-[750px] border border-border bg-card shadow-md px-8 py-6 w-full">
+  <div class="relative rounded-[38px] min-w-[1500px] h-[750px] border border-border bg-card shadow-md px-8 py-6 w-full ">
     
-    <div class="text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">员工管理</div>
+    <div class="absolute left-[40px] top-[38px] text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">员工管理</div>
    
        <!-- Headers -->
-       <div class="mt-6 grid items-center" :style="gridStyle">
+       <div class="mt-20 grid items-center form-grid" :style="gridStyle">
       <div
         v-for="(h, i) in renderHeaders":key="i" 
         class="text-stone-900 text-2xl font-normal font-['Alibaba_PuHuiTi'] text-center">
@@ -16,17 +16,17 @@
 
 
     <!-- Divider under headers -->
-    <div class="mt-3 h-0 shadow-[1px_1px_4px_0px_rgba(153,153,153,0.25)]
+    <div class="mt-2 mb-7 h-0 shadow-[1px_1px_4px_0px_rgba(153,153,153,0.25)]
      outline outline-2 outline-offset-[-1px] outline-neutral-200"></div>
 
 
 
     <!-- Rows in a scrollable container -->
-    <div class="mt-4 max-h-[420px] overflow-y-auto pr-2">
+    <div class="mt-4 max-h-[420px] overflow-y-auto overflow-x-hidden">
       <div
         v-for="(row, rIdx) in staffRows"
         :key="row.id || rIdx"
-        class="mb-4 grid items-center"
+        class="mb-4 grid items-center form-grid"
         :style="gridStyle"
       >
         <!-- Name -->
@@ -81,7 +81,7 @@
 
       <button
         type="button"
-        class="absolute right-6 top-6 cursor-pointer"
+        class="absolute right-16 top-8 cursor-pointer"
         @click="onEditClick"
         aria-label="编辑员工信息"
       >
@@ -97,7 +97,7 @@
 
     <template v-else>
 
-      <div class="absolute right-6 top-6 flex items-center gap-2">
+      <div class="absolute right-10 top-8 flex items-center gap-2">
         <!-- Add button -->
         <button
           type="button"
@@ -237,10 +237,10 @@ const totalItems = ref(null)
 // Computed properties
 const renderHeaders = computed(() => {
   
-  const baseHeaders = ['姓名', '设备号', '岗位', '日均服务时间', '昨日差评事件', '评分', '信息详情']
+  const baseHeaders = ['姓名', '设备号', '岗位', '日均服务时间', '昨日差评事件', '评分', '服务报告']
   
   if (isEditing.value) {
-    baseHeaders[6] = '编辑'
+    baseHeaders[6] = '信息详情'
   }
 
   return baseHeaders
@@ -411,7 +411,10 @@ onMounted(() => {
 
 
 <style scoped>
-
+.form-grid {
+  margin-left: -72px;
+  margin-right: -52px;
+}
 </style>
 
 

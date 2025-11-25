@@ -2,7 +2,7 @@
 <div class="relative inline-block">
   <div class="w-[473px] h-[240px] relative">
     <div class="w-[473px] h-[240px] left-0 top-0 absolute bg-white rounded-[30px] shadow-[0px_2px_2px_0px_rgba(76,76,76,0.25)] border border-gray-200"></div>
-    <div class="left-[48px] top-[27px] absolute justify-start text-stone-900 text-[22px] font-normal font-['Alibaba_PuHuiTi']">{{ taskName }}</div>
+    <div class="left-[48px] top-[27px] absolute justify-start text-stone-900 text-[22px] font-normal font-['Alibaba_PuHuiTi'] max-w-[300px] truncate">{{ taskName }}</div>
     <div class="w-[84px] h-[30px] left-[365px] top-[26px] absolute rounded-[15px]" :class="taskStatus.badgeClass"></div>
     <div class="left-[381px] top-[28px] absolute justify-start text-[18px] font-medium font-['Alibaba_PuHuiTi']" :class="taskStatus.textClass">{{ taskStatus.text }}</div>
     <div class="left-[48px] top-[65px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">{{ belongText }} · 截止 {{ formattedEndTime }}</div>
@@ -11,19 +11,28 @@
     <div class="h-[24px] left-[47px] top-[107px] absolute bg-slate-900 rounded-tl-[12px] rounded-bl-[12px]" :style="{ width: progressWidth }"></div>
     <button
       type="button"
-      class="w-[108px] h-[48px] left-[228px] top-[176px] absolute bg-slate-100 rounded-[9px] shadow-[0px_4px_4px_0px_rgba(168,168,168,0.25)] flex items-center justify-center text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi'] hover:bg-slate-200 transition-colors"
+      class="w-[108px] h-[48px] left-[228px] top-[176px] absolute bg-slate-100 rounded-[9px] shadow-[0px_4px_4px_0px_rgba(168,168,168,0.25)] flex items-center justify-center text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi'] hover:bg-slate-200 transition-colors cursor-pointer"
       @click="goToTaskDetail"
     >
       查看详情
     </button>
-    <div class="w-[108px] h-[48px] left-[341px] top-[176px] absolute bg-slate-900 rounded-[9px] shadow-[0px_4px_4px_0px_rgba(168,168,168,0.25)]"></div>
-    <div class="left-[356px] top-[187px] absolute justify-start text-white text-[18px] font-normal font-['Alibaba_PuHuiTi']">任务作废</div>
+    <button
+      type="button"
+      class="w-[108px] h-[48px] left-[341px] top-[176px] absolute bg-slate-900 rounded-[9px] shadow-[0px_4px_4px_0px_rgba(168,168,168,0.25)] flex items-center justify-center text-white text-[18px] font-normal font-['Alibaba_PuHuiTi'] disabled:opacity-60 disabled:cursor-not-allowed hover:bg-slate-800 transition-colors cursor-pointer"
+      @click="cancelTask"
+      :disabled="isCancelling"
+      aria-label="任务作废"
+    >
+      {{ isCancelling ? '处理中...' : '任务作废' }}
+    </button>
   </div>
 </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { postForm } from '../../httpClient/client'
+import { PATHS } from '../../httpClient/paths'
 
 const props = defineProps({
   task_id: { type: String, default: '' },
@@ -35,7 +44,7 @@ const props = defineProps({
   dish_name: { type: String, default: '' },
 })
 
-const emit = defineEmits(['goToDetail'])
+const emit = defineEmits(['goToDetail', 'statusUpdated'])
 
 // Task name: dish_name + task_type
 const taskName = computed(() => {
@@ -55,6 +64,8 @@ function getTaskStatus(status) {
 
 const taskStatus = computed(() => getTaskStatus(props.task_status))
 
+
+const isCancelling = ref(false)
 // Task belong mapping: 1=品牌, 0=自己门店
 const belongText = computed(() => {
   const belong = props.task_belong
@@ -95,6 +106,24 @@ const progressWidth = computed(() => {
 
 function goToTaskDetail() {
   emit('goToDetail', props.task_id)
+}
+
+
+async function cancelTask() {
+  if (!props.task_id || isCancelling.value) return
+  isCancelling.value = true
+
+  try {
+    await postForm(PATHS.TASK_UPDATE_STATUS, {
+      task_id: props.task_id,
+      status: '0',
+    })
+    emit('statusUpdated', { task_id: props.task_id, status: '0' })
+  } catch (error) {
+    console.error('[TaskCard] Failed to cancel task:', error)
+  } finally {
+    isCancelling.value = false
+  }
 }
 </script>
 

@@ -2,7 +2,7 @@
 
   <section class="p-[25px]">
 
-    <div class="relative   min-w-[1550px]  min-h-[1000px]  left-0 top-0 absolute bg-white rounded-[38px] shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)]" >
+    <div class="relative   min-w-[1500px]  min-h-[1000px]  left-0 top-0 absolute bg-white rounded-[38px] shadow-[2px_2px_4px_0px_rgba(204,204,204,0.25)]" >
      
     
      <img
@@ -504,13 +504,11 @@ async function onConfirmSelectGroup() {
 }
 
 
-
 const router = useRouter()
 
 function goDishManager() {
   router.push({ name: 'DishManager' })
 }
-
 
 //excel upload
 

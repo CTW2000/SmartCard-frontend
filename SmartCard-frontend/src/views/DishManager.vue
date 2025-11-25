@@ -1,6 +1,6 @@
 <template>
   <section class="p-[25px]">
-    <div class="flex items-start gap-[50px]">
+    <div class="flex items-start gap-[50px] min-w-[1500px]">
      
         <LineChartMenu />
       
@@ -86,7 +86,7 @@
 
 
 
-    <div class="mt-4 flex items-start gap-[20px]">
+    <div class="mt-4 flex items-start gap-[20px] min-w-[1500px]">
         <DishRank />
         <DishRank type="new" />
     </div>

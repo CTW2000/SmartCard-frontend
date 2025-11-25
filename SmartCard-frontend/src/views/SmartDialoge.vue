@@ -1,12 +1,13 @@
 <template>
-   <section class="p-[25px] flex gap-6">
+  <section class="p-[25px] ">
 
-    <div class="w-[1100px]  h-[1000px] bg-background rounded-[50px] relative flex flex-col">
-    
-      <div class=" absolute left-[50px] top-[50px] text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">智能对话</div>
+    <div class="flex items-start gap-[20px] w-full min-w-[1500px]">
+      <div class="flex-1 min-h-[1000px] bg-background rounded-[50px] relative flex">
       
-      <!-- Chat background -->
-      <div class="mx-[40px] mt-[100px] mb-[50px] h-[820px] bg-gray-50 shadow-[-3px_0px_4px_0px_rgba(204,204,204,0.25)] rounded-[20px] flex flex-col">
+        <div class=" absolute left-[50px] top-[50px] text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">智能对话</div>
+        
+        <!-- Chat background -->
+        <div class="flex-1 mt-[100px] mb-[50px] ml-[40px] mr-[20px] h-[820px] bg-gray-50 shadow-[-3px_0px_4px_0px_rgba(204,204,204,0.25)] rounded-[20px] flex flex-col">
         
         <!-- Messages area -->
         <div class="h-[560px] overflow-y-auto p-6 space-y-4">
@@ -53,24 +54,25 @@
         
 
 
-        <div class="flex justify-center pb-10">
+        <div class="flex justify-center pb-10 px-10">
         
           <!-- user input window -->
-          <div class="w-[926px] h-48 relative">
-            <div class="w-[926px] h-48 left-0 top-0 absolute bg-white rounded-[29px] border border-gray-200"></div>
+          <div class="relative w-full max-w-[1100px] h-48">
+            
+            <div class="absolute inset-0 bg-white rounded-[29px] border border-gray-200"></div>
             
             <div 
-              class="w-11 h-11 left-[869px] top-[144px] absolute bg-neutral-700 rounded-[250px] cursor-pointer hover:bg-neutral-600 transition-colors"
+              class="w-11 h-11 absolute right-[32px] top-[144px] bg-neutral-700 rounded-[250px] cursor-pointer hover:bg-neutral-600 transition-colors"
               @click="handleSend"
             ></div>
-            <div class="w-6 h-6 left-[879px] top-[155px] absolute flex items-center justify-center pointer-events-none">
+            <div class="w-6 h-6 absolute right-[42px] top-[155px] flex items-center justify-center pointer-events-none">
                 <img :src="sendIcon" alt="send" class="w-6 h-6" />
             </div>
 
             
             <textarea
               v-model="inputText"
-              class="left-[32px] top-[16px] absolute w-[820px] h-[100px] resize-none bg-transparent text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi'] placeholder:text-zinc-500 focus:outline-none"
+              class="absolute left-[32px] right-[120px] top-[16px] h-[100px] resize-none bg-transparent text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi'] placeholder:text-zinc-500 focus:outline-none"
               placeholder="输入你想说的话"
               @keydown.enter.exact.prevent="handleSend"
             ></textarea>
@@ -93,16 +95,15 @@
           
           
         </div>
-      </div>
-        
-      
-    </div>
+        </div>
 
-    <!-- History Chat Component -->
-    <div class="flex items-start ">
-      <HistoryChat />
+      </div>
+
+      <!-- History Chat Component -->
+      <div class="w-[360px] flex-shrink-0  mr-[40px]">
+        <HistoryChat />
+      </div>
     </div>
-    
     
   </section>
 </template>

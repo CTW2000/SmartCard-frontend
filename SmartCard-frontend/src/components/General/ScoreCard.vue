@@ -7,9 +7,17 @@
     </div>
 
 
-    <div class="text-stone-500 text-base mt-2">
-      {{ percentText || '' }}
+    <div class="text-stone-500 text-base mt-2" v-if="percentDisplay">
+      <template v-if="percentDisplay.hasSplit">
+        <span>{{ percentDisplay.prefix }}</span>
+        <span class="text-red-700">{{ percentDisplay.value }}</span>
+      </template>
+      <template v-else>
+        {{ percentDisplay.prefix }}
+      </template>
     </div>
+
+    
   </div>
 </template>
 
@@ -31,5 +39,25 @@ const percentText = computed(() => {
   if (value > 0) return `同比增长${value}%`
   if (value < 0) return `同比下降${Math.abs(value)}%`
   return '与上周持平'
+})
+
+const percentDisplay = computed(() => {
+  const text = percentText.value
+  if (!text) return null
+
+  const match = text.match(/^([^0-9]+)?([0-9]+%?)$/)
+  if (!match) {
+    return {
+      hasSplit: false,
+      prefix: text,
+      value: '',
+    }
+  }
+
+  return {
+    hasSplit: true,
+    prefix: match[1] ?? '',
+    value: match[2] ?? '',
+  }
 })
 </script>

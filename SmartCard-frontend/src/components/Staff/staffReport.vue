@@ -43,8 +43,24 @@
   />
   <div class="left-[182px] top-[86px] absolute justify-start text-amber-500 text-2xl font-medium font-['Alibaba_PuHuiTi']">4.3分</div>
   
+  <!--edit and share buttons-->
+  <div class="right-[43px] top-[60px] absolute flex gap-4">
+    <img
+      :src="pencilIcon"
+      alt="edit"
+      class="absolute left-[-40px] top-[4px] w-[20px] h-[20px] object-contain cursor-pointer hover:opacity-70"
+      @click="handleEdit"
+    />
+    <img
+      :src="shareIcon"
+      alt="share"
+      class="w-[30px] h-[30px] object-contain cursor-pointer hover:opacity-70"
+      @click="handleShare"
+    />
+  </div>
 
 
+  
   <div class="w-20 h-7 left-[264px] top-[88px] absolute bg-emerald-100 rounded-2xl shadow-[0px_4px_4px_0px_rgba(212,212,212,0.25)] border border-white"></div>
   <div class="left-[284px] top-[93px] absolute justify-start text-teal-800 text-sm font-medium font-['Alibaba_PuHuiTi']">蘑菇嫩</div>
   <div class="w-20 h-7 left-[355px] top-[88px] absolute bg-emerald-100 rounded-2xl shadow-[0px_4px_4px_0px_rgba(212,212,212,0.25)] border border-white"></div>
@@ -65,6 +81,17 @@
   <div class="w-[844px] h-[474px] left-0 top-0 absolute bg-white rounded-3xl border border-neutral-200"></div>
   <div class="left-[43px] top-[28px] absolute justify-start text-zinc-800 text-2xl font-medium font-['Alibaba_PuHuiTi']">AI智能报告——{{ staff?.name || '—' }}</div>
   <div class="w-[765px] h-0 left-[43px] top-[78px] absolute shadow-[1px_1px_4px_0px_rgba(153,153,153,0.25)] outline outline-2 outline-offset-[-1px] outline-neutral-200"></div>
+  
+  
+
+
+  <div class="left-[43px] top-[70px] absolute w-[540px] justify-start">
+    <span class="text-black text-xl font-light font-['Alibaba_PuHuiTi']"><br/></span>
+    <span class="text-black text-xl font-medium font-['Alibaba_PuHuiTi']">需改进：<br/></span>
+    <span class="text-black text-xl font-light font-['Alibaba_PuHuiTi']">1. 菜品质量问题突出，存在太油、太辣、太咸、小炒肉太肥等情况，需加强厨房品控<br/>2. 会员券使用规则解释不够清晰，导致顾客疑问<br/>3. 顾客了解门店渠道等信息记录不系统。<br/><br/></span>
+    <span class="text-black text-xl font-normal font-['Alibaba_PuHuiTi']">明日重点：<br/></span>
+    <span class="text-black text-xl font-light font-['Alibaba_PuHuiTi']">1. 与厨房沟通，调整菜品咸度、辣度，改进小炒肉炒制（减少油脂、延长炒制时间）<br/>2. 加强员工对会员券规则的培训，确保清晰解释<br/>3. 完善顾客反馈记录和处理流程，确保问题及时解决<br/>4. 持续推广评价活动，提高参与率。</span>
+  </div>
 </div>
 
 
@@ -129,6 +156,8 @@ import yellowStar from '../../../Resource/Dish/yellowStar.svg'
 import messageIcon from '../../../Resource/Dish/message.svg'
 import sadIcon from '../../../Resource/Staff/Sad.svg'
 import smileIcon from '../../../Resource/Staff/smile.svg'
+import pencilIcon from '../../../Resource/Staff/Pencil.svg'
+import shareIcon from '../../../Resource/Staff/Share.svg'
 import { postForm } from '../../httpClient/client'
 import { PATHS } from '../../httpClient/paths'
 

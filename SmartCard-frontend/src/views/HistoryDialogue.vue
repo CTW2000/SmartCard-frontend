@@ -1,6 +1,8 @@
 <template>
     <section class="p-[25px] ">
-        <div class="min-w-[1500px]  min-h-[1000px] bg-background rounded-[50px] relative ">
+      
+      <div class="min-w-[1500px]  min-h-[1000px] bg-background rounded-[50px] relative ">
+       
         <div class="left-[30px] top-[30px] absolute flex items-center gap-3">
               
               <img 
@@ -10,19 +12,23 @@
                   @click="handleBackClick"
               />
               <span class="text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">对话历史</span>
-        </div>
-        <div class="h-0 left-[40px] right-[40px] top-[100px] absolute outline outline-2 outline-offset-[-1px] outline-zinc-300"></div>
+        
+            </div>
+        <div class="h-0 left-[40px] right-[40px] top-[100px] absolute outline outline-2 outline-offset-[-1px] outline-zinc-200"></div>
+        
+
         
         <!-- Chat cards container -->
-        <div class="left-[40px] right-[40px] top-[120px] bottom-[40px] absolute overflow-y-auto">
+        <div class="left-[40px] right-[40px] top-[120px] bottom-[40px] absolute overflow-y-auto" @scroll="handleScroll">
             <div class="relative px-[20px] py-4 space-y-8">
                 <!-- Today Section -->
                 <div v-if="todaySessions.length > 0" class="space-y-4">
                     <div class="left-[20px] text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi']">今天</div>
                     <template v-for="(session, index) in todaySessions" :key="session._id">
-                        <div class="w-[800px] min-h-20 flex items-start gap-4 p-5 shadow-[0px_2px_2px_0px_rgba(148,148,148,0.25)] bg-slate-50 rounded-[42px] overflow-hidden">
+                       
+                      <div class="w-[800px] min-h-20 flex items-start gap-4 p-5 shadow-[0px_2px_2px_0px_rgba(148,148,148,0.25)] bg-slate-50 rounded-[42px] overflow-hidden">
                             <img class="w-11 h-11 rounded-[250px] flex-shrink-0 object-contain" :src="userAvatar" alt="user avatar" />
-                            <div class="flex-1 min-w-0 text-zinc-800 text-xl font-normal font-['Alibaba_PuHuiTi'] break-words" style="word-wrap: break-word; overflow-wrap: break-word;">
+                            <div class="flex-1 min-w-0 text-zinc-800 mt-2 text-xl font-normal font-['Alibaba_PuHuiTi'] break-words" style="word-wrap: break-word; overflow-wrap: break-word;">
                                 "{{ session.content }}"
                             </div>
                         </div>
@@ -56,6 +62,8 @@
                 </div>
             </div>
         </div>
+
+
      </div>
    </section>
  </template>
@@ -71,6 +79,14 @@ import { ref, onMounted, computed } from 'vue'
 
 const router = useRouter()
 const sessions = ref([])
+
+const historyPage = ref(1)
+const historyPageSize = ref(12)
+const historyTotal = ref(0)
+const hasMorePages = ref(true)
+const isLoadingMore = ref(false)
+
+
 
 // Helper function to parse date and get time difference
 function getDateDifference(dateString) {
@@ -115,15 +131,41 @@ function handleBackClick() {
   router.push({ name: 'SmartDialoge' })
 }
 
+function handleScroll(event) {
+  const container = event.target
+  const scrollTop = container.scrollTop
+  const scrollHeight = container.scrollHeight
+  const clientHeight = container.clientHeight
+
+  // Load more when scrolled near bottom (within 50px)
+  if (
+    scrollTop + clientHeight >= scrollHeight - 50 &&
+    hasMorePages.value &&
+    !isLoadingMore.value
+  ) {
+    historyPage.value++
+    fetchSessions()
+  }
+}
 
 async function fetchSessions() {
+  // Prevent duplicate requests or loading when there are no more pages
+  if (isLoadingMore.value || !hasMorePages.value) return
+
+  isLoadingMore.value = true
+
+  const payload = {
+    page: String(historyPage.value),
+    size: String(historyPageSize.value),
+  }
+
   try {
-    const res = await postForm(PATHS.SESSION, {})
+    const res = await postForm(PATHS.SESSION, payload)
     const body = res?.data
     if (body?.success === true || body?.code === 200) {
       const sessionList = body?.data?.session_list || []
       // Extract _id, user content from last_chat, and createdAt
-      sessions.value = sessionList.map(session => {
+      const mappedSessions = sessionList.map(session => {
         const userMessage = session.last_chat?.find(msg => msg.role === 'user')
         return {
           _id: session._id,
@@ -131,15 +173,38 @@ async function fetchSessions() {
           createdAt: session.createdAt || session.created || ''
         }
       })
+
+      if (historyPage.value === 1) {
+        // First page: replace data
+        sessions.value = mappedSessions
+      } else {
+        // Next pages: append data
+        sessions.value = [...sessions.value, ...mappedSessions]
+      }
+
+      const total = body?.data?.total ?? 0
+      historyTotal.value = total
+
+      if (total > 0) {
+        // Use total from backend if provided
+        hasMorePages.value = sessions.value.length < total
+      } else {
+        // Fallback: if we got a full page, assume there might be more
+        hasMorePages.value = mappedSessions.length === historyPageSize.value
+      }
     } else {
       console.error('Failed to fetch sessions:', body?.message)
     }
   } catch (err) {
     console.error('Error fetching sessions:', err?.response?.data || err)
+  } finally {
+    isLoadingMore.value = false
   }
 }
 
 onMounted(() => {
+  historyPage.value = 1
+  hasMorePages.value = true
   fetchSessions()
 })
 

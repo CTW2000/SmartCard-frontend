@@ -9,9 +9,18 @@
         <div class="inline-flex items-center gap-2 justify-self-end mr-6">
           <Notification />
           <UserAvatar name="Alice Doe" />
+          <button
+            type="button"
+            class="relative w-12 h-12 bg-white border border-black/5 rounded-full flex items-center justify-center shadow-sm cursor-pointer"
+            aria-label="Logout"
+            @click="handleLogout"
+          >
+            <img :src="logoutIcon" alt="Logout" class="w-6 h-6" />
+          </button>
         </div>
       </div>
     </header>
+
 
 
     <div class="flex-1 w-full ">
@@ -45,6 +54,7 @@ import BrandButton from './components/General/BrandButton.vue'
 import Notification from './components/General/Notification.vue'
 import UserAvatar from './components/General/UserAvatar.vue'
 import NetworkError from './components/Error/NetworkError.vue'
+import logoutIcon from '../Resource/Home/Logout.svg'
 
 const route = useRoute()
 const { showNetworkError } = useNetworkError()
@@ -52,7 +62,10 @@ const { showNetworkError } = useNetworkError()
 // use for the login page and the register page
 const hideChrome = computed(() => route?.meta?.hideChrome === true)
 
-
+function handleLogout() {
+  console.log('Logout clicked')
+  // TODO: integrate actual logout logic
+}
 </script>
 
 <style scoped>

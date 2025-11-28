@@ -1,6 +1,6 @@
 <template>
   <div class="rounded-[16px] border border-border bg-card shadow-md p-6">
-    <div class="text-stone-500 text-base font-bold">{{ title }}</div>
+    <div class="text-neutral-500 text-xl font-normal font-['Alibaba_PuHuiTi']">{{ title }}</div>
 
     <div class="text-3xl font-bold mt-1" :class="valueColor">
       {{ props.value }}
@@ -10,7 +10,7 @@
     <div class="text-stone-500 text-base mt-2" v-if="percentDisplay">
       <template v-if="percentDisplay.hasSplit">
         <span>{{ percentDisplay.prefix }}</span>
-        <span class="text-red-700">{{ percentDisplay.value }}</span>
+        <span :class="percentColor">{{ percentDisplay.value }}</span>
       </template>
       <template v-else>
         {{ percentDisplay.prefix }}
@@ -29,6 +29,7 @@ const props = defineProps({
   value: { type: [String, Number], default: '' },
   valueColor: { type: String, default: 'text-stone-900' },
   percentValue: { type: [String, Number], default: '' },
+  percentColor: { type: String, default: 'text-red-700' },
 })
 
 const percentText = computed(() => {

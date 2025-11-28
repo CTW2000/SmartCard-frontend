@@ -1,29 +1,27 @@
 <template>
   <button
-    class="w-8 h-8 rounded-full bg-[#F5C4C5] text-[#A92E31] inline-flex items-center justify-center font-bold border border-black/5"
+    class="w-72 h-14 bg-white rounded-3xl shadow-[0px_2px_2px_0px_rgba(189,189,189,0.25)] border border-neutral-200 flex items-center gap-4 px-4 text-left cursor-pointer"
     aria-label="User menu"
     @click="emit('click')"
   >
-    <span class="text-[12px] leading-none">{{ initials }}</span>
+    <img :src="avatarIcon" alt="User avatar" class="w-12 h-12 rounded-[250px] object-cover" />
+    <div class="text-black text-sm font-light font-['Alibaba_PuHuiTi'] leading-tight">
+      <div>{{ title }}</div>
+      <div>{{ subtitle }}</div>
+    </div>
   </button>
-  </template>
+</template>
 
 <script setup>
-import { computed } from 'vue'
+import avatarIcon from '../../../Resource/Staff/AvatarMan.svg'
 
 const props = defineProps({
-  name: { type: String, default: 'Alice Doe' },
+  title: { type: String, default: '店长-张三' },
+  subtitle: { type: String, default: '朱友和大排档（天时科创园店）' },
 })
 
 const emit = defineEmits(['click'])
-
-const initials = computed(() => {
-  const parts = props.name.trim().split(/\s+/)
-  if (parts.length === 1) return parts[0].charAt(0).toUpperCase()
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase()
-})
 </script>
 
 <style scoped>
 </style>
-

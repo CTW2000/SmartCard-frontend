@@ -140,7 +140,14 @@
 
         <div class="grid grid-cols-3 gap-x-[90px] gap-y-[37.5px]">
           
-          <div v-for="(card, idx) in dishCards" :key="idx" class="w-60 h-20 relative">
+          <div
+            v-for="(card, idx) in dishCards"
+            :key="idx"
+            class="w-60 h-20 relative"
+            @mouseenter="showDishTooltip($event, card.name)"
+            @mousemove="moveDishTooltip"
+            @mouseleave="hideDishTooltip"
+          >
 
             <div class="w-60 h-20 left-0 top-0 absolute bg-white rounded-3xl border border-zinc-300"></div>
            
@@ -172,6 +179,15 @@
         </div>
       </div>
       
+      <!-- Dish tooltip -->
+      <div
+        v-if="dishTooltip.visible"
+        class="fixed z-50 px-3 py-2 bg-white/90 text-neutral-900 text-base rounded-3xl border border-white/70 backdrop-blur pointer-events-none"
+        :style="{ left: dishTooltip.x + 'px', top: dishTooltip.y + 'px' }"
+      >
+        {{ dishTooltip.text }}
+      </div>
+
 
 
 
@@ -326,6 +342,12 @@ const isBatchSelect = ref(false)
 const selectedIndexes = ref(new Set())
 
 const dishCards = ref([])
+const dishTooltip = ref({
+  visible: false,
+  text: '',
+  x: 0,
+  y: 0,
+})
 
 const searchText = ref('')
 
@@ -509,6 +531,37 @@ const router = useRouter()
 function goDishManager() {
   router.push({ name: 'DishManager' })
 }
+
+
+
+
+//dish tooltip
+function showDishTooltip(event, text) {
+  if (!text) return
+  dishTooltip.value = {
+    visible: true,
+    text,
+    x: event.clientX + 12,
+    y: event.clientY + 12,
+  }
+}
+
+function moveDishTooltip(event) {
+  if (!dishTooltip.value.visible) return
+  dishTooltip.value = {
+    ...dishTooltip.value,
+    x: event.clientX + 12,
+    y: event.clientY + 12,
+  }
+}
+
+function hideDishTooltip() {
+  dishTooltip.value.visible = false
+}
+
+
+
+
 
 //excel upload
 

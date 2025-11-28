@@ -63,6 +63,14 @@
       <div class="w-[844px] h-[474px] left-0 top-0 absolute bg-white rounded-3xl border border-neutral-200"></div>
       <div class="left-[43px] top-[28px] absolute justify-start text-zinc-800 text-2xl font-medium font-['Alibaba_PuHuiTi']">AI智能报告——{{ dishName }}</div>
       <div class="w-[765px] h-0 left-[43px] top-[78px] absolute shadow-[1px_1px_4px_0px_rgba(153,153,153,0.25)] outline outline-2 outline-offset-[-1px] outline-neutral-200"></div>
+      <div class="left-[43px] top-[100px] absolute w-[765px] justify-start">
+        <span class="text-black text-xl font-normal font-['Alibaba_PuHuiTi']">一、核心反馈<br/>1. 好评点（27 条）<br/></span>
+        <span class="text-black text-xl font-normal font-['Alibaba_PuHuiTi']">家常味：15 位居民 / 家庭客群认可 "蛋嫩菇鲜"，符合定位。<br/>出餐快：8 位午市上班族反馈 "5 分钟上桌"，适配简餐需求。<br/>性价比高：4 位顾客认为 "28 元分量足"，优于同价小炒。<br/></span>
+        <span class="text-black text-xl font-normal font-['Alibaba_PuHuiTi']">2. 待改进（5 条）<br/></span>
+        <span class="text-black text-xl font-normal font-['Alibaba_PuHuiTi']">蘑菇出水：3 条反馈（含 2 桌夜宵党），因焯水后未挤干。<br/>咸淡不一：1 桌偏咸、1 桌偏淡，调味无统一标准。<br/>油感差异：1 位老年顾客反馈 "油稍多"。<br/></span>
+        <span class="text-black text-xl font-normal font-['Alibaba_PuHuiTi']">二、明日改进（责任人：李师傅）<br/></span>
+        <span class="text-black text-xl font-normal font-['Alibaba_PuHuiTi']">蘑菇焯水后需 "攥紧无水滴落"，完成帮厨培训。<br/>每份固定用盐 3g、生抽 5ml，定量取用。<br/>菜单备注 "可做少油版"，夜宵时段主动询问。</span>
+      </div>
     </div>
 
 

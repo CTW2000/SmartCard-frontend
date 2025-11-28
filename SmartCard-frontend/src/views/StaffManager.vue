@@ -4,8 +4,8 @@
      <!-- Top summary cards + filter buttons -->
      <div class="flex items-start gap-6 mb-6 min-w-[1500px]">
        <div class="grid grid-cols-3 gap-3 flex-1">
-         <ScoreCard title="昨日店长评分" :value="fetchTaskData.manager_score + '分'" valueColor="text-red-700" :percentValue="fetchTaskData.manager_score_ratio" />
-         <ScoreCard title="员工服务评分" :value="fetchTaskData.staff_score + '分'" valueColor="text-red-700" :percentValue="fetchTaskData.staff_score_ratio" />
+         <ScoreCard title="昨日店长评分" :value="fetchTaskData.manager_score + '分'" valueColor="text-red-700" :percentValue="fetchTaskData.manager_score_ratio" percentColor="text-red-700"  />
+         <ScoreCard title="员工服务评分" :value="fetchTaskData.staff_score + '分'" valueColor="text-red-700" :percentValue="fetchTaskData.staff_score_ratio" percentColor="text-red-700"  />
          <StaffBadcountCard title="员工差评原因TOP榜单" :reasons="fetchTaskData.bad_reason_list" />
        </div>
 

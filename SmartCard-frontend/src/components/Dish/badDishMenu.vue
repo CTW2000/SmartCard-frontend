@@ -49,7 +49,7 @@
 
 
 
-        <div v-else-if="!isLoadingMore" class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-400 text-center text-xl">暂无数据</div>
+        
         <div v-if="isLoadingMore" class="absolute left-1/2 bottom-4 transform -translate-x-1/2 text-gray-400 text-center text-lg">加载中...</div>
       
       

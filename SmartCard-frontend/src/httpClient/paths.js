@@ -32,6 +32,7 @@ export const PATHS = {
   TASK_INFO: '/api/task/info',
   TASK_UPDATE_STATUS: '/api/task/update_status',
   SESSION: '/api/complete/session',
+  CHAT_HISTORY: '/api/complete/chat/history',
 };
 
 

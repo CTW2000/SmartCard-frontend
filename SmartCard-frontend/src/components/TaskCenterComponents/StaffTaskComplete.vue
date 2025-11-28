@@ -10,8 +10,6 @@
     <div class="left-[35px] top-[103px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">筛选</div>
     <div class="left-[53px] top-[182px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">员工</div>
 
-
-
     <div class="right-[440px] top-[182px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']">完成率</div>
     
     <!-- Pagination buttons -->
@@ -41,6 +39,7 @@
     <div class="right-[194px] top-[105px] absolute justify-start text-neutral-600 text-[15px] font-normal font-['Alibaba_PuHuiTi']">
       第{{ staffPage }}/{{ staffTotal != null && staffPageSize > 0 ? Math.max(1, Math.ceil(staffTotal / staffPageSize)) : 1 }}页
     </div>
+    
     <!-- Dynamic separator lines -->
     <template v-for="(item, index) in staffList" :key="'separator-' + index">
       <div 
@@ -52,35 +51,29 @@
 
     <!-- Dynamic staff list -->
     <template v-for="(item, index) in staffList" :key="'staff-' + (item._id || index)">
-      <!-- Avatar -->
+      <!-- Avatar + name -->
       <div 
-        class="w-12 h-12 left-[53px] absolute bg-slate-200 rounded-full"
-        :style="{ top: (214 + 28 + 85 * index) + 'px' }"
+        class="absolute left-[53px] flex items-center gap-4"
+        :style="{ top: (214 + 24 + 85 * index) + 'px' }"
       >
-        <img 
-          v-if="item.staff_id?.avatar" 
-          :src="item.staff_id.avatar" 
-          :alt="item.staff_id?.name || ''"
-          class="w-full h-full rounded-full object-cover"
-        />
+        <div class="w-12 h-12 bg-slate-200 rounded-full overflow-hidden flex-shrink-0">
+          <img 
+            :src="AvatarMan"
+            :alt="item.staff_id?.name || 'staff avatar'"
+            class="w-full h-full rounded-full object-cover"
+          />
+        </div>
+        <div 
+          class="text-zinc-800 text-[22.5px] font-normal font-['Alibaba_PuHuiTi'] tracking-wider"
+        >
+          {{ (staffPage - 1) * staffPageSize + index + 1 }}.{{ item.staff_id?.name || '未知' }}
+        </div>
       </div>
+
+
+
+
       
-      <!-- Staff name (small) -->
-      <div 
-        class="left-[62px] absolute justify-start text-zinc-800 text-[18px] font-normal font-['Alibaba_PuHuiTi']"
-        :style="{ top: (214 + 41 + 85 * index) + 'px' }"
-      >
-        {{ item.staff_id?.name || '未知' }}
-      </div>
-
-      <!-- Rank and name (large) -->
-      <div 
-        class="left-[119px] absolute justify-start text-zinc-800 text-[22.5px] font-normal font-['Alibaba_PuHuiTi'] tracking-wider"
-        :style="{ top: (214 + 27 + 85 * index) + 'px' }"
-      >
-        {{ (staffPage - 1) * staffPageSize + index + 1 }}.{{ item.staff_id?.name || '未知' }}
-      </div>
-
       <!-- Progress percentage -->
       <div 
         class="right-[60px] absolute justify-start text-stone-500 text-[18px] font-normal font-['Alibaba_PuHuiTi']"
@@ -124,9 +117,10 @@
 
 <script setup>
 
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted } from 'vue'
 import { postForm } from '../../httpClient/client'
 import { PATHS } from '../../httpClient/paths'
+import AvatarMan from '../../../Resource/Staff/AvatarMan.svg'
 
 const props = defineProps({
   task_id: { type: String, default: '' }
@@ -137,6 +131,7 @@ const staffPageSize = ref(6)
 const staffTotal = ref(null)
 
 const staffList = ref([])
+
 
 async function fetchTaskList(page = staffPage.value, size = staffPageSize.value) {
   try {
@@ -192,6 +187,7 @@ function getStatusInfo(status) {
     textClass: 'text-rose-700'
   }
 }
+
 
 function prevStaffPage() {
   if (staffPage.value <= 1) return

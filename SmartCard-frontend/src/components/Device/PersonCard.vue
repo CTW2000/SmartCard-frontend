@@ -6,7 +6,7 @@
       <!-- Close button -->
       <button
         v-if="editMode"
-        class="absolute bottom-68 left-50 w-8 h-8 rounded-full bg-white border-2 flex items-center justify-center"
+        class="absolute bottom-68 left-50 w-8 h-8 rounded-full bg-white border-2 flex items-center justify-center cursor-pointer"
         style="border-color: rgba(0,0,0,0.16)"
         aria-label="Close"
         @click="onCloseClick"
@@ -119,9 +119,30 @@
     @close="showSelectStaffPanel = false"
     @select="onStaffSelected"
   />
-  
-  
-  
+
+  <!-- Delete Confirmation Dialog -->
+  <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/30" @click="cancelDelete"></div>
+    <div class="relative">
+      <div class="w-80 h-48 relative">
+        <div class="w-80 h-48 left-0 top-0 absolute bg-white rounded-[30px]"></div>
+        <div class="left-[124px] top-[30px] absolute justify-start text-neutral-800 text-2xl font-medium font-['Alibaba_PuHuiTi']">系统通知</div>
+        <div class="left-[63px] top-[73px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi']">确定要删除这项内容吗？</div>
+        <button
+          class="w-24 h-10 left-[183px] top-[116px] absolute bg-stone-50 rounded-[19.50px] border border-gray-200 cursor-pointer flex items-center justify-center"
+          @click="cancelDelete"
+        >
+          <div class="text-neutral-700 text-xl font-normal font-['Alibaba_PuHuiTi']">取消</div>
+        </button>
+        <button
+          class="w-24 h-10 left-[57px] top-[116px] absolute bg-teal-500 rounded-[19.50px] shadow-[0px_2px_2px_0px_rgba(196,196,196,0.25)] border border-white cursor-pointer flex items-center justify-center"
+          @click="confirmDelete"
+        >
+          <div class="text-white text-xl font-normal font-['Alibaba_PuHuiTi']">确定</div>
+        </button>
+      </div>
+    </div>
+  </div>
   
   </div>
 </template>
@@ -159,6 +180,7 @@ const emit = defineEmits(['close', 'updated'])
 
 const showEditModal = ref(false)
 const showSelectStaffPanel = ref(false)
+const showDeleteConfirm = ref(false)
 
 const editData = reactive({
   device_name: '',
@@ -172,8 +194,15 @@ function onEditClick() {
   showEditModal.value = true
 }
 
-async function onCloseClick() {
+function onCloseClick() {
+  showDeleteConfirm.value = true
+}
 
+function cancelDelete() {
+  showDeleteConfirm.value = false
+}
+
+async function confirmDelete() {
   const payload = {
     type: 'delete',
     data: JSON.stringify({
@@ -198,6 +227,8 @@ async function onCloseClick() {
     console.error('[PersonCard] delete device error:', e)
     alert('删除失败')
   }
+  
+  showDeleteConfirm.value = false
 }
 
 async function submitEditDevice() {

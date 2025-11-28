@@ -20,7 +20,7 @@
         </template>
       </div>
 
-      <div class="w-[1388px] h-0.5 bg-gray-200 rounded-[73px] mb-4"></div>
+      <div class="w-full h-0.5 bg-gray-200 rounded-[73px] mb-4"></div>
 
       
       <!-- Group controls -->
@@ -76,7 +76,7 @@
         </div>
       </div>
 
-      <div class="w-[1388px] h-0.5 bg-gray-200 rounded-[73px] mb-4"></div>
+      <div class="w-full h-0.5 bg-gray-200 rounded-[73px] mb-4"></div>
 
 
       <!-- Active group's cards -->
@@ -95,6 +95,22 @@
             @close="onCardUpdated"
             @updated="onCardUpdated"
           />
+        </div>
+        
+        <!-- Add staff button - only show in edit mode -->
+        <div v-if="isEditMode" class="m-0">
+          <button
+            class="w-55 h-74 relative rounded-xl cursor-pointer transition-transform duration-200 hover:scale-105 focus:outline-none flex items-center justify-center"
+            @click="showAddPersonPanel = true"
+            aria-label="Add person"
+          >
+            <div class="w-55 h-74 left-0 top-0 absolute bg-white rounded-xl shadow-[0px_1px_2px_0px_rgba(150,150,150,0.25)] border border-zinc-300"></div>
+            <div class="relative z-10 flex items-center justify-center">
+              <div class="w-[44px] h-[44px] rounded-full bg-black flex items-center justify-center">
+                <img :src="whiteCrossIcon" class="h-[24px] w-[24px] transition-transform duration-200 hover:scale-110" alt="新增人员" />
+              </div>
+            </div>
+          </button>
         </div>
         
       </div>
@@ -128,17 +144,6 @@
 
 
     <div class="absolute right-6 top-6 flex items-center gap-3">
-
-      <!-- Add staff button - only show in edit mode -->
-      <button
-        v-if="isEditMode"
-        class="group relative h-[44px] w-[44px] cursor-pointer transition-transform duration-200 hover:scale-105 hover:drop-shadow-md focus:outline-none"
-        @click="showAddPersonPanel = true"
-        aria-label="Add person"
-      >
-        <img :src="blackBGIcon" class="h-[44px] w-[44px] transition group-hover:brightness-110" alt="" />
-        <img :src="whiteCrossIcon" class="absolute left-1/2 top-1/2 h-[24px] w-[24px] -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 group-hover:scale-110" alt="新增人员" />
-      </button>
 
       <!-- Complete button - only show in edit mode -->
       <button
@@ -220,6 +225,55 @@
     @select="onStaffSelected"
   />
 
+  <!-- Organize Name Panel -->
+  <div v-if="showOrganizeNamePanel" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="relative w-[480px] rounded-[32px] bg-white px-10 py-12 shadow-lg">
+      <div class="flex flex-col items-center gap-6">
+        <img :src="inputOrganizeNameIcon" class="h-20 w-20" alt="组织图标" />
+        <h2 class="text-2xl font-semibold text-neutral-900">创建组织</h2>
+        <p class="text-center text-sm text-neutral-500">当前暂无组织，请先输入组织名称完成初始化。</p>
+        <input
+          v-model="editData.organize_name"
+          type="text"
+          class="w-full rounded-xl border border-[#DADADA] px-4 py-3 text-[16px] outline-none focus:border-neutral-800"
+          placeholder="请输入组织名称"
+        />
+        <button
+          class="w-full rounded-xl bg-neutral-900 py-3 text-base font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+          :disabled="!editData.organize_name.trim()"
+          @click="submitOrganizeName"
+        >
+          确认
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Dialog -->
+  <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/30" @click="cancelDelete"></div>
+    <div class="relative">
+      <div class="w-80 h-48 relative">
+        <div class="w-80 h-48 left-0 top-0 absolute bg-white rounded-[30px]"></div>
+        <div class="left-[124px] top-[30px] absolute justify-start text-neutral-800 text-2xl font-medium font-['Alibaba_PuHuiTi']">系统通知</div>
+        <div class="left-[63px] top-[73px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi']">确定要删除这项内容吗？</div>
+        <button
+          class="w-24 h-10 left-[183px] top-[116px] absolute bg-stone-50 rounded-[19.50px] border border-gray-200 cursor-pointer flex items-center justify-center"
+          @click="cancelDelete"
+        >
+          <div class="text-neutral-700 text-xl font-normal font-['Alibaba_PuHuiTi']">取消</div>
+        </button>
+        <button
+          class="w-24 h-10 left-[57px] top-[116px] absolute bg-teal-500 rounded-[19.50px] shadow-[0px_2px_2px_0px_rgba(196,196,196,0.25)] border border-white cursor-pointer flex items-center justify-center"
+          @click="confirmDelete"
+        >
+          <div class="text-white text-xl font-normal font-['Alibaba_PuHuiTi']">确定</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script setup>
@@ -232,6 +286,7 @@ import pencilIcon from '../../Resource/Staff/Pencil.svg'
 import closeIcon from '../../Resource/Equipment/Close.svg'
 import blackBGIcon from '../../Resource/Staff/blackBG.svg'
 import whiteCrossIcon from '../../Resource/Staff/whiteCross.svg'
+import inputOrganizeNameIcon from '../../Resource/Equipment/InputOrganizeName.svg'
 
 import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
@@ -259,30 +314,23 @@ const fetchData = reactive({
 const activeGroupIndex = ref(0)
 const showAddPersonPanel = ref(false)
 const showSelectStaffPanel = ref(false)
+const showOrganizeNamePanel = ref(false)
+const isFirstOpen = ref(true)
+
+// delete confirm
+const showDeleteConfirm = ref(false)
+const pendingDeleteGroupId = ref(null)
+const pendingDeleteIdx = ref(null)
+
+
 
 onMounted(async () => {
-  try {
-    const payload = {
-      type: 'add',
-      data: JSON.stringify({
-        organize_name: "",
-        type:"add",
-      })
-    }
-    try {
-      const res = await postForm(PATHS.DEVICE_ORGANIZE_EDIT, payload)
-      if (res && res.status >= 200 && res.status < 300) {
-        console.log('[EquipmentManager] Organize added successfully:', res.data)
-      } else {
-        console.error('[EquipmentManager] Failed to add organize')
-      }
-    } catch (e) {
-      console.error('[EquipmentManager] Error adding organize:', e)
-    }
-    
-    // Always fetch the organize list after adding
-    await fetchOrganizeList()
-  } catch (_) {}
+  await fetchOrganizeList(staffPage.value, staffPageSize.value, null)
+  if (!isFirstOpen.value && fetchData.groups.length === 0) {
+    await startAddGroup()
+  }
+
+  
 })
 
 
@@ -319,7 +367,7 @@ async function startAddGroup() {
   const payload = {
     type: 'add',
     data: JSON.stringify({
-      group_name: "",
+      group_name: "分组",
       type:"add",
       organize_id:organizeId
     })
@@ -339,23 +387,34 @@ async function startAddGroup() {
   fetchOrganizeList()
 }
 
-async function deleteGroup(groupId, idx) {
-
+function deleteGroup(groupId, idx) {
   if (fetchData.groups.length <= 1) {
     alert('至少需要保留一个分组')
     return
   }
+  pendingDeleteGroupId.value = groupId
+  pendingDeleteIdx.value = idx
+  showDeleteConfirm.value = true
+}
 
+function cancelDelete() {
+  showDeleteConfirm.value = false
+  pendingDeleteGroupId.value = null
+  pendingDeleteIdx.value = null
+}
+
+async function confirmDelete() {
+  if (!pendingDeleteGroupId.value) return
 
   const organizeId = getOrganizeId()
   const payload = { 
     type: 'delete',
-     data: JSON.stringify({ 
-      group_id: groupId, 
+    data: JSON.stringify({ 
+      group_id: pendingDeleteGroupId.value, 
       type: 'delete', 
       organize_id: organizeId 
-    }) }
-
+    }) 
+  }
 
   try {
     const res = await postForm(PATHS.DEVICE_GROUP_EDIT, payload)
@@ -370,6 +429,8 @@ async function deleteGroup(groupId, idx) {
     console.error('[EquipmentManager] group delete error:', e)
     alert('删除失败')
   }
+  
+  cancelDelete()
 }
 
 function onCardUpdated() {
@@ -478,9 +539,9 @@ async function EditComplete() {
 }
 
 async function fetchOrganizeList(page = staffPage.value, limit = staffPageSize.value, groupId=null) {
+  
   const organizeId = getOrganizeId()
   
-
   const payload = { 
     page: String(page),
     size: String(limit),
@@ -495,20 +556,30 @@ async function fetchOrganizeList(page = staffPage.value, limit = staffPageSize.v
     if (res && res.status >= 200 && res.status < 300) {
       const responseData = res.data || {}
       const data = responseData.data || {}
-
       const nowOrganize = data.now_organize
-      if (nowOrganize) {
+      const hasOrganize = nowOrganize && Object.keys(nowOrganize).length > 0
+
+      if (hasOrganize) {
         localStorage.setItem('now_organize', JSON.stringify(nowOrganize))
-      }
-
-      if (nowOrganize) {
         fetchData.organize_name = nowOrganize.organize_name || ''
+      
+        isFirstOpen.value = false
+        showOrganizeNamePanel.value = false
+      } else {
+        fetchData.organize_name = ''
+        isFirstOpen.value = true
+        showOrganizeNamePanel.value = true
+        fetchData.groups = []
+        staffTotal.value = 0
+        return
       }
 
-      
       const groupList = Array.isArray(data.group_list) ? data.group_list : []
 
       fetchData.groups = groupList.map(g => ({ id: g._id, name: g.group_name, people: [] }))
+      if (fetchData.groups.length === 0) {
+        activeGroupIndex.value = 0
+      }
 
 
       let targetGroupId = groupId
@@ -588,6 +659,36 @@ async function fetchOrganizeList(page = staffPage.value, limit = staffPageSize.v
     console.error('[EquipmentManager] fetch organize list error:', e)
   }
   return null
+}
+
+async function submitOrganizeName() {
+  const name = editData.organize_name.trim()
+  if (!name) {
+    alert('请输入组织名称')
+    return
+  }
+
+  const payload = {
+    type: 'add',
+    data: JSON.stringify({
+      organize_name: name,
+      type: 'add'
+    })
+  }
+
+  try {
+    const res = await postForm(PATHS.DEVICE_ORGANIZE_EDIT, payload)
+    if (res && res.status >= 200 && res.status < 300) {
+      isFirstOpen.value = false
+      showOrganizeNamePanel.value = false
+      await fetchOrganizeList()
+    } else {
+      alert('创建组织失败')
+    }
+  } catch (e) {
+    console.error('[EquipmentManager] Error creating organize:', e)
+    alert('创建组织失败')
+  }
 }
 
 function prevDevicePage() {

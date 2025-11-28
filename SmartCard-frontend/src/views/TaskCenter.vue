@@ -66,21 +66,34 @@
             </button>
 
 
-           <div class="left-[40px] right-[40px] top-[220px] absolute flex flex-wrap gap-8">
-                <TaskCard
-                  v-for="task in fetchTaskData.tasks"
-                  :key="task.task_id"
-                  :task_id="task.task_id"
-                  :task_type="task.task_type"
-                  :task_belong="task.task_belong"
-                  :task_status="task.task_status"
-                  :task_endtime="task.task_endtime"
-                  :task_progress="task.task_progress"
-                  :dish_name="task.dish_name"
-                  @goToDetail="handleGoToDetail"
-                  @statusUpdated="handleTaskStatusUpdated"
-                />
-            </div>
+           <div class="left-[40px] right-[40px] top-[220px] bottom-[100px] absolute">
+             <div
+               v-if="!isNoTaskPanel"
+               class="w-full h-full flex flex-wrap gap-8 items-start"
+             >
+               <TaskCard
+                 v-for="task in fetchTaskData.tasks"
+                 :key="task.task_id"
+                 :task_id="task.task_id"
+                 :task_type="task.task_type"
+                 :task_belong="task.task_belong"
+                 :task_status="task.task_status"
+                 :task_endtime="task.task_endtime"
+                 :task_progress="task.task_progress"
+                 :dish_name="task.dish_name"
+                 @goToDetail="handleGoToDetail"
+                 @statusUpdated="handleTaskStatusUpdated"
+               />
+             </div>
+             <div
+               v-else
+               class="w-full h-full flex items-center justify-center"
+             >
+               <div class="justify-start text-stone-900 text-3xl font-medium font-['Alibaba_PuHuiTi']">
+                 目前暂无任务
+               </div>
+             </div>
+           </div>
 
 
 
@@ -134,11 +147,14 @@ const taskPageSize = ref(6)
 const taskTotal = ref(0)
 const selectedBelong = ref(null) // null = 全部, '1' = 品牌方, '0' = 门店
 const selectedStatus = ref('1') // '1' = 进行中, '2,3' = 历史任务
+const isNoTaskPanel = ref(false)
+
 
 const fetchTaskData = reactive({
   tasks:[],
   taskTypes: [],
 })
+
 
 
 // Synchronous helper function to translate task type value to label
@@ -180,30 +196,33 @@ async function fetchTaskList(page = taskPage.value, size = taskPageSize.value, s
     
     const res = await postForm(PATHS.TASK_LIST, payload)
     if (res && res.status >= 200 && res.status < 300) {
-        const responseData = res.data || {}
-        const data = responseData.data || {}
-        const taskList = Array.isArray(data.task_list) ? data.task_list : []
-   
-        // Clear existing tasks before adding new ones
-        fetchTaskData.tasks = []
-        
-        for (const task of taskList) {
-          const taskInfo = {
-            task_id: task._id || '',
-            task_type: getTaskTypeLabel(task.label_value) || '',
-            task_belong: task.belong || '',
-            task_status: task.status || '',
-            task_endtime: task.end_time || '',
-            task_progress: task.progress || '',
-            dish_name: task.dish_name || '',
-            content: task.content || '',
-            createdAt: task.createdAt || '',
-          }
-          fetchTaskData.tasks.push(taskInfo)
-        }
+      const responseData = res.data || {}
+      const data = responseData.data || {}
+      const taskList = Array.isArray(data.task_list) ? data.task_list : []
 
-    const tasksTotal = data.total
-    if (typeof tasksTotal === 'number' && tasksTotal >= 0) {
+      // Clear existing tasks before adding new ones
+      fetchTaskData.tasks = []
+      
+      for (const task of taskList) {
+        const taskInfo = {
+          task_id: task._id || '',
+          task_type: getTaskTypeLabel(task.label_value) || '',
+          task_belong: task.belong || '',
+          task_status: task.status || '',
+          task_endtime: task.end_time || '',
+          task_progress: task.progress || '',
+          dish_name: task.dish_name || '',
+          content: task.content || '',
+          createdAt: task.createdAt || '',
+        }
+        fetchTaskData.tasks.push(taskInfo)
+      }
+
+      // Update empty state flag
+      isNoTaskPanel.value = fetchTaskData.tasks.length === 0
+
+      const tasksTotal = data.total
+      if (typeof tasksTotal === 'number' && tasksTotal >= 0) {
         taskTotal.value = tasksTotal
       }
       taskPage.value = page != null ? page : taskPage.value

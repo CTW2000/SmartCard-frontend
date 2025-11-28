@@ -1,6 +1,6 @@
 <template>
-  <div class="w-96 h-[609px] relative">
-    <div class="w-96 h-[609px] left-0 top-0 absolute bg-white rounded-[29px]"></div>
+  <div class="w-96 h-[660px] relative">
+    <div class="w-96 h-[660px] left-0 top-0 absolute bg-white rounded-[29px]"></div>
     
     <!-- Header -->
     <div class="w-96 h-24 left-0 top-0 absolute opacity-90 bg-white rounded-tl-[41px] rounded-tr-[41px] blur-[5px] z-10"></div>
@@ -13,17 +13,18 @@
     </button>
     
     <!-- Scrollable container for chat items -->
-    <div class="w-96 left-0 top-24 absolute overflow-y-auto" style="height: calc(609px - 96px);">
+    <div class="w-96 left-0 top-24 absolute overflow-y-auto" style="height: calc(609px - 20px);">
       <div class="relative px-[15px] pt-[29px] pb-4">
         <!-- Chat items - dynamically rendered from sessions -->
         <template v-for="(session, index) in displayedSessions" :key="session._id">
           <!-- Card wrapper with relative positioning -->
           <div 
-            class="relative mb-3"
+            class="relative mb-3 cursor-pointer hover:opacity-90 transition-opacity"
             :style="{ 
               height: `${getCardHeight(session.content)}px`,
               minHeight: '64px'
             }"
+            @click="handleCardClick(session._id)"
           >
             <!-- Card background -->
             <div 
@@ -48,13 +49,17 @@
             
             <!-- Chat text content with overflow handling -->
             <div 
-              class="w-52 left-[81px] top-[14px] absolute justify-start text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi'] leading-relaxed break-words overflow-hidden"
+              class="w-52 left-[81px] top-[14px] absolute
+               justify-start text-zinc-800 text-base 
+               font-normal font-['Alibaba_PuHuiTi'] leading-relaxed break-words overflow-hidden"
               :style="{ 
                 maxHeight: `${getCardHeight(session.content) - 28}px`,
-                paddingRight: '8px'
+                paddingRight: '8px',
+                overflowY: getCardHeight(session.content) >= 200 ? 'auto' : 'hidden'
               }"
+              :title="session.content"
             >
-              "{{ session.content }}"
+              {{ session.content }}
             </div>
           </div>
         </template>
@@ -79,6 +84,9 @@ import { PATHS } from '../../httpClient/paths'
 const router = useRouter()
 
 const sessions = ref([])
+const historyContent = ref(null)
+
+const emit = defineEmits(['loadHistory'])
 
 // Display up to 5 sessions
 const displayedSessions = computed(() => {
@@ -126,6 +134,24 @@ async function fetchSessions() {
 
 function handleHistoryClick() {
   router.push({ name: 'HistoryDialogue' })
+}
+
+async function handleCardClick(sessionId) {
+  try {
+    const res = await postForm(PATHS.CHAT_HISTORY, {
+      session_id: sessionId
+    })
+    const body = res?.data
+    if (body?.success === true || body?.code === 200) {
+      historyContent.value = body?.data
+      // Emit the history content to parent
+      emit('loadHistory', historyContent.value)
+    } else {
+      console.error('Failed to fetch chat history:', body?.message)
+    }
+  } catch (err) {
+    console.error('Error fetching chat history:', err?.response?.data || err)
+  }
 }
 
 onMounted(() => {

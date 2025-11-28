@@ -2,10 +2,10 @@
   <section class="p-[25px]">
 
       <div class="grid grid-cols-4 gap-6 min-w-[1500px]">
-        <ScoreCard title="昨日店长评分" :value="fetchhomeData.manager_score + '分'" valueColor="text-red-500" :percentValue="fetchhomeData.manager_score_ratio"  />
-        <ScoreCard title="昨日员工服务评分" :value="fetchhomeData.staff_score + '分'" valueColor="text-red-500" :percentValue="fetchhomeData.staff_score_ratio" />
-        <ScoreCard title="昨日菜品差评率" :value="fetchhomeData.dish_bad_score + '%'" valueColor="text-green-800" :percentValue="fetchhomeData.dish_bad_ratio" />
-        <ScoreCard title="昨日预警事件" :value="fetchhomeData.warn_score + '%'" valueColor="text-green-800" :percentValue="fetchhomeData.warn_ratio" />
+        <ScoreCard title="昨日店长评分" :value="fetchhomeData.manager_score + '分'" valueColor="text-red-700" :percentValue="fetchhomeData.manager_score_ratio" percentColor="text-red-700" />
+        <ScoreCard title="昨日员工服务评分" :value="fetchhomeData.staff_score + '分'" valueColor="text-red-700" :percentValue="fetchhomeData.staff_score_ratio" percentColor="text-red-700"   />
+        <ScoreCard title="昨日菜品差评率" :value="fetchhomeData.dish_bad_score + '%'" valueColor="text-green-800" :percentValue="fetchhomeData.dish_bad_ratio" percentColor="text-green-800" />
+        <ScoreCard title="昨日预警事件" :value="fetchhomeData.warn_score + '%'" valueColor="text-green-800" :percentValue="fetchhomeData.warn_ratio" percentColor="text-green-800" />
       </div>
 
 

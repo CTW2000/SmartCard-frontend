@@ -78,7 +78,7 @@
                 class="flex items-center justify-center min-h-[65px] border-b border-stone-300 last:border-b-0 cursor-pointer hover:bg-stone-50 transition-colors"
                 @click="handleTaskTypeSelect(task)"
               >
-                <div class="text-zinc-800 text-2xl font-normal font-['Alibaba_PuHuiTi'] text-center">
+                <div class="text-zinc-800 text-xl font-normal font-['Alibaba_PuHuiTi'] text-center">
                   {{ task.label }}
                 </div>
               </div>
@@ -102,7 +102,7 @@
                 class="flex items-center justify-center min-h-[65px] border-b border-stone-300 last:border-b-0 cursor-pointer hover:bg-stone-50 transition-colors"
                 @click="handleDishSelect(dish)"
               >
-                <div class="text-zinc-800 text-2xl font-normal font-['Alibaba_PuHuiTi'] text-center">
+                <div class="text-zinc-800 text-xl font-normal font-['Alibaba_PuHuiTi'] text-center">
                   {{ dish.name }}
                 </div>
               </div>
@@ -202,6 +202,7 @@ const formattedEndTime = computed(() => {
 function toggleDishPanel() {
   showDishPanel.value = !showDishPanel.value
   if (showDishPanel.value) {
+    showTaskTypePanel.value = false
     currentDishQuery.value = (editData.dish_name || '').trim()
     // Reset when opening panel
     dishPage.value = 1
@@ -213,7 +214,9 @@ function toggleDishPanel() {
 
 function toggleTaskTypePanel() {
   showTaskTypePanel.value = !showTaskTypePanel.value
-  
+  if (showTaskTypePanel.value) {
+    showDishPanel.value = false
+  }
 }
 
 async function fetchTheDishes() {

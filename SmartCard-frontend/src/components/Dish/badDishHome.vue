@@ -31,7 +31,14 @@
         :style="{ top: dotTop(index) + 'px' }"
       ></div>
     </div>
-    <div v-if="badRank.length === 0" class="text-gray-400 text-center py-8">暂无数据</div>
+    
+    
+    <div
+      v-if="badRank.length === 0"
+      class="absolute left-[96px] top-[230px] text-neutral-400 text-xl font-normal"
+    >
+      暂无差评菜品
+    </div>
   </div>
 </template>
 

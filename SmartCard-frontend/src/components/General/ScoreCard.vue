@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-[16px] border border-border bg-card shadow-md p-6">
+  <div class="h-[150px] rounded-[16px] border border-border bg-card shadow-md p-6">
     <div class="text-neutral-500 text-xl font-normal font-['Alibaba_PuHuiTi']">{{ title }}</div>
 
     <div class="text-3xl font-bold mt-1" :class="valueColor">

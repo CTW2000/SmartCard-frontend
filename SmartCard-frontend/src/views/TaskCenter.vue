@@ -15,7 +15,7 @@
 
            <div class="w-35 h-13 right-[40px] top-[40px] absolute cursor-pointer" @click="showCreateTaskPanel = true">
                 <div class="w-full h-full left-0 top-0 absolute bg-slate-900 rounded-xl shadow-[0px_4px_4px_0px_rgba(168,168,168,0.25)] transition-opacity hover:opacity-90"></div>
-                <div class="left-[25px] top-[12px] absolute justify-start text-white text-xl font-normal font-['Alibaba_PuHuiTi']">+新建任务</div>
+                <div class="left-[22px] top-[12px] absolute justify-start text-white text-xl font-normal font-['Alibaba_PuHuiTi']">+ 新建任务</div>
             </div>
 
 

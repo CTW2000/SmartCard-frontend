@@ -3,7 +3,7 @@
     
     <div class="h-[354px] relative mx-[40px] top-[100px]">
         <div class="w-full h-[354px] left-0 top-0 absolute bg-white rounded-[30px] shadow-[0px_2px_2px_0px_rgba(76,76,76,0.25)] border border-gray-200"></div>
-        <div class="left-[35px] top-[32px] absolute justify-start text-stone-900 text-2xl font-normal font-['Alibaba_PuHuiTi'] truncate max-w-[350px]">{{ props.dish_name || '新品推荐' }}</div>
+        <div class="left-[35px] top-[32px] absolute justify-start text-stone-900 text-2xl font-normal font-['Alibaba_PuHuiTi'] truncate max-w-[300px]">{{ props.dish_name || '新品推荐' }}</div>
         <div class="left-[35px] top-[132px] absolute justify-start text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">类型：{{ props.task_type || '推荐' }}</div>
         <div class="left-[35px] top-[195px] absolute justify-start text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">负责人：张三</div>
         <div class="left-[35px] top-[258px] absolute justify-start text-stone-500 text-xl font-normal font-['Alibaba_PuHuiTi']">截止时间：{{ formatDate(props.task_endtime) || '2025-10-20' }}</div>

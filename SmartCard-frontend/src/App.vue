@@ -45,7 +45,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useNetworkError } from './composables/useNetworkError'
 
 import Navbar from './components/General/Navbar.vue'
@@ -57,14 +57,22 @@ import NetworkError from './components/Error/NetworkError.vue'
 import logoutIcon from '../Resource/Home/Logout.svg'
 
 const route = useRoute()
+const router = useRouter()
 const { showNetworkError } = useNetworkError()
 
 // use for the login page and the register page
 const hideChrome = computed(() => route?.meta?.hideChrome === true)
 
 function handleLogout() {
-  console.log('Logout clicked')
-  // TODO: integrate actual logout logic
+  try {
+    localStorage.clear()
+  } catch (error) {
+    console.error('[App] Failed to clear localStorage during logout:', error)
+  } finally {
+    router.replace({ name: 'Login' }).catch(() => {
+      // Ignore redundant navigation errors
+    })
+  }
 }
 </script>
 

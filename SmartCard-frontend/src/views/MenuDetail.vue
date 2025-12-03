@@ -99,7 +99,7 @@
       <div
         v-if="isBatchSelect"
         class="w-30 h-14 left-[1446px] top-[420px] absolute origin-top-left rotate-90 bg-white rounded-[42.50px] shadow-[0px_4px_4px_0px_rgba(202,202,202,0.25)] border border-stone-300 cursor-pointer"
-        @click="onDeleteSelected"
+        @click="promptDeleteSelected"
       >
         <div class="left-[48px]  absolute rotate-270 flex flex-col items-center justify-center text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer">
           <span>删</span>
@@ -241,8 +241,8 @@
           
      
 
-          <div class="left-[120px] top-[110px] absolute justify-start text-neutral-500 text-3xl font-medium font-['Alibaba_PuHuiTi'] cursor-pointer" @click="selectedGroup = 'top'">热销</div>
-          <div class="w-8 h-8 left-[72px] top-[111px] absolute bg-white rounded-full border border-stone-300 cursor-pointer" @click="selectedGroup = 'top'">
+          <div class="left-[110px] top-[110px] absolute justify-start text-neutral-500 text-3xl font-medium font-['Alibaba_PuHuiTi'] cursor-pointer" @click="selectedGroup = 'top'">热销</div>
+          <div class="w-8 h-8 left-[62px] top-[111px] absolute bg-white rounded-full border border-stone-300 cursor-pointer" @click="selectedGroup = 'top'">
           
             <div v-if="selectedGroup === 'top'" class="w-4 h-4 left-[8px] top-[8px] absolute">
             <img :src="CheckMark" alt="checked" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style="width: 40px; height: 40px;" />
@@ -303,7 +303,29 @@
     </div>
   </div>
 
-
+  <!-- Delete Confirmation Dialog -->
+  <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/30" @click="cancelDeleteSelected"></div>
+    <div class="relative">
+      <div class="w-80 h-48 relative">
+        <div class="w-80 h-48 left-0 top-0 absolute bg-white rounded-[30px]"></div>
+        <div class="left-[110px] top-[30px] absolute justify-start text-neutral-800 text-2xl font-medium font-['Alibaba_PuHuiTi']">系统通知</div>
+        <div class="left-[60px] top-[73px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi']">确定要删除所选菜品吗？</div>
+        <button
+          class="w-24 h-10 left-[183px] top-[116px] absolute bg-stone-50 rounded-[19.50px] border border-gray-200 cursor-pointer flex items-center justify-center"
+          @click="cancelDeleteSelected"
+        >
+          <div class="text-neutral-700 text-xl font-normal font-['Alibaba_PuHuiTi']">取消</div>
+        </button>
+        <button
+          class="w-24 h-10 left-[57px] top-[116px] absolute bg-teal-500 rounded-[19.50px] shadow-[0px_2px_2px_0px_rgba(196,196,196,0.25)] border border-white cursor-pointer flex items-center justify-center"
+          @click="confirmDeleteSelected"
+        >
+          <div class="text-white text-xl font-normal font-['Alibaba_PuHuiTi']">确定</div>
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 
@@ -357,6 +379,8 @@ const pageSize = ref(15)
 const totalPages = ref(1)
 
 const currentFilter = ref('all') // all | new | top | off
+
+const showDeleteConfirm = ref(false)
 
 
 
@@ -464,6 +488,22 @@ function onClickWhiteIcon(dishId) {
   else next.add(dishId)
 
   selectedIndexes.value = next
+}
+
+function promptDeleteSelected() {
+  if (!isBatchSelect.value) return
+  const count = selectedIndexes.value ? selectedIndexes.value.size : 0
+  if (!count) return
+  showDeleteConfirm.value = true
+}
+
+function cancelDeleteSelected() {
+  showDeleteConfirm.value = false
+}
+
+async function confirmDeleteSelected() {
+  await onDeleteSelected()
+  showDeleteConfirm.value = false
 }
 
 async function onDeleteSelected() {

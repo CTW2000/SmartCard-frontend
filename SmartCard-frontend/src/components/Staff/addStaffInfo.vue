@@ -31,7 +31,7 @@
 
     
     <input v-model="editData.staff_name" type="text" class="w-36 h-14 left-[48px] top-[175px] absolute rounded-[10px] border border-black px-3 text-2xl text-stone-700 font-['Alibaba_PuHuiTi'] text-center outline-none" />
-    <input v-model="editData.phone" type="tel" inputmode="numeric" class="w-80 h-14 left-[48px] top-[284px] absolute rounded-[10px] border border-black px-3 text-2xl text-stone-700 font-['Alibaba_PuHuiTi'] text-center outline-none" />
+    <input v-model="editData.phone" type="tel" inputmode="numeric" class="w-72 h-14 left-[48px] top-[284px] absolute rounded-[10px] border border-black px-3 text-2xl text-stone-700 font-['Alibaba_PuHuiTi'] text-center outline-none" />
     
     
     <!-- Position select box -->
@@ -65,7 +65,9 @@
     <div class="absolute left-[248px] bottom-8">
       <button
         type="button"
-        class="w-28 h-11 bg-white rounded-2xl border border-stone-300 text-neutral-700 text-xl font-medium font-['Alibaba_PuHuiTi'] flex items-center justify-center hover:bg-stone-50 transition"
+        class="w-28 h-11 bg-white rounded-2xl border border-stone-300 
+        text-neutral-700 text-xl font-medium font-['Alibaba_PuHuiTi'] 
+        flex items-center justify-center hover:bg-stone-50 transition"
         @click="submit"
         aria-label="确认新增员工"
       >

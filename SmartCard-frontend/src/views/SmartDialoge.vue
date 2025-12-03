@@ -184,7 +184,7 @@
               </div>
               <div class="w-12 h-12 left-[21px] top-[17px] absolute bg-white rounded-[250px] shadow-[0px_2px_2px_0px_rgba(197,197,197,0.25)]"></div>
               <img
-                class="w-9 h-9 left-[65px] top-[61px] absolute origin-top-left rotate-180 object-contain"
+                class="w-9 h-9 left-[30px] top-[24px] absolute origin-top-left  object-contain"
                 :src="aiAvatar"
                 alt="ai avatar"
               />
@@ -351,6 +351,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import sendIcon from '../../Resource/SmartDiague/send-2.svg'
 import importVoiceIcon from '../../Resource/SmartDiague/importVoice.svg'
 import aiAvatar from '../../Resource/SmartDiague/AIAvatar.svg'
@@ -360,10 +361,12 @@ import shareIcon from '../../Resource/Staff/Share.svg'
 import WhiteCircle from '../../Resource/Menu/whiteCircle.svg'
 import CheckMark from '../../Resource/Menu/CheckMark.svg'
 import regenerateIcon from '../../Resource/SmartDiague/Regenerate.svg'
-import { streamChat } from '../httpClient/client'
+import { streamChat, postForm } from '../httpClient/client'
+import { PATHS } from '../httpClient/paths'
 import HistoryChat from '../components/SmartChat/HistoryChat.vue'
 import ExtractChat from '../components/SmartChat/ExtractChat.vue'
 
+const route = useRoute()
 const inputText = ref('')
 const messages = ref([])
 const isFirstOpen = ref(true)
@@ -374,10 +377,28 @@ const selectedIndexes = ref(new Set()) // Set to track which messages are select
 const isSelectAll = ref(false) // Track if select all is checked
 const showExportPanel = ref(false)
 const lastSentText = ref('')
+const currentSessionID = ref('')
+
+async function updateCurrentSessionId() {
+  try {
+    const res = await postForm(PATHS.SESSION, {})
+    const sessionList = res?.data?.data?.session_list || []
+    currentSessionID.value = sessionList[0]?._id || ''
+  } catch (error) {
+    console.error('[SmartDialoge] Failed to fetch session list:', error?.response?.data || error)
+  }
+}
 
 onMounted(() => {
   // Check if this is the first time opening the page based on messages length
   isFirstOpen.value = messages.value.length === 0
+
+  // If opened with an initial query from the global searchbar, auto send it
+  const initialQuery = (route.query.q || '').toString().trim()
+  if (initialQuery) {
+    inputText.value = initialQuery
+    sendMessage(initialQuery, currentSessionID.value)
+  }
 })
 
 
@@ -423,7 +444,6 @@ function processStreamChunk(rawChunk, aiMessageIndex) {
   }
 }
 
-
 function handleCardClick(cardText) {
   // Set the input text to the card text and send it
   inputText.value = cardText
@@ -439,6 +459,7 @@ function handlePlus() {
   isSelectMode.value = false
   selectedContent.value = []
   selectedIndexes.value = new Set()
+  currentSessionID.value = ''
 }
 
 function handleShare() {
@@ -509,10 +530,6 @@ function toggleSelectAll() {
   isSelectAll.value = !isSelectAll.value
 }
 
-
-
-
-
 function handleCancel() {
   // Exit select mode and clear selection
   isSelectMode.value = false
@@ -541,9 +558,10 @@ function handleCloseExportPanel() {
   showExportPanel.value = false
 }
 
-async function sendMessage(content) {
+async function sendMessage(content, sessionId = '') {
   if (!content) return
 
+  const shouldFetchSessionId = !sessionId && !currentSessionID.value
   if (isFirstOpen.value) {
     isFirstOpen.value = false
   }
@@ -557,6 +575,7 @@ async function sendMessage(content) {
   try {
     await streamChat(
       content,
+      sessionId || currentSessionID.value || '',
       (chunk) => {
         console.log('Stream chunk received:', chunk)
         processStreamChunk(chunk, aiMessageIndex)
@@ -571,6 +590,9 @@ async function sendMessage(content) {
         }
       }
     )
+    if (shouldFetchSessionId) {
+      await updateCurrentSessionId()
+    }
   } catch (error) {
     console.error('Failed to send message:', error)
     if (messages.value[aiMessageIndex]) {
@@ -584,9 +606,8 @@ async function handleSend() {
   if (!content) {
     return
   }
-
   lastSentText.value = content
-  await sendMessage(content)
+  await sendMessage(content, currentSessionID.value)
 }
 
 async function handleRegenerate() {
@@ -602,7 +623,7 @@ async function handleRegenerate() {
   showExportPanel.value = false
 
   inputText.value = lastSentText.value
-  await sendMessage(lastSentText.value)
+  await sendMessage(lastSentText.value, currentSessionID.value)
 }
 
 function handleLoadHistory(historyData) {
@@ -628,6 +649,7 @@ function handleLoadHistory(historyData) {
   isSelectAll.value = false
   inputText.value = ''
   lastSentText.value = ''
+  currentSessionID.value = historyData?.session_id || historyData?._id || ''
 }
 
 

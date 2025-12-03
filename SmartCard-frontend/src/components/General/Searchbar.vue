@@ -27,7 +27,7 @@
 
     <button
       type="button"
-      class="absolute right-[16px] top-[7px] w-7 h-7 flex items-center justify-center z-10"
+      class="absolute right-[16px] top-[7px] w-7 h-7 flex items-center justify-center z-10 cursor-pointer"
       aria-label="Send question"
       @click="emitSearch"
     >
@@ -40,13 +40,37 @@
   </div>
 </template>
 
+
+
+
 <script setup>
 import { ref } from 'vue'
-
+import { useRouter } from 'vue-router'
 import microphoneIcon from '../../../Resource/Home/microphone.svg'
 import sendIcon from '../../../Resource/Home/send-2.svg'
 
 const query = ref('')
+const router = useRouter()
+
+async function emitSearch() {
+  const value = (query.value || '').trim()
+  if (!value) return
+
+  try {
+    await router.push({
+      name: 'SmartDialoge',
+      query: { q: value },
+    })
+  } catch (error) {
+    // Ignore redundant navigation errors (e.g., pushing same route)
+    if (error?.name !== 'NavigationDuplicated') {
+      console.error('[Searchbar] Failed to navigate to SmartDialoge:', error)
+    }
+  } finally {
+    query.value = ''
+  }
+}
+
 
 
 </script>

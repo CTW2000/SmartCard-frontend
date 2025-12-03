@@ -1,6 +1,6 @@
 // Get BASE_URL from environment variable, with fallback to default
 // Vite exposes env variables with VITE_ prefix
-export const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://192.168.0.135:3000';
+export const BASE_URL = import.meta.env.VITE_BASE_URL || 'https://wanwu.chat/';
 
 // https://117.148.167.102:3000
 // https://wanwu.chat/

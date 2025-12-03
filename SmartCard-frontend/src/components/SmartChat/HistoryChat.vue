@@ -99,10 +99,10 @@ const displayedSessions = computed(() => {
 function getCardHeight(content) {
   if (!content) return 64 // min height
   const textWidth = 208 // w-52 = 208px
-  const charWidth = 14 // approximate character width for Chinese characters
+  const charWidth = 15 // approximate character width for Chinese characters
   const charsPerLine = Math.floor(textWidth / charWidth)
   const lines = Math.ceil(content.length / charsPerLine)
-  const lineHeight = 22 // line height with spacing
+  const lineHeight = 26 // line height with spacing
   const padding = 28 // top and bottom padding (14px each)
   const maxHeight = 200 // maximum card height to prevent overflow
   return Math.min(maxHeight, Math.max(64, lines * lineHeight + padding))

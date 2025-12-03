@@ -81,11 +81,14 @@ export function postMultipart(url, formData, extraHeaders = {}) {
 
 // Streaming chat API function
 // Accepts content string and optional callbacks for streaming data
-export async function streamChat(content, onChunk, onComplete, onError) {
+export async function streamChat(content, sessionId = '', onChunk, onComplete, onError) {
  
   const token = localStorage.getItem('token');
   const formData = new URLSearchParams();
   formData.append('content', content);
+  if (sessionId) {
+    formData.append('session_id', sessionId);
+  }
 
   const headers = {
     'Content-Type': 'application/x-www-form-urlencoded',

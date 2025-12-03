@@ -26,7 +26,10 @@
                     <div class="left-[20px] text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi']">今天</div>
                     <template v-for="(session, index) in todaySessions" :key="session._id">
                        
-                      <div class="w-[800px] min-h-20 flex items-start gap-4 p-5 shadow-[0px_2px_2px_0px_rgba(148,148,148,0.25)] bg-slate-50 rounded-[42px] overflow-hidden">
+                      <div
+                        class="w-[800px] min-h-20 flex items-start gap-4 p-5 shadow-[0px_2px_2px_0px_rgba(148,148,148,0.25)] bg-slate-50 rounded-[42px] overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                        @click="handleSessionClick(session._id)"
+                      >
                             <img class="w-11 h-11 rounded-[250px] flex-shrink-0 object-contain" :src="userAvatar" alt="user avatar" />
                             <div class="flex-1 min-w-0 text-zinc-800 mt-2 text-xl font-normal font-['Alibaba_PuHuiTi'] break-words" style="word-wrap: break-word; overflow-wrap: break-word;">
                                 "{{ session.content }}"
@@ -39,7 +42,10 @@
                 <div v-if="weekSessions.length > 0" class="space-y-4">
                     <div class="left-[20px] text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi']">七天内</div>
                     <template v-for="(session, index) in weekSessions" :key="session._id">
-                        <div class="w-[800px] min-h-20 flex items-start gap-4 p-5 shadow-[0px_2px_2px_0px_rgba(148,148,148,0.25)] bg-slate-50 rounded-[42px] overflow-hidden">
+                        <div
+                          class="w-[800px] min-h-20 flex items-start gap-4 p-5 shadow-[0px_2px_2px_0px_rgba(148,148,148,0.25)] bg-slate-50 rounded-[42px] overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                          @click="handleSessionClick(session._id)"
+                        >
                             <img class="w-11 h-11 rounded-[250px] flex-shrink-0 object-contain" :src="userAvatar" alt="user avatar" />
                             <div class="flex-1 min-w-0 text-zinc-800 text-xl font-normal font-['Alibaba_PuHuiTi'] break-words" style="word-wrap: break-word; overflow-wrap: break-word;">
                                 "{{ session.content }}"
@@ -52,7 +58,10 @@
                 <div v-if="monthSessions.length > 0" class="space-y-4">
                     <div class="left-[20px] text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi']">30天内</div>
                     <template v-for="(session, index) in monthSessions" :key="session._id">
-                        <div class="w-[800px] min-h-20 flex items-start gap-4 p-5 shadow-[0px_2px_2px_0px_rgba(148,148,148,0.25)] bg-slate-50 rounded-[42px] overflow-hidden">
+                        <div
+                          class="w-[800px] min-h-20 flex items-start gap-4 p-5 shadow-[0px_2px_2px_0px_rgba(148,148,148,0.25)] bg-slate-50 rounded-[42px] overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                          @click="handleSessionClick(session._id)"
+                        >
                             <img class="w-11 h-11 rounded-[250px] flex-shrink-0 object-contain" :src="userAvatar" alt="user avatar" />
                             <div class="flex-1 min-w-0 text-zinc-800 text-xl font-normal font-['Alibaba_PuHuiTi'] break-words" style="word-wrap: break-word; overflow-wrap: break-word;">
                                 "{{ session.content }}"
@@ -129,6 +138,14 @@ const monthSessions = computed(() => {
 
 function handleBackClick() {
   router.push({ name: 'SmartDialoge' })
+}
+
+function handleSessionClick(sessionId) {
+  if (!sessionId) return
+  router.push({
+    name: 'SmartDialoge',
+    query: { session_id: sessionId },
+  })
 }
 
 function handleScroll(event) {

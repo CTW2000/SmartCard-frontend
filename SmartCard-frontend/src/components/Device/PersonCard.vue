@@ -20,7 +20,7 @@
 
       <!-- Portrait + Title -->
       <div class="flex flex-col items-center">
-        <img :src="AvatarMan" alt="avatar" class="w-[96px] h-[96px] rounded-full object-cover ring-2" style="--tw-ring-color: rgba(0,0,0,0.08)" />
+        <img :src="props.sex === 2 ? AvatarWoman : AvatarMan" alt="avatar" class="w-[96px] h-[96px] rounded-full object-cover ring-2" style="--tw-ring-color: rgba(0,0,0,0.08)" />
         <h3 class="mt-1 mb-2  tracking-[-0.01em]  text-center max-w-[260px] text-black text-[20px] font-normal font-['Alibaba_PuHuiTi']">{{ props.staff_name || '—' }}</h3>
       </div>
 
@@ -153,6 +153,7 @@
 import { reactive, ref } from 'vue'
 
 import AvatarMan from '../../../Resource/Staff/AvatarMan.svg'
+import AvatarWoman from '../../../Resource/Staff/AvatarWoman.svg'
 import StaffSelect from '../Staff/StaffSelect.vue'
 
 
@@ -170,8 +171,8 @@ const props = defineProps({
   device_status: { type: String, default: '' },
   staff_id: { type: String, default: '' },
   group_id: { type: String, default: '' },
+  sex: { type: Number, default: null },
   editMode: { type: Boolean, default: false },
-
 })
 
 

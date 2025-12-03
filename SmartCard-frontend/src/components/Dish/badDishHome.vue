@@ -2,10 +2,10 @@
   <div class="relative">
     
     <div class="w-80 h-[471px] left-0 top-0 absolute rounded-[38px] border border-border bg-card shadow-md"></div>
-    <div class="left-[56px] top-[30px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">菜品差评数</div>
+    <div class="left-[56px] top-[35px] absolute justify-start text-neutral-700 text-3xl font-bold font-['Alibaba_PuHuiTi']">菜品差评数</div>
    
     <div
-      v-for="(item, index) in badRank"
+      v-for="(item, index) in badRank.slice(0, 3)"
       :key="item._id || index"
     >
       <!-- Item name -->
@@ -56,7 +56,7 @@ const nameTop = (index) => {
 }
 
 const countTop = (index) => {
-  const base = [161, 268, 376]
+  const base = [165, 270, 378]
   if (index < base.length) return base[index]
   return base[base.length - 1] + (index - (base.length - 1)) * 108
 }

@@ -49,7 +49,7 @@
      </div>
 
       <!-- Form section -->
-        <StaffForm @rowAction="onRowAction" />
+     <StaffForm @rowAction="onRowAction" />
     
 
     <!-- StaffReport modal overlay -->
@@ -59,10 +59,9 @@
         <button type="button" class="absolute -top-4 -right-4 bg-white rounded-full px-3 py-1 border border-neutral-200 shadow" @click="closeReport">关闭</button>
       </div>
       </div>
-
-
   </section>
 </template>
+
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue'

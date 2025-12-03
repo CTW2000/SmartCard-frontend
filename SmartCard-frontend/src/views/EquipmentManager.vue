@@ -91,6 +91,7 @@
             :device_id="p.device_id"
             :staff_id="p.staff_id"
             :device_status="p.device_status"
+            :sex="p.sex"
             :editMode="isEditMode"
             @close="onCardUpdated"
             @updated="onCardUpdated"
@@ -185,8 +186,8 @@
           <div class="left-[54px] top-[165px] absolute justify-start text-zinc-500 text-base font-normal font-['Alibaba_PuHuiTi']">设备号</div>
           <div class="left-[53px] top-[214px] absolute justify-start text-zinc-500 text-base font-normal font-['Alibaba_PuHuiTi']">设备名称</div>
           <div class="left-[51px] top-[37px] absolute justify-start text-black text-2xl font-normal font-['Alibaba_PuHuiTi']">添加设备</div>
-          <div class="w-28 h-10 left-[129px] top-[272px] absolute bg-white rounded-[20px] border border-zinc-300"></div>
-          <div class="left-[164px] top-[279px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer" @click="submitAddDevice">完成</div>
+          <div class="w-28 h-10 left-[129px] top-[260px] absolute bg-white rounded-[20px] border border-zinc-300"></div>
+          <div class="left-[164px] top-[265px] absolute justify-start text-black text-xl font-normal font-['Alibaba_PuHuiTi'] cursor-pointer" @click="submitAddDevice">完成</div>
           
           
           <!-- Inputs -->
@@ -256,8 +257,8 @@
     <div class="relative">
       <div class="w-80 h-48 relative">
         <div class="w-80 h-48 left-0 top-0 absolute bg-white rounded-[30px]"></div>
-        <div class="left-[124px] top-[30px] absolute justify-start text-neutral-800 text-2xl font-medium font-['Alibaba_PuHuiTi']">系统通知</div>
-        <div class="left-[63px] top-[73px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi']">确定要删除这项内容吗？</div>
+        <div class="left-[108px] top-[30px] absolute justify-start text-neutral-800 text-2xl font-medium font-['Alibaba_PuHuiTi']">系统通知</div>
+        <div class="left-[55px] top-[73px] absolute justify-start text-neutral-800 text-xl font-normal font-['Alibaba_PuHuiTi']">确定要删除这项内容吗？</div>
         <button
           class="w-24 h-10 left-[183px] top-[116px] absolute bg-stone-50 rounded-[19.50px] border border-gray-200 cursor-pointer flex items-center justify-center"
           @click="cancelDelete"
@@ -265,7 +266,7 @@
           <div class="text-neutral-700 text-xl font-normal font-['Alibaba_PuHuiTi']">取消</div>
         </button>
         <button
-          class="w-24 h-10 left-[57px] top-[116px] absolute bg-teal-500 rounded-[19.50px] shadow-[0px_2px_2px_0px_rgba(196,196,196,0.25)] border border-white cursor-pointer flex items-center justify-center"
+          class="w-24 h-10 left-[45px] top-[116px] absolute bg-teal-500 rounded-[19.50px] shadow-[0px_2px_2px_0px_rgba(196,196,196,0.25)] border border-white cursor-pointer flex items-center justify-center"
           @click="confirmDelete"
         >
           <div class="text-white text-xl font-normal font-['Alibaba_PuHuiTi']">确定</div>
@@ -308,6 +309,7 @@ const editData = reactive({
 
 const fetchData = reactive({
   organize_name: '',
+  organize_id: '',
   groups:[],
 })
 
@@ -334,19 +336,6 @@ onMounted(async () => {
 })
 
 
-// Helper function to get organize ID from localStorage
-function getOrganizeId() {
-  try {
-    const nowOrganizeStr = localStorage.getItem('now_organize')
-    if (nowOrganizeStr) {
-      const nowOrganize = JSON.parse(nowOrganizeStr)
-      return nowOrganize._id || ''
-    }
-  } catch (e) {
-    console.error('[EquipmentManager] Error reading now_organize from localStorage:', e)
-  }
-  return ''
-}
 
 function selectGroup(idx) {
 
@@ -361,7 +350,7 @@ function selectGroup(idx) {
 }
 
 async function startAddGroup() {
-  const organizeId = getOrganizeId()
+  const organizeId = fetchData.organize_id || ''
   if (organizeId === '') return;
 
   const payload = {
@@ -406,7 +395,7 @@ function cancelDelete() {
 async function confirmDelete() {
   if (!pendingDeleteGroupId.value) return
 
-  const organizeId = getOrganizeId()
+  const organizeId = fetchData.organize_id || ''
   const payload = { 
     type: 'delete',
     data: JSON.stringify({ 
@@ -493,7 +482,7 @@ async function toggleEditMode() {
 }
 
 async function EditComplete() {
-  const organizeId = getOrganizeId()
+  const organizeId = fetchData.organize_id || ''
 
   const payload = {
     type: 'update',
@@ -540,12 +529,10 @@ async function EditComplete() {
 
 async function fetchOrganizeList(page = staffPage.value, limit = staffPageSize.value, groupId=null) {
   
-  const organizeId = getOrganizeId()
-  
   const payload = { 
     page: String(page),
     size: String(limit),
-    organize_id: organizeId, 
+    organize_id: fetchData.organize_id || '', 
     group_id: groupId || '' }
 
 
@@ -560,12 +547,13 @@ async function fetchOrganizeList(page = staffPage.value, limit = staffPageSize.v
       const hasOrganize = nowOrganize && Object.keys(nowOrganize).length > 0
 
       if (hasOrganize) {
-        localStorage.setItem('now_organize', JSON.stringify(nowOrganize))
+        fetchData.organize_id = nowOrganize._id || ''
         fetchData.organize_name = nowOrganize.organize_name || ''
       
         isFirstOpen.value = false
         showOrganizeNamePanel.value = false
       } else {
+        fetchData.organize_id = ''
         fetchData.organize_name = ''
         isFirstOpen.value = true
         showOrganizeNamePanel.value = true
@@ -636,7 +624,8 @@ async function fetchOrganizeList(page = staffPage.value, limit = staffPageSize.v
               device_name: dev.device_name || '',
               staff_phone: staffData.phone || '',
               group_id: dev.group_id,
-              staff_status: staffData.status
+              staff_status: staffData.status,
+              sex: staffData.sex || null
             }
 
             fetchData.groups[gIdx].people.push(person)

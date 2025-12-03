@@ -20,19 +20,34 @@
      
       <img class="w-20 h-20 left-[35px] top-[29px] absolute rounded-[276px] shadow-[0px_4px_4px_0px_rgba(194,194,194,0.25)] border-[3px] border-white" src="https://placehold.co/86x86" />
       
-      <div class="left-[146px] top-[31px] absolute justify-start
-       text-zinc-800 text-2xl font-medium font-['Alibaba_PuHuiTi']
-        truncate  max-w-[250px]">
-        {{ dishName }}</div>
-      
-      <div class="w-40 h-9 left-[400px] top-[29px] absolute bg-gray-100 rounded-[57px]">
-        <span class="left-[20px] top-[7px] absolute justify-start text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi']">今日总反馈{{ dishReport.total || 0 }}次</span>
+      <div
+        class="left-[146px] right-[60px] top-[29px] absolute flex items-center"
+        style="gap: 30px"
+      >
+        <div class="text-zinc-800 text-2xl font-medium font-['Alibaba_PuHuiTi'] truncate  min-w-0">
+          {{ dishName }}
+        </div>
+
+        <div class="flex items-center gap-3 ">
+          <div class="w-40 h-9 bg-gray-100 rounded-[57px] relative">
+            <span
+              class="left-[20px] top-[7px] absolute justify-start text-zinc-800 text-base font-normal font-['Alibaba_PuHuiTi']"
+            >
+              今日总反馈{{ dishReport.total || 0 }}次
+            </span>
+          </div>
+          <div class="w-32 h-9 bg-red-700 rounded-[57px] relative">
+            <span
+              class="left-[18px] top-[7px] absolute justify-start text-white text-base font-normal font-['Alibaba_PuHuiTi']"
+            >
+              负面占比32%
+            </span>
+          </div>
+        </div>
+
+        
       </div>
 
-      
-      <div class="w-32 h-9 left-[580px] top-[29px] absolute bg-red-700 rounded-[57px]">
-        <span class="left-[18px] top-[7px] absolute justify-start text-white text-base font-normal font-['Alibaba_PuHuiTi']">负面占比32%</span>
-      </div>
 
       <img
         :src="yellowStar"

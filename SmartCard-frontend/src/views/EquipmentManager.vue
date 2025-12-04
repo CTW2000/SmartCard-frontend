@@ -37,7 +37,7 @@
               <input
                 v-model="editData.group_names[g.id]"
                 type="text"
-                class="rounded-[8px] border px-[18px] py-[9.2px] text-[14px] outline-none"
+                class="w-40 h-[48px] rounded-[8px] border px-3 text-[14px] text-center outline-none bg-white text-neutral-900 placeholder-neutral-500 focus:bg-black focus:text-white focus:placeholder-white/70 transition-colors duration-150"
                 placeholder="请输入组别名称"
               />
 
@@ -54,7 +54,7 @@
               @click="startAddGroup"
               aria-label="新建分组"
             >
-              <img :src="blackBGIcon" class="h-[44px] w-[44px] transition group-hover:brightness-110" alt="" />
+              <img :src="blackBGIcon" class="h-[40px] w-[44px] transition group-hover:brightness-110" alt="" />
               <img :src="whiteCrossIcon" class="absolute left-1/2 top-1/2 h-[24px] w-[24px] -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 group-hover:scale-110" alt="新建分组" />
             </button>
 

@@ -8,6 +8,7 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL || 'https://wanwu.chat/';
 export const PATHS = {
   REGISTER: '/api/users/register',
   LOGIN: '/api/users/login',
+  JWT_TOKEN: '/api/users/jwttoken',
   MANAGE_INDEX: '/api/manage/index',
   STAFF_NAV: '/api/staff/nav',
   STAFF_EDIT: '/api/staff/edit',

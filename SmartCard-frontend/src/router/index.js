@@ -4,7 +4,7 @@ import { setNetworkError } from '../composables/useNetworkError'
 const routes = [
   {
     path: '/',
-    redirect: '/login',
+    redirect: (to) => ({ path: '/login', query: to.query }),
   },
   {
     path: '/home',
@@ -95,7 +95,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // Clear network error state when navigating to a new route
   setNetworkError(false)
-  
+
   const isAuthenticated = !!localStorage.getItem('token')
   const allowList = ['Login', 'CreateAccounts', 'JoinUs']
   if (!isAuthenticated && !allowList.includes(to.name)) {

@@ -59,12 +59,13 @@
 
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { postForm } from '../httpClient/client'
 import { PATHS } from '../httpClient/paths'
 import loginImage from '../../Resource/Login/loginImage.svg'
 
 const router = useRouter()
+const route = useRoute()
 
 const form = reactive({ account: '', password: '' })
 const remember = ref(false)
@@ -103,6 +104,58 @@ async function onSubmit() {
   }
 }
 
+async function handleTokenFromUrl() {
+  try {
+    // Prefer route.query but be robust to stray spaces in key
+   
+    let tokenFromQuery = ''
+    for (const [rawKey, rawVal] of Object.entries(route.query)) {
+      const key = String(rawKey).trim()
+      if (key === 'token') {
+        if (Array.isArray(rawVal)) {
+          tokenFromQuery = String(rawVal[0] ?? '').trim()
+        } else {
+          tokenFromQuery = String(rawVal ?? '').trim()
+        }
+        break
+      }
+    }
+
+    // Fallback: parse window.location in case router not ready
+    if (!tokenFromQuery && typeof window !== 'undefined') {
+      try {
+        const url = new URL(window.location.href)
+        // also iterate to tolerate keys like "token "
+        for (const [k, v] of url.searchParams.entries()) {
+          if (k.trim() === 'token') {
+            tokenFromQuery = v.trim()
+            break
+          }
+        }
+      } catch (_) {}
+    }
+    console.log(tokenFromQuery)
+    if (!tokenFromQuery) return
+   
+
+    const res = await postForm(PATHS.JWT_TOKEN, { token: tokenFromQuery })
+    const body = res?.data
+    if (body?.success === true || body?.code === 200) {
+      const serverToken = tokenFromQuery
+      if (serverToken) localStorage.setItem('token', serverToken)
+      // Navigate to Home after successful validation
+      router.push({ name: 'Home' })
+      return
+    }
+    // If server responds but not success, surface message
+    alert(body?.message || 'Token 校验失败')
+  } catch (err) {
+    console.error('JWT token exchange failed:', err?.response?.data || err)
+    const msg = err?.response?.data?.message || err?.message || '请求失败'
+    alert(msg)
+  }
+}
+
 onMounted(() => {
   const savedAccount = localStorage.getItem('remembered_account')
   if (savedAccount) {
@@ -114,6 +167,8 @@ onMounted(() => {
     form.password = savedPassword
     remember.value = true
   }
+  // Handle token passed via URL (e.g., ?token=...)
+  handleTokenFromUrl()
 })
 
 

@@ -306,8 +306,6 @@ function handleTaskTypeSelect(task) {
 }
 
 
-
-
 //time choose control panel
 
 function toggleDatePanel() {
@@ -357,9 +355,9 @@ async function handleSubmit() {
   const payload = {
     dish_id: matchedDish?.id || '',
     dish_name: dishName,
-    label_value: editData.task_type_value || '',
+    label_value: editData.task_type_value || props.task_type[0]?.value || '',
     content: (editData.content || '').trim(),
-    end_time: editData.end_time || ''
+    end_time: editData.end_time || new Date().getTime()
   }
 
   if (!payload.dish_id || !payload.dish_name || !payload.label_value || !payload.content || !payload.end_time) {

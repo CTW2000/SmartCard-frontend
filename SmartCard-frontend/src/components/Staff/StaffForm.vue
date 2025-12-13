@@ -36,7 +36,7 @@
 
         <!-- Device Number -->
         <div class="text-neutral-500 text-2xl font-normal font-['Alibaba_PuHuiTi'] truncate text-center">
-          {{ row.device_number }}
+          {{ row.device_name }}
         </div>
 
         <!-- Position -->
@@ -353,7 +353,7 @@ async function fetchStaffData(page = currentPage.value, size = pageSize.value) {
           name: item.staff_id?.name || '—',
           sex: item.staff_id?.sex || '—',
           phone: item.staff_id?.phone || '—',
-          device_number: item.device_id?.device_number || '—',
+          device_name: item.device_id?.device_name || '—',
           postion: item.staff_id?.postion || '—',
           postion_type: item.staff_id?.postion_type || '—',
           day_time: item.day_work_time ?? 0,

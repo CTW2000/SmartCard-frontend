@@ -21,7 +21,7 @@
 
 
     <!-- Rows -->
-    <div class="mt-4">
+    <div class="mt-4 max-h-[220px] overflow-y-auto overflow-x-hidden">
 
       <div v-for="(row, rIdx) in staffRows" :key="row.id || rIdx" class="mb-4 grid items-center form-grid" :style="gridStyle">
         <!-- Name -->
@@ -169,7 +169,7 @@ onMounted(() => {
 
 <style scoped>
 .form-grid {
-  margin-left: -72px;
+  margin-left: -52px;
   margin-right: -56px;
 }
 </style>
